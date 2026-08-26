@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>死魂灵的夜曲 · 主持人速查卡</title>
+<style>
+  :root{
+    --bg:#100b1a; --panel:#1a1428; --panel2:#221a35; --ink:#ece8f6; --muted:#a99fc4;
+    --line:#3a2f55; --gold:#d9b36a; --ghost:#7fd6e0; --blood:#e0657f; --vine:#9d7bd8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);
+    font-family:"Songti SC","STSong","Noto Serif SC",serif;}
+  .sheet{width:210mm;min-height:297mm;margin:0 auto;padding:10mm 9mm;
+    background:linear-gradient(160deg,#140e22,#0e0a18);}
+  header{border-bottom:2px solid var(--gold);padding-bottom:6px;margin-bottom:8px;
+    display:flex;justify-content:space-between;align-items:flex-end;}
+  header h1{font-size:23px;letter-spacing:3px;color:var(--gold);font-weight:700;}
+  header .sub{font-size:10.5px;color:var(--muted);text-align:right;line-height:1.5}
+  .badges{margin:6px 0 10px;display:flex;gap:8px;flex-wrap:wrap;font-size:10px}
+  .badge{border:1px solid var(--line);border-radius:10px;padding:2px 9px;color:var(--muted)}
+  .badge b{color:var(--ghost)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+  .panel.full{grid-column:1 / -1}
+  .panel h2{font-size:13px;letter-spacing:2px;color:var(--gold);
+    border-left:3px solid var(--blood);padding-left:7px;margin-bottom:6px}
+  .panel h3{font-size:11px;color:var(--ghost);margin:7px 0 3px;letter-spacing:1px}
+  ol,ul{margin-left:15px;font-size:10.3px;line-height:1.55;color:var(--ink)}
+  li{margin:1.5px 0}
+  .night{background:var(--panel2)}
+  .day{background:#191324}
+  table{width:100%;border-collapse:collapse;font-size:9.8px;margin-top:3px}
+  th,td{border:1px solid var(--line);padding:3px 5px;text-align:left;line-height:1.4}
+  th{color:var(--gold);background:#241b38}
+  td code{color:var(--ghost);font-family:"Courier New",monospace;font-size:9.5px}
+  .pri{font-size:10.5px;line-height:1.7;background:#221a35;border-radius:6px;padding:5px 8px}
+  .pri .v42{color:var(--gold)} .pri .v43{color:var(--blood)}
+  .k{font-size:10.2px;line-height:1.62}
+  .k b{color:var(--ghost)}
+  .note{font-size:9.5px;color:var(--muted);font-style:italic;margin-top:4px}
+  .flow{font-size:10px;line-height:1.5}
+  .flow .tag{display:inline-block;min-width:14px;color:var(--blood);font-weight:700}
+  .script{font-size:10px;line-height:1.6;background:#0f0a1c;border:1px dashed var(--line);
+    border-radius:6px;padding:6px 8px;color:#d7cdee}
+  .script .q{color:var(--gold)}
+  .foot{font-size:9px;color:var(--muted);text-align:center;margin-top:8px;border-top:1px solid var(--line);padding-top:5px}
+  @media print{
+    html,body{background:#fff;color:#111}
+    .sheet{background:#fff;width:auto;min-height:auto;padding:6mm}
+    :root{--ink:#111;--muted:#444;--line:#999;--panel:#f3f0f8;--panel2:#eceaf4;
+      --gold:#8a6a1e;--ghost:#1d6f7a;--blood:#a8243f;--vine:#5b3f8a;--bg:#fff}
+    .panel{background:#f6f4fb;border:1px solid #bbb}
+    .night{background:#eef0f8} .day{background:#f3f0f8}
+    .script{background:#f0f0f0;border-color:#bbb;color:#222}
+    header h1{color:#8a6a1e} .badge{border-color:#bbb}
+    table th{background:#e8e2f2}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <header>
+    <h1>死魂灵的夜曲 · 主持人速查卡</h1>
+    <div class="sub">11 人局 · 白昼回归迷雾<br/>V4.2 屠边版 / V4.3 屠城阈值版 通用</div>
+  </header>
+
+  <div class="badges">
+    <span class="badge">配置 <b>人类8 / 死亡3</b></span>
+    <span class="badge">夜间死亡上限 <b>2</b></span>
+    <span class="badge">回归 <b>延至次日白天</b></span>
+    <span class="badge">遗言 <b>夜杀无·放逐有</b></span>
+    <span class="badge">米提亚 <b>验魂灵/夜祷</b></span>
+    <span class="badge">V4.3 含 <b>夜祷·穿透刀</b></span>
+  </div>
+
+  <div class="grid">
+    <!-- 日间流程 -->
+    <div class="panel day">
+      <h2>一、日间流程</h2>
+      <div class="flow">
+        <div><span class="tag">①</span>宣布<b>回归名单</b>（只报名字，不报原因；空则说"今夜无人回归"）</div>
+        <div><span class="tag">②</span>[<b>首日</b>] 领袖票选（不额外发言，直接投票）</div>
+        <div><span class="tag">③</span>领袖决定发言顺序 → 自由讨论</div>
+        <div><span class="tag">④</span>放逐投票（<b>放逐者有遗言</b>，出局前简短陈述）</div>
+        <div><span class="tag">⑤</span>回归名单宣布后立即<b>判定胜负</b></div>
+        <div><span class="tag">⑥</span>进入黑夜（自爆可随时打断 → 立即入夜，见右下列）</div>
+      </div>
+      <h3>自爆中断</h3>
+      <ul>
+        <li>莱莱可：翻牌 + 弃刀 + <b>不出局</b> + 入夜（弃刀→人类胜 B2 关闭）</li>
+        <li>魂灵：翻牌 + <b>立即永久出局</b>（无遗言）+ 当日作废 + 入夜；计入条件A，水妖不可复活（V4.3 可当夜转夜祷）</li>
+        <li>首日票选前自爆 → 领袖票选顺延次日；唱票中自爆 → 本轮投票作废</li>
+      </ul>
+    </div>
+
+    <!-- 夜间流程 -->
+    <div class="panel night">
+      <h2>二、夜间流程</h2>
+      <ol>
+        <li>门先生守护 <b>2 人</b>（不可守己；同人不得连守两晚）</li>
+        <li>死亡阵营提交击杀（魂灵 N 刀 + 死神 0~2 刀）+ <b>[V4.3]</b> 死神提交夜祷转化目标</li>
+        <li>莱莱可刺杀（<b>N1 不可行动</b>；未自爆才可），计入上限</li>
+        <li><b>[V4.3]</b> 夜祷穿透刀（自定目标，不与狼队协调）</li>
+        <li>水妖主动复活目标（记录不结算；失效不耗次数）</li>
+        <li>米提亚 / 降临者查验</li>
+        <li>结算死亡名单（被水妖指定者<b>仍列死亡</b>，复活次日才生效）</li>
+      </ol>
+      <h3>查验口径</h3>
+      <ul>
+        <li>米提亚：查 <b>魂灵 / 夜祷</b> → 命中其一即阳性（可明确报"是夜祷"）</li>
+        <li>降临者：查 <b>死神</b> → 夜祷显示"否"（仍盲区）</li>
+      </ul>
+    </div>
+
+    <!-- 击杀优先级 -->
+    <div class="panel full">
+      <h2>三、击杀优先级（全局死亡上限 = 2，溢出无效）</h2>
+      <div class="pri">
+        <span class="v42">V4.2 屠边：</span> 魂灵第1刀 &gt; 莱莱可1刀 &gt; 魂灵第2刀 &gt; 死神刀<br/>
+        <span class="v43">V4.3 屠城：</span> 夜祷穿透刀 &gt; 魂灵第1刀 &gt; 莱莱可1刀 &gt; 魂灵第2刀 &gt; 死神刀
+      </div>
+      <table>
+        <tr><th>参数</th><th>说明</th></tr>
+        <tr><td>夜祷穿透刀</td><td>必中、<b>无视门先生守护</b>、占上限 1 名额；其余击杀只能再取前 1 个</td></tr>
+        <tr><td>门先生守护</td><td>优先级判定后、结算前介入；<b>仅对非穿透刀生效</b>（被守者击杀作废，但已占名额）</td></tr>
+        <tr><td>同目标多刀</td><td>不重复计数，仅消耗 1 名额；指向同一人则低优先者溢出</td></tr>
+        <tr><td>水妖复活</td><td>最后延迟生效；与守护叠加时门先生优先、<b>不奶穿</b>（目标本未死→复活作废）</td></tr>
+      </table>
+      <div class="note">口诀：穿透刀永远先算 → 取前 N-1 有效击杀 → 门先生挡非穿透刀 → 水妖复活压到次日。</div>
+    </div>
+
+    <!-- 胜负判定 -->
+    <div class="panel">
+      <h2>四、胜负判定</h2>
+      <h3>死亡阵营胜利</h3>
+      <ul>
+        <li><b>[V4.2 屠边]</b> 5 神职全出 或 3 普通人全出</li>
+        <li><b>[V4.3 屠城阈值]</b> 场上<b>人类 ≤ 死亡阵营人数</b>（夜祷计入狼方；死神回归不占上限但计 1 人）</li>
+      </ul>
+      <h3>人类胜利（两版相同）</h3>
+      <ul>
+        <li><b>A</b> 两名魂灵永久出局 且</li>
+        <li><b>B1</b> 终局放逐票命中真实死神（死神不再回归）<b>或</b></li>
+        <li><b>B2</b> 莱莱可于 2 魂灵出局后永久刺杀死神</li>
+      </ul>
+      <div class="note">判定时机：每日回归名单宣布后立即判（先判狼胜，再判人类胜）。</div>
+    </div>
+
+    <!-- 关键裁决 -->
+    <div class="panel">
+      <h2>五、关键裁决速查</h2>
+      <div class="k">
+        <b>遗言：</b>夜杀未复活者无遗言；放逐者有遗言；自爆无遗言；回归名单者无需遗言。<br/>
+        <b>回归名单：</b>只报名字，绝不报原因。<br/>
+        <b>水妖失效：</b>目标被守护/未死→不耗次数；误对夜祷复活→私下告知无效、不耗次数。<br/>
+        <b>同目标冲突：</b>水妖复活 与 死神转化 同选一人 → 复活优先，死神不耗次数。<br/>
+        <b>夜祷：</b>穿透守护、最高优先、必中、占上限1；自定刀可能重复浪费；被放逐/击杀<b>真死</b>，水妖不可复活。<br/>
+        <b>死神：</b>被放逐次日必回（无限次、不占上限）；2 魂灵出局后被莱莱可刺杀 = 永久。<br/>
+        <b>领袖：</b>首日回归后票选（不额外发言）；1.5 票 + 定发言顺序；出局当日补选。
+      </div>
+    </div>
+
+    <!-- 主持人口令 -->
+    <div class="panel full">
+      <h2>六、主持人口令要点</h2>
+      <div class="script">
+        <span class="q">【收夜刀后】</span>"天亮了。昨夜倒下的是：__、__。"（被水妖救者仍列死亡名单）<br/>
+        <span class="q">【公布回归】</span>"今夜回归游戏的是：__、__。"（只报名字，不解释）<br/>
+        <span class="q">【放逐死神后】</span>"__ 被放逐。但他明天还会回来。"（不说明身份）<br/>
+        <span class="q">【狼胜·屠边】</span>"所有神职（或所有普通人）已出局——死亡阵营胜利。"<br/>
+        <span class="q">【狼胜·屠城】</span>"场上人类已不足死亡阵营——城已陷落，死亡阵营胜利。"<br/>
+        <span class="q">【人类胜】</span>"两名魂灵永久出局，且今夜放逐命中死神——人类胜利。" / "莱莱可永久刺杀了死神——人类胜利。"<br/>
+        <span class="q">【自爆】</span>"__ 自爆，身份是魂灵，立即出局、进入黑夜。"（无遗言）
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">死魂灵的夜曲 · 主持人速查卡（V4.2 / V4.3 通用）　|　打印：浏览器 Ctrl/Cmd+P，建议 A4 纵向</div>
+</div>
+</body>
+</html>
