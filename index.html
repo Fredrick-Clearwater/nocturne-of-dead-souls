@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>死魂灵的夜曲 · 规则分享版 V4.3</title>
+<title>死魂灵的夜曲 · 规则书 V4.3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
@@ -83,7 +83,7 @@
     background:radial-gradient(circle at 30% 30%,rgba(201,162,75,.18),transparent);
     box-shadow:0 0 0 4px rgba(201,162,75,.06);
   }
-  h2.sec-title{font-family:var(--wei);font-size:27px;margin:14px 0 6px;color:var(--bone);letter-spacing:1px;}
+  h2.sec-title{font-family:var(--wei);font-size:clamp(22px,5vw,27px);margin:14px 0 6px;color:var(--bone);letter-spacing:1px;}
   h2.sec-title .en{display:block;font-size:13px;color:var(--bone-dim);font-family:var(--serif);letter-spacing:3px;text-transform:uppercase;margin-top:2px;}
   h3{font-family:var(--wei);font-size:20px;color:var(--gold);margin:30px 0 10px;border-left:3px solid var(--crimson);padding-left:12px;}
   p{margin:10px 0;color:var(--bone);}
@@ -100,7 +100,7 @@
     width:70%;height:120px;background:radial-gradient(closest-side,rgba(79,176,164,.16),transparent);
     filter:blur(20px);
   }
-  .hero h1{font-family:var(--calli);font-size:72px;margin:0;line-height:1.1;color:var(--bone);
+  .hero h1{font-family:var(--calli);font-size:clamp(40px,11vw,72px);margin:0;line-height:1.1;color:var(--bone);
     text-shadow:0 0 30px rgba(179,54,54,.35),0 0 60px rgba(79,176,164,.18);}
   .hero .sub{font-family:var(--wei);font-size:19px;color:var(--bone-dim);margin-top:14px;letter-spacing:2px;}
   .hero .tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px;}
@@ -114,7 +114,35 @@
   .grid{display:grid;gap:16px;margin-top:18px;}
   .g2{grid-template-columns:repeat(2,1fr);}
   .g3{grid-template-columns:repeat(3,1fr);}
-  @media(max-width:820px){.g2,.g3{grid-template-columns:1fr;}}
+  @media(max-width:820px){
+    body{font-size:16px;}
+    main{padding:0 14px 70px;}
+    section{padding:34px 0 10px;}
+    .nav-inner{padding:8px 14px;gap:8px;}
+    .brand{font-size:18px;}
+    .nav-links a{font-size:12.5px;padding:5px 8px;}
+    h3{font-size:18px;}
+    .faction{padding:16px 16px;}
+    .role-card{padding:15px 15px;}
+    .tier{padding:10px 12px;gap:10px;flex-wrap:wrap;}
+    .tier .ds{margin-left:0;text-align:left;width:100%;}
+    table{font-size:13px;}
+    th,td{padding:8px 9px;}
+  }
+  @media(max-width:480px){
+    .nav-inner{flex-wrap:wrap;padding:8px 12px;gap:6px;}
+    .nav-links{order:3;width:100%;margin-left:0;overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;-webkit-overflow-scrolling:touch;}
+    .nav-links a{white-space:nowrap;font-size:12.5px;padding:5px 9px;}
+    .btn-print{margin-left:auto;}
+    .hero{padding:46px 14px 38px;}
+    .hero .sub{font-size:15.5px;}
+    .tags{gap:8px;margin-top:16px;}
+    .tag{font-size:12px;padding:5px 11px;}
+    body{font-size:15.5px;}
+    .faction ul{padding-left:16px;}
+    .vswitch{overflow-x:auto;}
+    .vswitch table{min-width:460px;}
+  }
 
   .faction{
     border-radius:16px;padding:20px 22px;position:relative;overflow:hidden;
@@ -236,7 +264,7 @@
 
 <div class="hero">
   <h1>死魂灵的夜曲</h1>
-  <div class="sub">Nocturne of the Dead Souls · 狼人杀 Like 规则分享版</div>
+  <div class="sub">Nocturne of the Dead Souls · 狼人杀 Like 规则</div>
   <div class="tags">
     <span class="tag gold">V4.3</span>
     <span class="tag crim">11 人局</span>
@@ -537,7 +565,7 @@
 </main>
 
 <footer>
-  《死魂灵的夜曲》规则分享版 V4.3 · 由 WorkBuddy 排版生成 · 与《规则V4.3_屠城阈值版.md》《规则V4.2.md》《新手导读与术语表.md》同源
+  《死魂灵的夜曲》规则书 V4.3 · 由 WorkBuddy 排版生成 · 与《规则V4.3_屠城阈值版.md》《规则V4.2.md》《新手导读与术语表.md》同源
 </footer>
 
 </body>
