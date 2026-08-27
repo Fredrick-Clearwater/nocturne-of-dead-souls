@@ -109,6 +109,14 @@
   .tag.soul{border-color:var(--soul-dim);color:var(--soul);}
   .tag.crim{border-color:var(--crimson-deep);color:#e07a7a;}
   .tag.gold{border-color:var(--gold-dim);color:var(--gold);}
+  .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px;}
+  .btn-hero{font-family:var(--wei);font-size:15px;color:var(--ink) !important;
+    background:linear-gradient(180deg,var(--gold),var(--gold-dim));
+    border:none;padding:11px 22px;border-radius:10px;text-decoration:none;
+    box-shadow:0 6px 18px rgba(201,162,75,.35);transition:.2s;}
+  .btn-hero:hover{filter:brightness(1.08);transform:translateY(-1px);color:var(--ink) !important;}
+  .btn-hero.ghost{background:transparent;color:var(--gold) !important;border:1px solid var(--gold);box-shadow:none;}
+  .btn-hero.ghost:hover{background:rgba(201,162,75,.12);color:var(--gold) !important;}
 
   /* ---------- cards / grids ---------- */
   .grid{display:grid;gap:16px;margin-top:18px;}
@@ -259,6 +267,7 @@
       <a href="#s8">平衡</a>
     </nav>
     <button class="btn-print" onclick="window.print()">打印 / 存 PDF</button>
+    <a class="btn-print" href="死魂灵的夜曲_模拟器_V4.3新版.html" target="_blank" rel="noopener">🧪 模拟器</a>
   </div>
 </header>
 
@@ -271,6 +280,10 @@
     <span class="tag soul">白昼回归迷雾</span>
     <span class="tag">屠城阈值胜利</span>
     <span class="tag">含夜祷 / 领袖 / 自爆</span>
+  </div>
+  <div class="hero-cta">
+    <a class="btn-hero" href="死魂灵的夜曲_模拟器_V4.3新版.html" target="_blank" rel="noopener">🧪 打开规则模拟器</a>
+    <a class="btn-hero ghost" href="死魂灵的夜曲_主持人速查卡.html" target="_blank" rel="noopener">🗂 主持人速查卡</a>
   </div>
 </div>
 
@@ -408,7 +421,8 @@
         <div class="rname">降临者 <span class="badge b-new">昼间指认</span></div>
         <p>每夜查 1 人<strong>是否为死神</strong>；另于<strong>每个白天</strong>有 1 次「指认死神」机会（投票前声明）：</p>
         <p>• 指认正确 → 强迫死神<strong>当场自爆、进入黑夜</strong>：当夜无行动、全场知其身份，<span class="hl-crim">次日方回归</span>（跳过其一夜）。当日投票作废。</p>
-        <p>• 指认错误 → 无效果，机会作废。降临者出局后失效。</p>
+        <p>• <span class="hl-gold">一次性奖励</span>：指认正确 = 降临者<strong>永久失去指认</strong>，并获得唯一一次性<strong>「飞刀」</strong>（每夜最高优先、穿透守护、可刀任何人；双魂灵出局后刺中死神＝<span class="hl-crim">永久击杀 B3</span>），杜绝"反复指认跳票"。</p>
+        <p>• 指认错误 → 无效果，机会作废，次日可再试。降临者出局后失效。</p>
         <p>每轮最多<strong>两次触及死神</strong>（夜查 + 日指认），日指认为博弈，猜错即空过。</p>
       </div>
     </div>
