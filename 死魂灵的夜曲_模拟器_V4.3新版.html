@@ -9,27 +9,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#08060f;
-  --bg2:#0e0a1a;
-  --panel:#150f25;
-  --panel2:#1d1530;
-  --panel3:#261a3e;
-  --line:#2a1f48;
-  --line-bright:#3d2d63;
-  --gold:#e2b870;
-  --gold-dim:#8a6d3c;
+  --bg:#09111f;
+  --bg2:#0f1524;
+  --panel:#101a2b;
+  --panel2:#16233a;
+  --panel3:#1e2d48;
+  --line:#263752;
+  --line-bright:#3b506f;
+  --gold:#d4aa5a;
+  --gold-dim:#8f7139;
   --gold-glow:rgba(226,184,112,.25);
-  --purple:#b59cf0;
-  --purple-dim:#5e448f;
-  --purple-glow:rgba(181,156,240,.22);
-  --death:#e85a72;
-  --death-dim:#7a2e3c;
-  --death-glow:rgba(232,90,114,.2);
-  --human:#6fdcc0;
-  --human-dim:#2a6e5c;
-  --ink:#f1e6d2;
-  --ink-dim:#a89cc0;
-  --ink-faint:#6f648a;
+  --purple:#9fb7d2;
+  --purple-dim:#526b87;
+  --purple-glow:rgba(159,183,210,.22);
+  --death:#d98a8a;
+  --death-dim:#7d3939;
+  --death-glow:rgba(179,54,54,.2);
+  --human:#7fc9bd;
+  --human-dim:#2f6b64;
+  --ink:#eee5d5;
+  --ink-dim:#aeb6c4;
+  --ink-faint:#6e7b8d;
 }
 *{box-sizing:border-box; margin:0; padding:0;}
 html,body{height:100%;}
@@ -464,6 +464,7 @@ button:focus-visible{outline-color:var(--purple);}
         <select id="p_winMode"><option value="tubian">屠边（灭神/灭民）</option><option value="tucheng">屠城阈值（人类 ≤ 狼方）</option></select></div>
       <div class="param-row"><label>全局每夜死亡上限</label><input type="number" id="p_deathCap" value="2" min="1" max="5"></div>
       <div class="param-row"><label>领袖放逐票权重</label><input type="number" id="p_leaderWeight" value="1.5" step="0.5" min="1" max="3"></div>
+      <div class="param-row"><label>信息驱动投票模型</label><select id="p_infoModel"><option value="1">启用（米提亚/降临者会影响投票）</option><option value="0">关闭（完全随机基准）</option></select></div>
       <div class="param-row"><label>门先生每夜守护人数</label><input type="number" id="p_guardCount" value="2" min="0" max="4"></div>
       <div class="param-row"><label>莱莱可首夜（N1）禁刀</label><select id="p_assassinN1"><option value="1">禁刀（规则默认）</option><option value="0">允许行动</option></select></div>
       <div class="param-row"><label>魂灵自爆（各 1 次）</label><select id="p_soulSD"><option value="1">启用</option><option value="0">禁用</option></select></div>
@@ -507,8 +508,8 @@ button:focus-visible{outline-color:var(--purple);}
 <div class="screen" id="screen-stats">
   <div class="setup-grid">
     <div class="panel">
-      <h2>批量自动推演（AI 随机基准策略）</h2>
-      <div class="hint" style="margin-bottom:12px;">使用<b>配置页当前参数</b>自动跑多局。AI 采用随机基准策略（狼刀随机人类、投票随机、技能即用），用于快速积累样本观察规则骨架的平衡趋势；精细博弈结论仍需手动对局验证。</div>
+      <h2>批量自动推演（可切换信息模型）</h2>
+      <div class="hint" style="margin-bottom:12px;">使用<b>配置页当前参数</b>自动跑多局。启用信息模型后，好人会以 40%–60% 浮动概率推举米提亚；米提亚验出死亡阵营且为领袖时，99% 的好人票集中在阳性目标，其余信息按较弱权重扩散。</div>
       <div class="action-row">
         推演局数 <input type="number" id="batchN" value="100" min="1" max="5000" style="width:90px;">
         <button class="primary" id="batchBtn" onclick="App.runBatch()">开始推演</button>
@@ -616,6 +617,7 @@ function readConfig(){
     winMode: document.getElementById("p_winMode").value,
     deathCap: +document.getElementById("p_deathCap").value || 2,
     leaderWeight: +document.getElementById("p_leaderWeight").value || 1.5,
+    infoModel: document.getElementById("p_infoModel").value === "1",
     guardCount: +document.getElementById("p_guardCount").value || 0,
     assassinN1Block: document.getElementById("p_assassinN1").value==="1",
     soulSD: document.getElementById("p_soulSD").value==="1",
@@ -1620,12 +1622,22 @@ function autoOneGame(cfg){
     if(G.over) break;
     if(!G.electionDone||!G.leader){
       const al2=aliveP(G);
-      G.leader=rnd(al2).id; G.electionDone=true; use(G,"领袖当选");
+      const mitiaLeader = cfg.infoModel && aliveRole(G,"米提亚") && Math.random() < (.4 + Math.random()*.2);
+      G.leader=(mitiaLeader ? aliveRole(G,"米提亚") : rnd(al2)).id; G.electionDone=true; use(G,"领袖当选");
     }
     const al2=aliveP(G), h2=al2.filter(p=>factionOf(p)==="human");
     const votes={};
     al2.forEach(p=>{
       let pool=factionOf(p)==="death"? h2 : al2.filter(q=>q.id!==p.id);
+      if(factionOf(p)==="human" && cfg.infoModel){
+        const mc=G.night.mitiaChecks||[];
+        const positive=mc.some(id=>id!=null && factionOf(G.players[id])==="death");
+        const mitia=aliveRole(G,"米提亚");
+        const known=mc.filter(id=>id!=null && factionOf(G.players[id])==="death").map(id=>G.players[id]);
+        if(known.length && positive && mitia && G.leader===mitia.id && Math.random()<.99) pool=known;
+        else if(known.length && positive && Math.random()<.72) pool=known;
+        else if(G.night.oracleCheck!=null && G.players[G.night.oracleCheck] && G.players[G.night.oracleCheck].role==="死神" && Math.random()<.85) pool=[G.players[G.night.oracleCheck]];
+      }
       if(!pool.length) pool=al2.filter(q=>q.id!==p.id);
       votes[p.id]= pool.length? rnd(pool).id : null;
     });
