@@ -6,7 +6,7 @@
 <title>死魂灵的夜曲 · 规则平衡性模拟器</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#09111f;
@@ -43,6 +43,7 @@ body{
     radial-gradient(ellipse 35% 25% at 8% 95%, rgba(232,90,114,.05), transparent 70%);
   background-attachment: fixed;
 }
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 55% 35% at 75% 0%,rgba(41,113,137,.12),transparent 70%),radial-gradient(ellipse 45% 35% at 8% 100%,rgba(148,39,52,.08),transparent 70%);mix-blend-mode:screen}
 body::before{
   content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
   background-image:
@@ -447,6 +448,10 @@ button:focus-visible{outline-color:var(--purple);}
       <div><div class="vt">V4.3 · 屠城阈值版</div><div class="vd">狼胜 = 人类 ≤ 狼方 · 水妖 3 次复活 · 夜祷转化 · 米提亚双查 · 降临者昼间指认</div></div>
       <span class="vbadge">TUCHENG</span>
     </div>
+    <div class="ver-tab" id="vt44" onclick="App.setVersion('4.4')">
+      <div><div class="vt">V4.4 preview · 13 人局</div><div class="vd">平民 +2 · 首夜仅死亡行动 · 门先生双守代出局 · 信息投票模型</div></div>
+      <span class="vbadge">PREVIEW</span>
+    </div>
   </div>
   <div class="setup-sec-label second"><b>②</b> 对局配置</div>
   <div class="setup-grid">
@@ -592,6 +597,7 @@ App.setVersion = function(v){
   App.version = v;
   document.getElementById("vt42").classList.toggle("sel", v==="4.2");
   document.getElementById("vt43").classList.toggle("sel", v==="4.3");
+  document.getElementById("vt44").classList.toggle("sel", v==="4.4");
   if(v==="4.2"){
     setV("p_winMode","tubian"); setV("p_nixieNightType","delayed");
     setV("p_nixieNight",1); setV("p_nixieExile",0); setV("p_nixiePassive",1);
@@ -600,9 +606,15 @@ App.setVersion = function(v){
     setV("p_winMode","tucheng"); setV("p_nixieNightType","instant");
     setV("p_nixieNight",1); setV("p_nixieExile",1); setV("p_nixiePassive",1);
     setV("p_prayer",1); setV("p_prayerPierce",1);
+    if(v==="4.4") App.classic44();
   }
 };
 function setV(id,val){ document.getElementById(id).value = val; }
+App.classic44 = function(){
+  const c={"魂灵":2,"死神":1,"莱莱可":1,"门先生":1,"米提亚":1,"降临者":1,"水妖":1,"普通人":5};
+  ALL_ROLES.forEach(r=>document.getElementById("rc_"+r).value=c[r]);
+  setV("p_winMode","tucheng"); setV("p_assassinN1",1); setV("p_infoModel",1); App.updateTotal();
+};
 App.classic = function(){
   const c = {"魂灵":2,"死神":1,"莱莱可":1,"门先生":1,"米提亚":1,"降临者":1,"水妖":1,"普通人":3};
   ALL_ROLES.forEach(r=>document.getElementById("rc_"+r).value = c[r]);
@@ -791,7 +803,7 @@ function resolveNight(G){
     const cs=(n.mitiaChecks||[]).filter(c=>c!=null);
     if(cs.length){
       use(G,"米提亚查验");
-      const dual=(G.cfg.version==="4.3" && cs.length>=2 && cs[0]!==cs[1]);
+      const dual=((G.cfg.version==="4.3"||G.cfg.version==="4.4") && cs.length>=2 && cs[0]!==cs[1]);
       if(dual){
         const poses=cs.filter(id=>{const r=G.players[id].role; return r==="魂灵"||r==="夜祷";});
         if(poses.length) logGod(G,`米提亚双查 [${cs.map(id=>nameOf(G,id)).join("、")}] → 「魂灵在它们之中」（含 ${poses.map(id=>nameOf(G,id)).join("、")}）。`);
@@ -1075,7 +1087,7 @@ function renderPlayers(){
     if(p.revealed) tags.push(`<span class="ptag deadtag">已翻牌</span>`);
     if(p.knifeGone) tags.push(`<span class="ptag">已弃刀</span>`);
     if(p.role==="夜祷") tags.push(`<span class="ptag prayer">夜祷</span>`);
-    if(p.role==="降临者" && G.cfg.version==="4.3"){
+    if(p.role==="降临者" && (G.cfg.version==="4.3"||G.cfg.version==="4.4")){
       if(G.oracleKnifeGranted) tags.push(`<span class="ptag ${G.oracleKnifeUsed?"":"prayer"}">${G.oracleKnifeUsed?"飞刀已用":"🔮 飞刀可用"}</span>`);
       else if(p.alive && !G.oracleIdentifyUsedEver && G.phase.startsWith("day")) tags.push(`<span class="ptag ${G.oracleUsedToday?"":"ret"}">${G.oracleUsedToday?"指认已试":"指认可用"}</span>`);
     }
@@ -1282,7 +1294,7 @@ function renderPhase(){
     const ora=G.players.find(p=>p.baseRole==="降临者");
     h+=`<div class="phase-desc">查验结果仅上帝与水妖可见于日志（<b>【上帝】</b>条目），法官私下告知本人。</div>`;
     if(mit && mit.alive){
-      const dual=(G.cfg.version==="4.3");
+      const dual=(G.cfg.version==="4.3"||G.cfg.version==="4.4");
       h+=`<div class="action-block"><div class="ab-t"><span class="whoic role-米提亚">${roleIcon("米提亚")}</span><span class="who role-米提亚">米提亚 ${mit.name}</span> ${dual?"双查（验魂灵/夜祷，可含自己）":"查验（验魂灵/夜祷）"}</div>`;
       for(let i=0;i<(dual?2:1);i++){
         h+=`<div class="action-row">目标 ${i+1}：<select onchange="App.G.night.mitiaChecks[${i}]=this.value===''?null:+this.value">${opts(alive,G.night.mitiaChecks&&G.night.mitiaChecks[i],true)}</select></div>`;
@@ -1312,7 +1324,7 @@ function renderPhase(){
     const sd=sdButtons();
     if(sd) h+=`<div class="action-block"><div class="ab-t">自爆（<span class="role-魂灵">狼·魂灵</span> / <span class="role-莱莱可">好人·莱莱可</span>，立即结算，当日作废）</div><div class="action-row">${sd}</div></div>`;
     const ora=G.players.find(p=>p.baseRole==="降临者");
-    if(ora && ora.alive && G.cfg.version==="4.3" && !G.oracleIdentifyUsedEver && !G.oracleUsedToday){
+    if(ora && ora.alive && (G.cfg.version==="4.3"||G.cfg.version==="4.4") && !G.oracleIdentifyUsedEver && !G.oracleUsedToday){
       h+=`<div class="action-block"><div class="ab-t"><span class="whoic role-降临者">${roleIcon("降临者")}</span><span class="who role-降临者">降临者 ${ora.name}</span> 指认死神（每白昼 1 次，成功即失去此技能并得一次性飞刀）</div>
         <div class="action-row">指认目标：<select id="oraPick">${opts(alive.filter(p=>p.id!==ora.id), null, true, "-- 不指认 --")}</select>
           <button class="small danger" onclick="App.oracleIdentify()">🔮 指认</button></div>
@@ -1467,7 +1479,7 @@ App.aiFillNight=function(){
     if(nix&&G.nixie.night>0){ const pv=previewDeaths(G); if(pv.eff.length&&Math.random()<0.8) G.night.nixiePick=String(rnd(pv.eff).target); }
   }else if(ph==="night_check"){
     const mit=G.players.find(p=>p.baseRole==="米提亚"),ora=G.players.find(p=>p.baseRole==="降临者");
-    if(mit && mit.alive){ G.night.mitiaChecks = (G.cfg.version==="4.3") ? [rnd(alive).id, rnd(alive).id] : [rnd(alive.filter(p=>p.id!==mit.id)).id, null]; }
+    if(mit && mit.alive){ G.night.mitiaChecks = (G.cfg.version==="4.3"||G.cfg.version==="4.4") ? [rnd(alive).id, rnd(alive).id] : [rnd(alive.filter(p=>p.id!==mit.id)).id, null]; }
     else G.night.mitiaChecks=[null,null];
     if(ora && ora.alive) G.night.oracleCheck=rnd(alive.filter(p=>p.id!==ora.id)).id;
   }
@@ -1608,7 +1620,7 @@ function autoOneGame(cfg){
       if(pv.eff.length&&Math.random()<0.8) G.night.nixiePick=String(rnd(pv.eff).target);
     }
     const mit=G.players.find(p=>p.baseRole==="米提亚"),ora=G.players.find(p=>p.baseRole==="降临者");
-    if(mit && mit.alive){ G.night.mitiaChecks = (cfg.version==="4.3") ? [rnd(alive).id, rnd(alive).id] : [rnd(alive.filter(p=>p.id!==mit.id)).id, null]; }
+    if(mit && mit.alive){ G.night.mitiaChecks = (cfg.version==="4.3"||cfg.version==="4.4") ? [rnd(alive).id, rnd(alive).id] : [rnd(alive.filter(p=>p.id!==mit.id)).id, null]; }
     else G.night.mitiaChecks=[null,null];
     if(ora && ora.alive) G.night.oracleCheck=rnd(alive.filter(p=>p.id!==ora.id)).id;
     resolveNight(G);
