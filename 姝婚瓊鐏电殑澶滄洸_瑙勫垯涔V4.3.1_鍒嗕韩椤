@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>死魂灵的夜曲 · 科洛列夫茨基剧院之夜</title>
+<meta name="description" content="暴风雪封锁了散场的剧院。十三位观众留宿于此——但「死亡」已经落座。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cinzel+Decorative:wght@400;700;900&family=Noto+Serif+SC:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0b0f1a;
+    --night-2:#0f1524;
+    --night-3:#141c30;
+    --snow:#eef2f7;
+    --mist:#a9b8cd;
+    --mist-dim:#76879e;
+    --gold:#d4aa5a;
+    --gold-dim:#9a7b3e;
+    --gold-line:rgba(212,170,90,.22);
+    --crimson:#b23a3a;
+    --ice:#7fa3c9;
+    --serif:"Noto Serif SC",serif;
+    --latin:"Cormorant Garamond",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--night);
+    color:var(--snow);
+    font-family:var(--serif);
+    font-size:16px;
+    line-height:1.9;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:rgba(212,170,90,.3);}
+
+  /* ---------- snow canvas & vignette ---------- */
+  #snow{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+  .vignette{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(120% 90% at 50% 0%, transparent 55%, rgba(4,6,12,.55) 100%),
+      radial-gradient(90% 60% at 50% 110%, rgba(4,6,12,.5), transparent 70%);
+  }
+  main,header,footer{position:relative;z-index:1;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:9vh 24px 7vh;
+    position:relative;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(58% 46% at 50% -4%, rgba(212,170,90,.16), transparent 72%),
+      radial-gradient(70% 30% at 50% 108%, rgba(127,163,201,.10), transparent 70%);
+  }
+  .eyebrow{
+    font-family:var(--latin);
+    font-style:italic;
+    font-size:clamp(13px,1.6vw,16px);
+    letter-spacing:.42em;
+    color:var(--ice);
+    text-transform:uppercase;
+    margin-bottom:5vh;
+  }
+  .hero h1{
+    font-family:"UnifrakturMaguntia","Cormorant Garamond",serif;
+    font-weight:400;
+    font-size:clamp(44px,9.6vw,108px);
+    line-height:1.05;
+    letter-spacing:.06em;
+    background:linear-gradient(178deg,#f7ecc8 0%,#ecd08a 34%,#d4aa5a 58%,#9a7b3e 100%);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+    filter:drop-shadow(0 0 32px rgba(212,170,90,.22)) drop-shadow(0 4px 16px rgba(0,0,0,.55));
+  }
+  .latin-sub{
+    font-family:var(--latin);
+    font-style:italic;
+    font-size:clamp(17px,2.6vw,26px);
+    letter-spacing:.3em;
+    color:var(--mist);
+    margin-top:1.4vh;
+  }
+  .cn-title{
+    font-family:var(--serif);
+    font-weight:900;
+    font-size:clamp(21px,3.8vw,33px);
+    letter-spacing:.5em;
+    text-indent:.5em;   /* 配平末字间距 */
+    color:var(--snow);
+    margin-top:3.4vh;
+  }
+  .cn-title .de{
+    color:var(--gold);
+    font-weight:600;
+    margin:0 .04em;
+  }
+  .hero .ornament{margin:5vh auto 4.5vh;max-width:340px;}
+  .lede{
+    max-width:34em;
+    font-size:clamp(15px,2vw,17.5px);
+    color:var(--mist);
+    line-height:2.25;
+  }
+  .lede em{
+    font-style:normal;color:var(--snow);
+    border-bottom:1px solid rgba(178,58,58,.55);
+    padding-bottom:2px;
+  }
+  .lede .drop{color:#d98a8a;}
+  .hero-meta{
+    margin-top:5.5vh;
+    display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+  }
+  .hero-meta span{
+    font-size:12.5px;letter-spacing:.28em;color:var(--mist-dim);
+    border:1px solid var(--gold-line);
+    padding:7px 18px 7px 22px;border-radius:999px;
+  }
+  .hero-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:28px;}
+  .hero-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 20px;border:1px solid var(--gold-line);border-radius:999px;color:var(--snow);font-size:13px;letter-spacing:.12em;transition:.25s;background:rgba(15,21,36,.45);}
+  .hero-actions a.primary{background:linear-gradient(135deg,rgba(184,145,69,.95),rgba(126,39,39,.92));border-color:rgba(224,190,111,.7);color:#fff8e8;}
+  .hero-actions a:hover{transform:translateY(-2px);border-color:var(--gold);background:rgba(30,39,64,.8);}
+  .scroll-cue{
+    position:absolute;bottom:4.5vh;left:50%;
+    color:var(--mist-dim);font-size:12px;letter-spacing:.4em;
+    animation:cue 2.6s ease-in-out infinite;
+  }
+  @keyframes cue{0%,100%{transform:translate(-50%,0);opacity:.55;}50%{transform:translate(-50%,8px);opacity:1;}}
+
+  /* ---------- ornament divider ---------- */
+  .ornament{display:flex;align-items:center;gap:18px;width:min(420px,72vw);}
+  .ornament::before,.ornament::after{
+    content:"";flex:1;height:1px;
+  }
+  .ornament::before{background:linear-gradient(90deg,transparent,var(--gold-dim));}
+  .ornament::after{background:linear-gradient(270deg,transparent,var(--gold-dim));}
+  .ornament i{color:var(--gold);font-style:normal;font-size:13px;opacity:.9;}
+
+  /* ---------- acts ---------- */
+  .act{
+    max-width:920px;
+    margin:0 auto;
+    padding:clamp(140px,28vh,260px) 26px 0;
+  }
+  .act-head{text-align:center;margin-bottom:clamp(44px,7vh,72px);}
+  .act-head .no{
+    font-family:var(--latin);font-style:italic;
+    font-size:13px;letter-spacing:.5em;color:var(--gold);
+    text-transform:uppercase;display:block;margin-bottom:14px;
+  }
+  .act-head h2{
+    font-weight:900;font-size:clamp(26px,4.4vw,38px);
+    letter-spacing:.22em;
+  }
+  .act-head .fr{
+    font-family:var(--latin);font-style:italic;
+    color:var(--mist-dim);font-size:14.5px;letter-spacing:.3em;
+    display:block;margin-top:10px;
+  }
+
+  /* 第一幕 · prose */
+  .prose{max-width:600px;margin:0 auto;color:var(--mist);font-size:16.5px;line-height:2.3;text-align:justify;}
+  .prose p+p{margin-top:1.7em;}
+  .prose strong{color:var(--snow);font-weight:600;}
+  .prose .drop{color:#d98a8a;}
+
+  /* 第二幕 · mist steps */
+  .mist-steps{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:var(--gold-line);
+    border:1px solid var(--gold-line);
+  }
+  .mist-steps article{
+    background:linear-gradient(180deg,var(--night-2),var(--night));
+    padding:38px 26px 34px;text-align:center;
+    transition:background .4s;
+  }
+  .mist-steps article:hover{background:var(--night-3);}
+  .mist-steps .t{
+    font-family:var(--latin);font-style:italic;
+    color:var(--gold);font-size:12.5px;letter-spacing:.34em;display:block;margin-bottom:14px;
+  }
+  .mist-steps h3{font-size:17.5px;font-weight:600;letter-spacing:.14em;margin-bottom:12px;}
+  .mist-steps p{font-size:13.5px;color:var(--mist-dim);line-height:2;}
+  .mist-note{
+    max-width:560px;margin:34px auto 0;text-align:center;
+    color:var(--mist);font-size:15px;line-height:2.15;
+  }
+  .mist-note b{color:var(--gold);font-weight:600;}
+
+  /* 第三幕 · cast */
+  .troupe{display:flex;flex-direction:column;gap:52px;}
+  .faction-label{
+    display:flex;align-items:baseline;gap:14px;
+    margin-bottom:22px;
+  }
+  .faction-label h3{
+    font-size:15px;font-weight:600;letter-spacing:.32em;white-space:nowrap;
+  }
+  .faction-label h3 i{
+    font-style:normal;display:inline-block;width:8px;height:8px;border-radius:50%;
+    margin-right:11px;vertical-align:1px;
+  }
+  .faction-label small{
+    font-family:var(--latin);font-style:italic;
+    color:var(--mist-dim);letter-spacing:.22em;font-size:12.5px;white-space:nowrap;
+  }
+  .faction-label::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--gold-line),transparent);}
+  .f-human h3{color:var(--snow);} .f-human i{background:var(--gold);}
+  .f-death h3{color:#d98a8a;} .f-death i{background:var(--crimson);}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(216px,1fr));gap:14px;}
+  .card{
+    border:1px solid rgba(169,184,205,.13);
+    padding:26px 22px 22px;position:relative;
+    transition:border-color .35s,transform .35s,background .35s;
+    background:rgba(15,21,36,.5);
+  }
+  .card:hover{
+    border-color:var(--gold-line);transform:translateY(-3px);
+    background:rgba(20,28,48,.72);
+  }
+  .card::after{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s;
+    background:radial-gradient(70% 50% at 50% 0%,rgba(212,170,90,.07),transparent 70%);
+  }
+  .card:hover::after{opacity:1;}
+  .card .role{font-size:18px;font-weight:600;letter-spacing:.2em;}
+  .card-portrait{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center 18%;margin:-4px 0 18px;border:1px solid rgba(212,170,90,.28);filter:saturate(.9) contrast(1.03);}
+  .card .lat{
+    font-family:var(--latin);font-style:italic;color:var(--mist-dim);
+    font-size:12px;letter-spacing:.18em;display:block;margin-top:5px;
+  }
+  .card p{margin-top:15px;font-size:13.5px;color:var(--mist);line-height:2.05;}
+  .card .mark{
+    position:absolute;top:20px;right:20px;
+    font-size:11px;color:var(--mist-dim);letter-spacing:.14em;
+    border:1px solid rgba(169,184,205,.18);padding:2px 9px;border-radius:999px;
+  }
+  .card.death .role{color:#e0a3a3;}
+  .plus-note{
+    margin-top:26px;text-align:center;color:var(--mist-dim);font-size:13.5px;letter-spacing:.06em;
+  }
+  .plus-note b{color:var(--gold);font-weight:600;}
+
+  /* 第四幕 · endgame */
+  .duel{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:16px;}
+  .duel article{
+    border:1px solid var(--gold-line);padding:40px 32px 36px;
+    background:linear-gradient(180deg,rgba(20,28,48,.6),rgba(15,21,36,.4));
+  }
+  .duel article.crimson{border-color:rgba(178,58,58,.4);}
+  .duel .side{
+    font-family:var(--latin);font-style:italic;font-size:12px;letter-spacing:.4em;
+    text-transform:uppercase;display:block;margin-bottom:12px;color:var(--mist-dim);
+  }
+  .duel article.crimson .side{color:#c96e6e;}
+  .duel h3{font-size:19px;font-weight:600;letter-spacing:.2em;margin-bottom:18px;}
+  .duel p{font-size:14.5px;color:var(--mist);line-height:2.15;}
+  .duel p b{color:var(--snow);font-weight:600;}
+  .duel ol{margin:14px 0 0;padding-left:1.3em;color:var(--mist);font-size:14.5px;line-height:2.15;}
+  .duel ol b{color:var(--gold);font-weight:600;}
+  .fine{
+    margin-top:30px;text-align:center;color:var(--mist-dim);
+    font-size:12.5px;letter-spacing:.24em;
+  }
+  /* night order strip */
+  .order{
+    margin-top:64px;text-align:center;
+  }
+  .order .cap{
+    font-family:var(--latin);font-style:italic;color:var(--mist-dim);
+    font-size:12.5px;letter-spacing:.42em;display:block;margin-bottom:24px;
+  }
+  .order ol{
+    list-style:none;display:flex;flex-wrap:wrap;justify-content:center;
+    gap:8px 0;max-width:760px;margin:0 auto;
+  }
+  .order li{
+    display:flex;align-items:center;color:var(--mist);
+    font-size:14px;letter-spacing:.1em;
+  }
+  .order li:not(:last-child)::after{
+    content:"—";color:var(--gold-dim);margin:0 14px;opacity:.7;
+  }
+  .order li b{color:var(--snow);font-weight:600;margin-right:6px;}
+
+  /* ---------- footer ---------- */
+  footer{
+    margin-top:clamp(90px,15vh,150px);
+    border-top:1px solid rgba(169,184,205,.1);
+    padding:56px 26px calc(64px + env(safe-area-inset-bottom));
+    text-align:center;
+  }
+  footer .fin{
+    font-family:var(--latin);font-style:italic;
+    color:var(--gold);font-size:15px;letter-spacing:.34em;
+  }
+  footer .colophon{
+    margin-top:18px;color:var(--mist-dim);font-size:12px;letter-spacing:.2em;line-height:2.3;
+  }
+
+  /* ---------- reveal ---------- */
+  .rv{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s ease;}
+  .rv.on{opacity:1;transform:none;}
+  @media (prefers-reduced-motion:reduce){
+    .rv{opacity:1;transform:none;transition:none;}
+    .scroll-cue{animation:none;}
+  }
+
+  /* ---------- mobile ---------- */
+  @media (max-width:640px){
+    body{font-size:15px;}
+    .eyebrow{letter-spacing:.3em;}
+    .mist-steps{grid-template-columns:1fr;}
+    .mist-steps article{padding:30px 22px 26px;}
+    .cards{grid-template-columns:1fr 1fr;gap:10px;}
+    .card{padding:20px 16px 18px;}
+    .card .mark{top:14px;right:14px;}
+    .card .role{font-size:15.5px;letter-spacing:.12em;}
+    .card p{font-size:12.5px;line-height:1.95;}
+    .duel article{padding:30px 24px 28px;}
+    .order li{font-size:12.5px;}
+    .order li:not(:last-child)::after{margin:0 9px;}
+    .hero-meta span{letter-spacing:.18em;padding:6px 13px 6px 17px;font-size:11.5px;}
+    .prose{text-align:left;font-size:15px;}
+  }
+  @media (max-width:380px){
+    .cards{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="snow" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- ============ 序幕 ============ -->
+<header class="hero">
+  <p class="eyebrow">Korolevsky Theatre</p>
+  <h1>Nocturne</h1>
+  <p class="latin-sub">— of Dead Souls —</p>
+  <p class="cn-title">死魂灵<span class="de">的</span>夜曲</p>
+  <div class="ornament"><i>❄</i></div>
+  <p class="lede">
+    雪国，科洛列夫茨基剧院。散场铃响过之后，<br>
+    百年难遇的超级暴风雪封锁了整座城市。<br>
+    十三个人被迫留宿在剧院里——起初，所有人都以为<br>
+    这只是一场<em>新奇的体验</em>。<br>
+    直到有人发现：<span class="drop">死亡，已经落座在观众席里。</span>
+  </p>
+  <div class="hero-meta">
+    <span>十三 人局</span>
+    <span>白昼回归迷雾</span>
+    <span>屠城阈值</span>
+  </div>
+  <nav class="hero-actions" aria-label="主要入口">
+    <a class="primary" href="死魂灵的夜曲_规则书_V4.3.1_分享页.html">了解详细规则</a>
+    <a href="死魂灵的夜曲_模拟器_V4.3新版.html">打开规则模拟器</a>
+  </nav>
+  <div class="scroll-cue">幕 布 拉 开</div>
+</header>
+
+<main>
+
+<!-- ============ 第一幕 · 风雪 ============ -->
+<section class="act">
+  <div class="act-head rv">
+    <span class="no">Acte Ⅰ · 第一幕</span>
+    <h2>风雪之夜</h2>
+    <span class="fr">La Tempête</span>
+  </div>
+  <div class="prose rv">
+    <p>
+      大幕落下，雪也落了下来。电话线断了，道路埋了，剧院成了一座雪国孤岛。
+      十三个人围坐在烛光里，用讲故事的方式打发长夜——
+      <strong>直到第一个名字，再也不会开口。</strong>
+    </p>
+    <p>
+      从这一刻起，剧场里不再有观众。
+      <span class="drop">每个人既是演员，也是猎物。</span>
+      白天，你们用选票放逐嫌疑者；夜晚，有什么东西在幕布之后游荡。
+    </p>
+  </div>
+</section>
+
+<!-- ============ 第二幕 · 迷雾 ============ -->
+<section class="act">
+  <div class="act-head rv">
+    <span class="no">Acte Ⅱ · 第二幕</span>
+    <h2>白昼回归迷雾</h2>
+    <span class="fr">La Brume du Retour</span>
+  </div>
+  <div class="mist-steps rv">
+    <article>
+      <span class="t">Minuit · 深夜</span>
+      <h3>有人死去</h3>
+      <p>死亡名单只留下名字——<br>没有死因，没有线索。</p>
+    </article>
+    <article>
+      <span class="t">Entre · 之间</span>
+      <h3>逝者沉睡</h3>
+      <p>一切复活与回归都被推迟，<br>命运按下不表。</p>
+    </article>
+    <article>
+      <span class="t">Matin · 白昼</span>
+      <h3>回归名单</h3>
+      <p>「XX 回归游戏。」<br>只报名字，绝不解释。</p>
+    </article>
+  </div>
+  <p class="mist-note rv">
+    于是，每一个归来者都笼罩在迷雾里——
+    他是<b>被救回的好人</b>、被转化的<b>亡魂</b>，还是从未真正离开的<b>死神</b>？你无从分辨。
+  </p>
+</section>
+
+<!-- ============ 第三幕 · 卡司 ============ -->
+<section class="act">
+  <div class="act-head rv">
+    <span class="no">Acte Ⅲ · 第三幕</span>
+    <h2>今夜卡司</h2>
+    <span class="fr">La Troupe</span>
+  </div>
+  <div class="troupe">
+    <div class="rv">
+      <div class="faction-label f-human">
+        <h3><i></i>人类阵营</h3><small>Camp des Vivants · 10 人</small>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <img class="card-portrait" src="莱莱可.jpg" alt="莱莱可角色立绘" loading="lazy" width="1280" height="2246">
+          <div class="role">莱莱可</div><span class="lat">L'Assassin</span>
+          <p>潜行于包厢之间的刺客。刀刃，替他发言。</p>
+        </article>
+        <article class="card">
+          <div class="role">门先生</div><span class="lat">Le Gardien</span>
+          <p>每夜守护两扇门的沉默者——但他守不住自己。</p>
+        </article>
+        <article class="card">
+          <img class="card-portrait" src="米提亚.jpg" alt="米提亚角色立绘" loading="lazy" width="1280" height="2821">
+          <div class="role">米提亚</div><span class="lat">La Voyante</span>
+          <p>每夜透视两个灵魂：它们之间，藏着亡者吗？</p>
+        </article>
+        <article class="card">
+          <img class="card-portrait" src="降临者.jpg" alt="降临者角色立绘" loading="lazy" width="1280" height="2560">
+          <div class="role">降临者</div><span class="lat">Le Chasseur</span>
+          <p>追猎死神的猎手。指认，即是审判。</p>
+        </article>
+        <article class="card">
+          <img class="card-portrait" src="水妖.jpg" alt="水妖角色立绘" loading="lazy" width="1280" height="2827">
+          <div class="role">水妖</div><span class="lat">La Nymphe</span>
+          <p>三次挽留消逝的生命。命运，也有回声。</p>
+        </article>
+        <article class="card">
+          <div class="role">普通人</div><span class="lat">Le Public</span>
+          <p>观众，亦是演员。手中的票根，就是投票。</p>
+          <span class="mark">×5</span>
+        </article>
+      </div>
+    </div>
+    <div class="rv">
+      <div class="faction-label f-death">
+        <h3><i></i>死亡阵营</h3><small>Camp des Morts · 3 人</small>
+      </div>
+      <div class="cards">
+        <article class="card death">
+          <img class="card-portrait" src="魂灵之一.jpg" alt="魂灵角色立绘" loading="lazy" width="1280" height="2275">
+          <div class="role">魂灵</div><span class="lat">Les Âmes</span>
+          <p>谢幕之后仍在游荡。每夜，取走一条性命。</p>
+          <span class="mark">×2</span>
+        </article>
+        <article class="card death">
+          <div class="role">死神</div><span class="lat">La Mort</span>
+          <p>被放逐，也会归来。除非——两名魂灵谢幕之后，刀锋正中于它。</p>
+        </article>
+      </div>
+      <p class="plus-note">
+        演出表中另有一位<b>「神秘加演」</b>——由死神亲自挑选的亡者，
+        携一把无视守护的穿雾之刀归来。开演之前，无人知晓他是谁。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 第四幕 · 终局 ============ -->
+<section class="act">
+  <div class="act-head rv">
+    <span class="no">Acte Ⅳ · 第四幕</span>
+    <h2>落幕方式</h2>
+    <span class="fr">Le Dénouement</span>
+  </div>
+  <div class="duel rv">
+    <article>
+      <span class="side">Camp des Morts</span>
+      <h3>死亡阵营 · 席卷之夜</h3>
+      <p>当幸存的人类人数<b>不多于</b>死亡阵营人数，
+      剧院的灯将熄灭——<b>城之夜幕降临，死亡阵营获胜。</b></p>
+    </article>
+    <article class="crimson">
+      <span class="side">Camp des Vivants</span>
+      <h3>人类 · 黎明终章</h3>
+      <ol>
+        <li>先送 <b>2 名魂灵</b>永久谢幕；</li>
+        <li>再将<b>真正的死神</b>送上终局——
+        精准放逐、刺客之刃，或降临者的审判飞刀。</li>
+      </ol>
+    </article>
+  </div>
+  <p class="fine rv">放逐独立计票 · 每夜至多两名死者 · 亡者无遗言</p>
+
+  <div class="order rv">
+    <span class="cap">L'Ordre de la Nuit · 一夜的秩序</span>
+    <ol>
+      <li><b>守门</b>门先生</li>
+      <li><b>猎杀</b>死亡阵营</li>
+      <li><b>刺客</b>莱莱可</li>
+      <li><b>穿雾</b>夜祷</li>
+      <li><b>挽留</b>水妖</li>
+      <li><b>审视</b>双目</li>
+      <li><b>天明</b>回归名单</li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ 尾声 ============ -->
+<footer>
+  <p class="fin">« Cette nuit, personne ne quitte le théâtre. »</p>
+  <p class="colophon">
+    今夜，无人离场。<br>
+    十三人局 · 人类 10 / 死亡 3 · 规则以现场主持人裁决为准 · V4.4 preview
+  </p>
+</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- snow（随滚动渐强的暴风雪） ---------- */
+  var cv = document.getElementById("snow"), ctx = cv.getContext("2d");
+  var W, H, DPR = Math.min(window.devicePixelRatio || 1, 2);
+  var N_MAX = 0, BASE = 0, flakes = [];
+  var prog = 0, progTarget = 0;   /* 滚动进度 0→1（平滑跟随） */
+
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = W * DPR; cv.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    N_MAX = Math.round(Math.max(170, Math.min(300, W * H / 5200)));
+    BASE = Math.round(N_MAX * .32);
+    flakes = [];
+    for (var i = 0; i < N_MAX; i++){
+      flakes.push({
+        x: Math.random() * W,
+        y: i < BASE ? Math.random() * H          /* 基础雪：已落满全屏 */
+                    : -4 - Math.random() * 300,  /* 增援雪：从天外飘入 */
+        r: .6 + Math.random() * 2.1,
+        s: .25 + Math.random() * .8,
+        ph: Math.random() * Math.PI * 2,
+        sw: .3 + Math.random() * .9,
+        o: .25 + Math.random() * .55
+      });
+    }
+  }
+  function scrollProg(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    progTarget = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+  }
+  function draw(t){
+    prog += (progTarget - prog) * .045;           /* 缓动，风雪渐起 */
+    var active = BASE + prog * (N_MAX - BASE);
+    var wind = prog * 1.5;                        /* 风势：越深越斜 */
+    var spMul = 1 + prog * 1.8;                   /* 落速：越深越急 */
+    var swMul = 1 + prog * 1.4;                   /* 摆幅：越深越乱 */
+    ctx.clearRect(0, 0, W, H);
+    var n = Math.min(flakes.length, Math.ceil(active));
+    for (var i = 0; i < n; i++){
+      var f = flakes[i];
+      f.y += f.s * spMul;
+      f.x += Math.sin(t / 1600 + f.ph) * f.sw * swMul * .4 + wind * (.5 + f.s * .5);
+      if (f.y > H + 4){ f.y = -4; f.x = Math.random() * W; }
+      if (f.x > W + 4) f.x = -4; else if (f.x < -4) f.x = W + 4;
+      var fadeIn = Math.min(1, active - i);       /* 新雪淡入 / 退雪淡出 */
+      ctx.globalAlpha = f.o * Math.max(0, fadeIn);
+      ctx.fillStyle = "#dfe7f2";
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, f.r, 0, 6.2832);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  resize();
+  scrollProg();
+  window.addEventListener("resize", resize);
+  window.addEventListener("scroll", scrollProg, { passive: true });
+  if (!reduced) requestAnimationFrame(draw);
+  else {
+    /* 静态雪尘（减少动态偏好） */
+    for (var i = 0; i < BASE; i++){
+      var f = flakes[i];
+      ctx.globalAlpha = f.o * .7;
+      ctx.fillStyle = "#dfe7f2";
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 6.2832); ctx.fill();
+    }
+  }
+
+  /* ---------- reveal on scroll ---------- */
+  var els = document.querySelectorAll(".rv");
+  if ("IntersectionObserver" in window && !reduced){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add("on"); io.unobserve(e.target); }
+      });
+    }, { threshold: .08, rootMargin: "0px 0px -20% 0px" });
+    els.forEach(function(el){ io.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add("on"); });
+  }
+})();
+</script>
+</body>
+</html>
