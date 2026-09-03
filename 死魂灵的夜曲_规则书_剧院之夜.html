@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>死魂灵的夜曲 · 剧院之夜 · 完整剧本 V4.4 preview</title>
+<meta name="description" content="科洛列夫茨基剧院之夜 · 完整规则剧本：十三位留宿者的名录、幕布之后的一夜秩序、每一种落幕的方式。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Noto+Serif+SC:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0b0f1a;
+    --night-2:#0f1524;
+    --night-3:#141c30;
+    --snow:#eef2f7;
+    --mist:#a9b8cd;
+    --mist-dim:#76879e;
+    --gold:#d4aa5a;
+    --gold-dim:#9a7b3e;
+    --gold-line:rgba(212,170,90,.22);
+    --crimson:#b23a3a;
+    --crimson-soft:#d98a8a;
+    --ice:#7fa3c9;
+    --serif:"Noto Serif SC",serif;
+    --latin:"Cormorant Garamond",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--night);
+    color:var(--snow);
+    font-family:var(--serif);
+    font-size:16px;
+    line-height:1.9;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:rgba(212,170,90,.3);}
+
+  /* ---------- snow & vignette ---------- */
+  #snow{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+  .vignette{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(120% 90% at 50% 0%, transparent 55%, rgba(4,6,12,.55) 100%),
+      radial-gradient(90% 60% at 50% 110%, rgba(4,6,12,.5), transparent 70%);
+  }
+  main,header,footer{position:relative;z-index:1;}
+
+  /* ---------- top nav ---------- */
+  .topnav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(10px);
+    background:linear-gradient(180deg,rgba(11,15,26,.96),rgba(11,15,26,.8));
+    border-bottom:1px solid var(--gold-line);
+  }
+  .nav-inner{
+    max-width:1080px;margin:0 auto;
+    display:flex;align-items:center;gap:16px;
+    padding:10px 22px;
+  }
+  .brand{
+    font-family:"UnifrakturMaguntia","Cormorant Garamond",serif;
+    font-size:19px;color:var(--gold);white-space:nowrap;letter-spacing:.05em;
+  }
+  .nav-links{display:flex;gap:2px;flex-wrap:wrap;margin-left:auto;}
+  .nav-links a{
+    font-size:12.5px;color:var(--mist-dim);padding:5px 10px;border-radius:8px;
+    letter-spacing:.14em;transition:.2s;text-decoration:none;white-space:nowrap;
+  }
+  .nav-links a:hover{background:rgba(212,170,90,.12);color:var(--gold);}
+  .nav-btn{
+    font-family:var(--serif);font-size:12.5px;letter-spacing:.14em;white-space:nowrap;
+    color:var(--night);background:linear-gradient(180deg,var(--gold),var(--gold-dim));
+    border:none;padding:7px 14px;border-radius:8px;cursor:pointer;text-decoration:none;
+    box-shadow:0 4px 14px rgba(212,170,90,.25);transition:.2s;
+  }
+  .nav-btn:hover{filter:brightness(1.08);}
+  .nav-btn.ghost{
+    background:transparent;color:var(--gold);border:1px solid var(--gold-dim);box-shadow:none;
+  }
+  .nav-btn.ghost:hover{background:rgba(212,170,90,.12);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    text-align:center;padding:88px 24px 66px;
+    position:relative;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(58% 46% at 50% -4%, rgba(212,170,90,.16), transparent 72%),
+      radial-gradient(70% 30% at 50% 108%, rgba(127,163,201,.10), transparent 70%);
+  }
+  .hero>*{position:relative;}
+  .eyebrow{
+    font-family:var(--latin);font-style:italic;
+    font-size:clamp(12px,1.6vw,15px);letter-spacing:.42em;
+    color:var(--ice);text-transform:uppercase;margin-bottom:26px;
+  }
+  .hero h1{
+    font-family:"UnifrakturMaguntia","Cormorant Garamond",serif;
+    font-weight:400;
+    font-size:clamp(40px,8.6vw,88px);
+    line-height:1.05;letter-spacing:.06em;
+    background:linear-gradient(178deg,#f7ecc8 0%,#ecd08a 34%,#d4aa5a 58%,#9a7b3e 100%);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+    filter:drop-shadow(0 0 30px rgba(212,170,90,.2)) drop-shadow(0 4px 14px rgba(0,0,0,.55));
+  }
+  .latin-sub{
+    font-family:var(--latin);font-style:italic;
+    font-size:clamp(15px,2.4vw,22px);letter-spacing:.3em;
+    color:var(--mist);margin-top:12px;
+  }
+  .cn-title{
+    font-family:var(--serif);font-weight:900;
+    font-size:clamp(19px,3.4vw,28px);letter-spacing:.5em;text-indent:.5em;
+    color:var(--snow);margin-top:26px;
+  }
+  .cn-title .de{color:var(--gold);font-weight:600;}
+  .ornament{display:flex;align-items:center;gap:18px;width:min(340px,68vw);margin:30px auto;}
+  .ornament::before,.ornament::after{content:"";flex:1;height:1px;}
+  .ornament::before{background:linear-gradient(90deg,transparent,var(--gold-dim));}
+  .ornament::after{background:linear-gradient(270deg,transparent,var(--gold-dim));}
+  .ornament i{color:var(--gold);font-style:normal;font-size:13px;opacity:.9;}
+  .lede{
+    max-width:36em;margin:0 auto;
+    font-size:clamp(14.5px,1.9vw,16.5px);color:var(--mist);line-height:2.3;
+  }
+  .lede em{
+    font-style:normal;color:var(--snow);
+    border-bottom:1px solid rgba(178,58,58,.55);padding-bottom:2px;
+  }
+  .lede .drop{color:var(--crimson-soft);}
+  .hero-meta{margin-top:34px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+  .hero-meta span{
+    font-size:12px;letter-spacing:.24em;color:var(--mist-dim);
+    border:1px solid var(--gold-line);padding:7px 17px 7px 21px;border-radius:999px;
+  }
+  .hero-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px;}
+  .hero-link{
+    display:inline-block;padding:9px 18px;border:1px solid rgba(212,170,90,.55);border-radius:999px;
+    color:var(--snow);background:rgba(11,15,26,.42);font-size:13.5px;letter-spacing:.08em;
+    text-decoration:none;transition:.2s;
+  }
+  .hero-link:hover{color:var(--gold);background:rgba(212,170,90,.12);transform:translateY(-1px);}
+  .hero-link.primary{background:linear-gradient(180deg,var(--gold),var(--gold-dim));color:var(--night);font-weight:700;}
+  .hero-link.primary:hover{color:var(--night);}
+
+  /* ---------- acts ---------- */
+  .act{max-width:960px;margin:0 auto;padding:clamp(84px,13vh,150px) 26px 0;}
+  .act-head{text-align:center;margin-bottom:clamp(36px,5.5vh,56px);}
+  .act-head .no{
+    font-family:var(--latin);font-style:italic;
+    font-size:12.5px;letter-spacing:.5em;color:var(--gold);
+    text-transform:uppercase;display:block;margin-bottom:13px;
+  }
+  .act-head h2{font-weight:900;font-size:clamp(24px,4vw,34px);letter-spacing:.22em;}
+  .act-head .fr{
+    font-family:var(--latin);font-style:italic;
+    color:var(--mist-dim);font-size:14px;letter-spacing:.3em;
+    display:block;margin-top:9px;
+  }
+  .prose{max-width:640px;margin:0 auto 30px;color:var(--mist);font-size:15.5px;line-height:2.25;text-align:justify;}
+  .prose strong{color:var(--snow);font-weight:600;}
+  .prose .drop{color:var(--crimson-soft);}
+
+  /* ---------- grids & cards ---------- */
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .panel{
+    border:1px solid rgba(169,184,205,.13);
+    padding:24px 22px 20px;position:relative;
+    background:rgba(15,21,36,.5);
+    transition:border-color .35s,background .35s;
+  }
+  .panel:hover{border-color:var(--gold-line);background:rgba(20,28,48,.72);}
+  .panel.gold{border-color:var(--gold-line);}
+  .panel.crimson{border-color:rgba(178,58,58,.4);}
+  .panel.ice{border-color:rgba(127,163,201,.35);}
+  .panel h4{font-size:16.5px;font-weight:600;letter-spacing:.12em;margin-bottom:10px;color:var(--snow);}
+  .panel.gold h4{color:var(--gold);}
+  .panel.crimson h4{color:var(--crimson-soft);}
+  .panel.ice h4{color:var(--ice);}
+  .panel p{font-size:13.8px;color:var(--mist);line-height:2.05;}
+  .panel p b{color:var(--snow);font-weight:600;}
+  .panel ul{margin:6px 0 0;padding-left:1.25em;font-size:13.8px;color:var(--mist);line-height:2.1;}
+  .panel ul b{color:var(--snow);font-weight:600;}
+  .panel .gold-t{color:var(--gold);font-weight:600;}
+  .panel .crim-t{color:var(--crimson-soft);font-weight:600;}
+  .panel .ice-t{color:var(--ice);font-weight:600;}
+
+  .badge{
+    display:inline-block;vertical-align:2px;margin-left:8px;
+    font-size:10.5px;letter-spacing:.18em;padding:2px 9px;border-radius:999px;
+    font-weight:400;font-family:var(--latin);font-style:italic;
+  }
+  .badge.v44{color:var(--gold);border:1px solid var(--gold-dim);}
+  .badge.human{color:var(--gold);border:1px solid rgba(212,170,90,.35);}
+  .badge.death{color:var(--crimson-soft);border:1px solid rgba(178,58,58,.45);}
+  .badge.tmp{color:var(--ice);border:1px solid rgba(127,163,201,.4);}
+
+  /* ---------- callout ---------- */
+  .callout{
+    position:relative;margin:26px 0;padding:18px 22px 16px 26px;
+    background:linear-gradient(180deg,rgba(20,28,48,.55),rgba(15,21,36,.4));
+    border:1px solid var(--gold-line);
+  }
+  .callout::before{
+    content:"";position:absolute;left:-1px;top:14px;bottom:14px;width:3px;border-radius:3px;
+    background:var(--gold);
+  }
+  .callout.crim::before{background:var(--crimson);}
+  .callout.ice::before{background:var(--ice);}
+  .callout .ct{
+    font-family:var(--latin);font-style:italic;font-size:12.5px;
+    letter-spacing:.3em;color:var(--gold);display:block;margin-bottom:8px;text-transform:uppercase;
+  }
+  .callout.crim .ct{color:var(--crimson-soft);}
+  .callout.ice .ct{color:var(--ice);}
+  .callout p{font-size:14px;color:var(--mist);line-height:2.1;margin:5px 0;}
+  .callout p b{color:var(--snow);font-weight:600;}
+  .callout p .gold-t{color:var(--gold);font-weight:600;}
+  .callout p .crim-t{color:var(--crimson-soft);font-weight:600;}
+  .callout p .ice-t{color:var(--ice);font-weight:600;}
+
+  /* ---------- role blocks ---------- */
+  .role-block{margin-bottom:44px;}
+  .role-head{
+    display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+    margin-bottom:14px;
+  }
+  .role-head h3{font-size:19px;font-weight:600;letter-spacing:.2em;color:var(--snow);}
+  .role-head .lat{
+    font-family:var(--latin);font-style:italic;color:var(--mist-dim);
+    font-size:12.5px;letter-spacing:.2em;
+  }
+  .role-head::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--gold-line),transparent);}
+  .role-head .pt{
+    display:inline-block;width:7px;height:7px;border-radius:50%;
+    vertical-align:2px;margin-right:10px;
+  }
+  .role-head .pt.h{background:var(--gold);}
+  .role-head .pt.d{background:var(--crimson);}
+
+  /* ---------- faction duo (Acte I) ---------- */
+  .duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;}
+  .duo article{border:1px solid var(--gold-line);padding:30px 28px 26px;background:linear-gradient(180deg,rgba(20,28,48,.6),rgba(15,21,36,.4));}
+  .duo article.crimson{border-color:rgba(178,58,58,.4);}
+  .duo .side{
+    font-family:var(--latin);font-style:italic;font-size:11.5px;letter-spacing:.4em;
+    text-transform:uppercase;display:block;margin-bottom:10px;color:var(--mist-dim);
+  }
+  .duo article.crimson .side{color:#c96e6e;}
+  .duo h3{font-size:18px;font-weight:600;letter-spacing:.18em;margin-bottom:4px;}
+  .duo .cnt{font-size:12.5px;color:var(--mist-dim);letter-spacing:.16em;}
+  .duo ul{margin:16px 0 0;padding-left:1.25em;font-size:13.8px;color:var(--mist);line-height:2.15;}
+  .duo ul b{color:var(--snow);font-weight:600;}
+  .duo ul i{font-family:var(--latin);font-style:italic;color:var(--mist-dim);font-size:12px;letter-spacing:.1em;}
+
+  /* ---------- mist steps ---------- */
+  .mist-steps{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:var(--gold-line);border:1px solid var(--gold-line);
+  }
+  .mist-steps article{
+    background:linear-gradient(180deg,var(--night-2),var(--night));
+    padding:32px 24px 28px;text-align:center;transition:background .4s;
+  }
+  .mist-steps article:hover{background:var(--night-3);}
+  .mist-steps .t{
+    font-family:var(--latin);font-style:italic;
+    color:var(--gold);font-size:12px;letter-spacing:.34em;display:block;margin-bottom:12px;
+  }
+  .mist-steps h3{font-size:16.5px;font-weight:600;letter-spacing:.14em;margin-bottom:10px;}
+  .mist-steps p{font-size:13px;color:var(--mist-dim);line-height:2;}
+
+  /* ---------- night timeline ---------- */
+  .tl{margin:24px 0;padding-left:6px;max-width:760px;}
+  .tl .step{display:flex;gap:16px;padding:9px 0;position:relative;}
+  .tl .step:not(:last-child)::before{
+    content:"";position:absolute;left:13px;top:36px;bottom:-8px;width:2px;background:var(--gold-line);
+  }
+  .tl .dot{
+    width:28px;height:28px;border-radius:50%;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12.5px;font-weight:600;color:var(--night);background:var(--gold);
+    box-shadow:0 0 0 4px rgba(212,170,90,.12);
+  }
+  .tl .dot.ice{background:var(--ice);box-shadow:0 0 0 4px rgba(127,163,201,.12);}
+  .tl .dot.crim{background:var(--crimson-soft);box-shadow:0 0 0 4px rgba(178,58,58,.14);}
+  .tl .body h5{font-size:15.5px;font-weight:600;letter-spacing:.1em;color:var(--snow);margin-top:2px;}
+  .tl .body p{font-size:13.5px;color:var(--mist);line-height:2.05;}
+  .tl .body p b{color:var(--gold);font-weight:600;}
+
+  /* ---------- priority ladder ---------- */
+  .ladder{display:flex;flex-direction:column;gap:8px;margin:24px 0;max-width:620px;}
+  .tier{
+    display:flex;align-items:center;gap:14px;padding:12px 18px;border-radius:2px;
+    background:linear-gradient(90deg,rgba(20,28,48,.7),rgba(15,21,36,.4));
+    border:1px solid var(--gold-line);
+  }
+  .tier .rk{
+    font-family:var(--latin);font-style:italic;font-size:19px;color:var(--gold);
+    width:32px;text-align:center;flex:none;
+  }
+  .tier .nm{font-size:15px;font-weight:600;letter-spacing:.08em;color:var(--snow);}
+  .tier .ds{font-size:12.5px;color:var(--mist-dim);margin-left:auto;text-align:right;letter-spacing:.04em;}
+  .tier.top{border-color:rgba(127,163,201,.5);box-shadow:0 0 0 1px rgba(127,163,201,.25) inset;}
+  .tier.top .rk,.tier.top .nm{color:var(--ice);}
+  .tier.low{border-color:rgba(178,58,58,.4);opacity:.92;}
+  .tier.low .rk,.tier.low .nm{color:var(--crimson-soft);}
+
+  /* ---------- tables ---------- */
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.8px;}
+  th,td{border:1px solid var(--gold-line);padding:11px 14px;text-align:left;vertical-align:top;}
+  th{font-weight:600;color:var(--gold);background:rgba(212,170,90,.07);letter-spacing:.1em;font-size:13px;}
+  td{color:var(--mist);line-height:1.9;}
+  td b{color:var(--snow);font-weight:600;}
+  tr:nth-child(even) td{background:rgba(255,255,255,.015);}
+
+  /* ---------- version switch ---------- */
+  .vswitch{border:1px dashed rgba(127,163,201,.5);padding:24px 26px;background:rgba(127,163,201,.05);}
+  .vswitch h3{
+    font-size:16px;font-weight:600;letter-spacing:.14em;color:var(--ice);margin-bottom:10px;
+  }
+  .vswitch p{font-size:13.8px;color:var(--mist);line-height:2.05;margin:6px 0;}
+
+  /* ---------- footer ---------- */
+  footer{
+    margin-top:clamp(90px,14vh,150px);
+    border-top:1px solid rgba(169,184,205,.1);
+    padding:52px 26px calc(60px + env(safe-area-inset-bottom));
+    text-align:center;
+  }
+  footer .fin{
+    font-family:var(--latin);font-style:italic;
+    color:var(--gold);font-size:14.5px;letter-spacing:.34em;
+  }
+  footer .colophon{
+    margin-top:16px;color:var(--mist-dim);font-size:11.5px;letter-spacing:.2em;line-height:2.3;
+  }
+
+  /* ---------- reveal ---------- */
+  .rv{opacity:0;transform:translateY(24px);transition:opacity .9s ease,transform .9s ease;}
+  .rv.on{opacity:1;transform:none;}
+  @media (prefers-reduced-motion:reduce){
+    .rv{opacity:1;transform:none;transition:none;}
+  }
+
+  /* ---------- mobile ---------- */
+  @media (max-width:820px){
+    .grid3{grid-template-columns:1fr;}
+    .grid2{grid-template-columns:1fr;}
+    .mist-steps{grid-template-columns:1fr;}
+  }
+  @media (max-width:640px){
+    body{font-size:15px;}
+    .nav-inner{padding:8px 12px;gap:8px;flex-wrap:wrap;}
+    .nav-links{order:3;width:100%;margin-left:0;overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;-webkit-overflow-scrolling:touch;}
+    .nav-btn{margin-left:auto;}
+    .mist-steps article{padding:26px 18px 22px;}
+    .tier{padding:10px 12px;gap:10px;flex-wrap:wrap;}
+    .tier .ds{margin-left:0;text-align:left;width:100%;}
+    table{font-size:12.5px;}
+    th,td{padding:8px 9px;}
+    .vswitch{overflow-x:auto;}
+    .vswitch table{min-width:460px;}
+    .prose{text-align:left;font-size:14.5px;}
+  }
+
+  /* ---------- print ---------- */
+  @media print{
+    body{background:#fff;color:#222;background-image:none;font-size:12.5px;line-height:1.75;}
+    #snow,.vignette,.topnav,.hero-actions,.scroll-cue{display:none !important;}
+    .hero{padding:24px 10px 12px;border-bottom:2px solid #999;}
+    .hero h1{
+      color:#7d6a2a;background:none;-webkit-text-fill-color:initial;
+      font-size:34px;filter:none;
+    }
+    .latin-sub,.cn-title{color:#333;margin-top:8px;}
+    .eyebrow,.lede,.hero-meta span{color:#444;}
+    .act{padding:26px 10px 0;page-break-inside:avoid;}
+    .act-head h2{color:#111;}
+    .act-head .no,.act-head .fr{color:#666;}
+    .panel,.duo article,.callout,.mist-steps article,.tier,.tl .step{background:#fff !important;color:#333;box-shadow:none;break-inside:avoid;}
+    .panel p,.panel ul,.callout p,.prose,.duo ul,.tl .body p,.tier .ds{color:#444;}
+    .panel h4,.callout .ct,.duo h3{color:#222;}
+    .panel{border:1px solid #bbb;}
+    .callout{border:1px solid #bbb;border-left:3px solid #888;}
+    th{background:#eee;color:#333;}
+    th,td{border:1px solid #bbb;color:#333;}
+    td{color:#333;}
+    .badge{color:#555;border-color:#999;}
+    a{color:#333;text-decoration:none;}
+    .lede em{border-color:#888;}
+    footer{border-top:1px solid #999;color:#666;}
+    footer .fin,footer .colophon{color:#666;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="snow" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- ============ 顶栏 ============ -->
+<nav class="topnav">
+  <div class="nav-inner">
+    <span class="brand">Nocturne</span>
+    <div class="nav-links">
+      <a href="#a1">名录</a>
+      <a href="#a2">迷雾</a>
+      <a href="#a3">角色</a>
+      <a href="#a4">夜序</a>
+      <a href="#a5">领袖</a>
+      <a href="#a6">胜负</a>
+      <a href="#a7">台本</a>
+      <a href="#a8">版本</a>
+    </div>
+    <a class="nav-btn ghost" href="index.html">← 返回首页</a>
+    <button class="nav-btn" onclick="window.print()">打印 / 存 PDF</button>
+  </div>
+</nav>
+
+<!-- ============ 序幕 ============ -->
+<header class="hero">
+  <p class="eyebrow">Korolevsky Theatre · Le Livre de Règles</p>
+  <h1>Nocturne</h1>
+  <p class="latin-sub">— Le Script Complet —</p>
+  <p class="cn-title">剧院之夜<span class="de"> · </span>完整剧本</p>
+  <div class="ornament"><i>❄</i></div>
+  <p class="lede">
+    这本场刊，是剧院交给你的<span class="drop">完整台本</span>：
+    十三位留宿者的名录、幕布之后的一夜秩序、
+    以及<em>每一种落幕的方式</em>。
+    开演之前请读完它——因为从第一夜起，<span class="drop">死亡不会等任何人。</span>
+  </p>
+  <div class="hero-meta">
+    <span>V4.4 PREVIEW · 终曲「剧院之夜」</span>
+    <span>十三 人局</span>
+    <span>白昼回归迷雾</span>
+    <span>屠城阈值</span>
+  </div>
+  <div class="hero-actions">
+    <a class="hero-link" href="index.html">← 返回剧院首页</a>
+    <a class="hero-link" href="死魂灵的夜曲_模拟器_导演台.html" target="_blank" rel="noopener">打开导演台模拟器</a>
+    <a class="hero-link" href="https://fredrick-clearwater.github.io/nocturne-of-dead-souls/死魂灵的夜曲_主持人速查卡.html" target="_blank" rel="noopener">主持人速查卡</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 第一幕 · 名录 ============ -->
+<section class="act" id="a1">
+  <div class="act-head rv">
+    <span class="no">Acte Ⅰ · 第一幕</span>
+    <h2>登场名录</h2>
+    <span class="fr">La Distribution</span>
+  </div>
+  <p class="prose rv">
+    暴风雪封锁的科洛列夫茨基剧院里，<strong>十三个人</strong>留宿于此。
+    其中三位，坐的从来不是观众席——
+    <span class="drop">他们是「死亡阵营」：两名魂灵，与一位死神。</span>
+  </p>
+  <div class="duo rv">
+    <article>
+      <span class="side">Camp des Vivants</span>
+      <h3>人类阵营 · 10 人</h3>
+      <div class="cnt">五名神职 + 五名普通人</div>
+      <ul>
+        <li>莱莱可 <i>L'Assassin</i> ×1 — 带刀刺客，N1 不可行动</li>
+        <li>门先生 <i>Le Gardien</i> ×1 — 每夜守护 2 人</li>
+        <li>米提亚 <i>La Voyante</i> ×1 — 每夜查验 2 名目标</li>
+        <li>降临者 <i>Le Chasseur</i> ×1 — 每夜查验死神 + 每白天 1 次指认</li>
+        <li>水妖 <i>La Nymphe</i> ×1 — 3 次复活机会</li>
+        <li>普通人 <i>Le Public</i> ×5 — <b>V4.4 由 3 → 5</b>，无技能</li>
+      </ul>
+    </article>
+    <article class="crimson">
+      <span class="side">Camp des Morts</span>
+      <h3>死亡阵营 · 3 人</h3>
+      <div class="cnt">互知身份 · 夜间共用一个讨论群</div>
+      <ul>
+        <li>魂灵 <i>Les Âmes</i> ×2 — 夜刀数 = 当前存活魂灵数</li>
+        <li>死神 <i>La Mort</i> ×1 — 夜刀 0~2（优先级最低）；被放逐次日自动回归</li>
+        <li>夜祷 <i>Le Revenant</i> — 死神一次性转化的临时单位，<b>不计入初始配置</b>，不在此群</li>
+      </ul>
+    </article>
+  </div>
+  <div class="callout rv">
+    <span class="ct">Regles de Base · 基础规则锚点</span>
+    <p>• 每夜<b>死亡上限 = 2 人</b>，约束夜间所有击杀（魂灵 / 死神 / 莱莱可 / 夜祷）。</p>
+    <p>• <span class="ice-t">放逐走「独立通道」</span>：白天投票出局即永久出局，<b>不计入</b>夜杀上限；一夜「夜杀 ≤2 + 放逐 1」合法并存。</p>
+    <p>• <span class="gold-t">领袖</span>为日间票选之临时职衔（见第五幕）；夜祷不占初始配置（见第三幕）。</p>
+  </div>
+</section>
+
+<!-- ============ 第二幕 · 迷雾 ============ -->
+<section class="act" id="a2">
+  <div class="act-head rv">
+    <span class="no">Acte Ⅱ · 第二幕</span>
+    <h2>白昼回归迷雾</h2>
+    <span class="fr">La Brume du Retour</span>
+  </div>
+  <p class="prose rv">
+    无论是<span class="ice-t"><strong>水妖的复活</strong></span>，还是<span class="crim-t"><strong>死神被放逐后的返回</strong></span>，
+    都不在夜间 / 结算时立即生效，统一推迟到<strong>第二天白天讨论阶段开始时</strong>生效。
+    主持人只宣布「XX 玩家回归游戏」，<span class="crim-t"><strong>绝不透露回归原因</strong></span>。
+  </p>
+  <div class="mist-steps rv">
+    <article>
+      <span class="t">Minuit · 深夜</span>
+      <h3>有人死去</h3>
+      <p>死亡名单只留下名字——<br>没有死因，没有线索。</p>
+    </article>
+    <article>
+      <span class="t">Entre · 之间</span>
+      <h3>逝者沉睡</h3>
+      <p>一切复活与回归都被推迟，<br>命运按下不表。</p>
+    </article>
+    <article>
+      <span class="t">Matin · 白昼</span>
+      <h3>回归名单</h3>
+      <p>「XX 回归游戏。」<br>只报名字，绝不解释。</p>
+    </article>
+  </div>
+  <p class="prose rv" style="margin-top:30px">
+    于是，每一个归来者都笼罩在迷雾里——他是<b>被救回的好人</b>、刚被转化的<b>夜祷</b>，
+    还是从未真正离开的<b>死神</b>？你无从分辨。
+    死神与夜祷可以借此伪装成「刚被复活的可怜好人」（穿衣服）；
+    好人也能反推——<strong>名单里出现了谁，水妖本轮就用了技能</strong>。
+    迷雾，是这出戏的灵魂。
+  </p>
+</section>
+
+<!-- ============ 第三幕 · 角色 ============ -->
+<section class="act" id="a3">
+  <div class="act-head rv">
+    <span class="no">Acte Ⅲ · 第三幕</span>
+    <h2>角色全解</h2>
+    <span class="fr">Les Personnages</span>
+  </div>
+
+  <div class="callout ice rv" style="margin-top:0">
+    <span class="ct">Principe · 身份裁决总则</span>
+    <p>角色被转化为夜祷后，<b>立即失去原角色的一切阵营、技能与行动资格</b>；从转化起只按夜祷规则行动。原始身份仅作为历史记录，以及魂灵永久出局条件 A 的计数依据。</p>
+  </div>
+
+  <!-- 魂灵 -->
+  <div class="role-block rv">
+    <div class="role-head">
+      <span class="pt d"></span><h3>魂灵 ×2</h3>
+      <span class="lat">Les Âmes · 每晚击杀数 = 存活魂灵数</span>
+    </div>
+    <div class="grid2">
+      <div class="panel crimson">
+        <h4>夜间击杀</h4>
+        <p>存活 2 名 → 夜刀 <b>2</b>；存活 1 名 → 夜刀 <b>1</b>。与全局死亡上限联动（见第四幕优先级）。</p>
+      </div>
+      <div class="panel crimson">
+        <h4>自爆 <span class="badge v44">每名 1 次</span></h4>
+        <p>白天任意时刻宣布，<b>立即结算、不可撤回</b>：翻牌公开身份 → <span class="crim-t">立即永久出局（无遗言）</span> → 当日剩余流程全部作废 → <b>立即进入黑夜</b>。不带额外击杀。</p>
+        <p style="margin-top:8px">• 计入人类胜利条件 A；<span class="crim-t">不可被水妖复活</span>；<b>可被死神当夜转化为夜祷</b>（转化后不影响已成立的 A）。</p>
+        <p>• 自爆当夜该魂灵不再行动，夜刀数按剩余存活魂灵数计算，空位由死神 / 夜祷按优先级补足。</p>
+        <p>• 自爆使死亡阵营人数 −1，直接抬高屠城门槛；若当夜转化为夜祷，人数可复原。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 死神 -->
+  <div class="role-block rv">
+    <div class="role-head">
+      <span class="pt d"></span><h3>死神 ×1</h3>
+      <span class="lat">La Mort · 夜刀 0~2 · 优先级最低</span>
+    </div>
+    <div class="grid2">
+      <div class="panel crimson">
+        <h4>回归 &amp; 夜刀</h4>
+        <p>被投票放逐后：<b>次日白天自动回归</b>，<span class="crim-t">无限次、不占死亡上限</span>。</p>
+        <p style="margin-top:8px">唯一被「永久消灭」的方式：<b>2 魂灵出局后</b>被莱莱可（B2）或降临者飞刀（B3）刺杀。</p>
+      </div>
+      <div class="panel crimson">
+        <h4>夜祷转化 <span class="badge v44">有且仅有一次</span></h4>
+        <p>任选一名<b>已死亡角色</b>于当夜转化为「夜祷」，次日白天随回归名单归来（不报身份、不报原因），加入死亡阵营。</p>
+        <p style="margin-top:8px">此后每夜夜祷<b>首先开 1 刀</b>（最高优先、穿透守护），但其<b>不进入夜间讨论群</b>、刀目标由夜祷自行决定。夜祷仍共享全局死亡上限 2。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 莱莱可 -->
+  <div class="role-block rv">
+    <div class="role-head">
+      <span class="pt h"></span><h3>莱莱可 ×1</h3>
+      <span class="lat">L'Assassin · 带刀刺客</span>
+    </div>
+    <div class="grid2">
+      <div class="panel gold">
+        <h4>夜刀</h4>
+        <p>夜刀 1，可杀任意目标，计入全局死亡上限。<b>首夜（N1）不可行动</b>——无法得知身份，故不下刀。</p>
+      </div>
+      <div class="panel gold">
+        <h4>自爆 &amp; 刺杀死神</h4>
+        <p><span class="gold-t">自爆（1 次）</span>：翻牌 + 立即弃刀 + <b>本人不出局</b> + 立即进入黑夜（当日流程作废，无额外击杀）；弃刀后人类胜路径 B2 永久关闭。</p>
+        <p style="margin-top:8px"><span class="gold-t">刺杀死神</span>：2 魂灵出局前刺中死神 → 死神次日正常回归；<b>2 魂灵出局后刺中 = 永久击杀（B2）</b>。刺中夜祷 → 夜祷永久死亡。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 门先生 -->
+  <div class="role-block rv">
+    <div class="role-head">
+      <span class="pt h"></span><h3>门先生 ×1</h3>
+      <span class="lat">Le Gardien · 守护</span>
+    </div>
+    <div class="panel gold rv">
+      <h4>守护</h4>
+      <p>每夜守护 <b>2 人</b>。<b>不可守护自己</b>；同一人<b>不得连续两晚</b>被守护（隔一晚可再守）。</p>
+      <p style="margin-top:8px">• 与水妖<b>延迟复活（② / ③）</b>叠加时，<span class="gold-t">门先生优先结算、不奶穿</span>：被守护者本未死 → 水妖该次延迟复活作废（不消耗次数）。<b>夜间即时救护（①）不受此限</b>——两者叠加、目标确定存活且不浪费水妖次数。</p>
+      <p>• 守护<b>对夜祷穿透刀无效</b>。</p>
+    </div>
+    <div class="callout rv" style="border-style:solid">
+      <span class="ct">V4.4 Nouveau · 双守代出局</span>
+      <p>若门先生本夜守护的两名目标<b>同夜均被非穿透刀命中、且两把刀均被守护抵消</b>（「双守护本可救下两人」的情形），则<span class="crim-t">门先生代替出局</span>：</p>
+      <p>• 代替出局在守护结算后<b>立即生效</b>，无遗言（按夜间死亡处理）；</p>
+      <p>• 计入当夜<b>有效死亡候选</b>，<span class="ice-t">水妖①可对其夜间即时救护</span>（救回则门先生存活、当晚 0 死）；</p>
+      <p>• <b>不占用 / 不突破夜死上限</b>（触发前提是两刀均已被守护抵消，当夜总死亡数天然 ≤ 2）；</p>
+      <p>• 中刀来源<span class="crim-t">不问敌我</span>：魂灵刀、死神刀、莱莱可刀均算「命中」——莱莱可能误害门先生，须谨慎下刀；</p>
+      <p>• 若任意一刀为<b>穿透刀</b>（夜祷刀命中被守者）或任意一刀已实际致死，则<span class="gold-t">不触发</span>代出局，按普通规则结算；</p>
+      <p>• 门先生出局后，其守护自然终止。</p>
+    </div>
+  </div>
+
+  <!-- 米提亚 & 降临者 -->
+  <div class="role-block rv">
+    <div class="role-head">
+      <span class="pt h"></span><h3>米提亚 ×1 / 降临者 ×1</h3>
+      <span class="lat">La Voyante &amp; Le Chasseur · 双查验位</span>
+    </div>
+    <div class="grid2">
+      <div class="panel gold">
+        <h4>米提亚 · 每夜双查</h4>
+        <p>每夜查验 <b>2 名目标（可含自己）</b>，结果二选一：</p>
+        <p>• 两人皆非魂灵 / 夜祷 →「<span class="ice-t">都是生者</span>」；</p>
+        <p>• 至少一人为魂灵 / 夜祷 →「<span class="ice-t">魂灵在它们之中</span>」（不指人数、不指是谁）。</p>
+        <p style="margin-top:8px"><span class="gold-t">验己保险法</span>：验〔自己 + X〕可绝对确认 X 的身份——但会暴露查验方式，易被死亡阵营针对。</p>
+      </div>
+      <div class="panel gold">
+        <h4>降临者 · 夜查 + 昼指认</h4>
+        <p>每夜查验 1 名目标<b>是否为死神</b>；另于每个白天拥有 <b>1 次「指认死神」机会</b>（放逐投票前公开声明，须针对当日已回归且当前存活的玩家）。</p>
+        <p style="margin-top:8px"><span class="gold-t">指认正确</span> → 死神当场自爆、立即进入黑夜（当夜无法行动、次日回归）；<b>当日投票作废</b>。本次指认为一次性技能：成功后<b>永久失去日间指认</b>，同时获得一次性<span class="crim-t">「飞刀」</span>——每夜可刀任意人、<b>优先级最高（高于夜祷）、穿透守护</b>；双魂灵出局后刺中死神 = 永久击杀（<span class="crim-t">人类胜 B3</span>）。</p>
+        <p><span class="gold-t">指认错误</span> → 无效果，该次机会作废，次日可再试。降临者出局后失去指认能力。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 水妖 -->
+  <div class="role-block rv">
+    <div class="role-head">
+      <span class="pt h"></span><h3>水妖 ×1</h3>
+      <span class="lat">La Nymphe · 复活 ×3</span>
+    </div>
+    <div class="grid3">
+      <div class="panel gold">
+        <h4>① 夜间即时救护</h4>
+        <p>完成击杀优先级、重复目标、死亡上限、守护裁决与 <b>V4.4 代出局裁定</b>后，主持人向水妖告知本夜<b>有效死亡候选</b>（不披露刀源与无效刀）；水妖可立即选定其中一人救护——<b>该人当夜不会死</b>。可对自己使用。目标不在候选中时本次不生效、<span class="gold-t">不消耗次数</span>。</p>
+      </div>
+      <div class="panel gold">
+        <h4>② 白天放逐复活</h4>
+        <p>白天选定一名<b>已被放逐</b>的玩家救护，延迟至次日白天回归名单（不报身份、不报原因）。允许指定死亡阵营角色（自刀 / 资敌博弈）。</p>
+      </div>
+      <div class="panel gold">
+        <h4>③ 自身出局前被动复活</h4>
+        <p>水妖本人出局前（被击杀 / 放逐结算时）指定一名<b>已出局角色</b>复活，延迟至次日白天回归。允许指定死亡阵营角色。已计入条件 A 的永久出局魂灵、自爆魂灵与夜祷<b>不可复活</b>。</p>
+      </div>
+    </div>
+    <div class="callout rv">
+      <span class="ct">Regles Communes · 水妖通用细则</span>
+      <p>• <span class="gold-t">失效不浪费次数</span>：目标本未死等未生效情形，次数保留可再用；② / ③ 对象须确已死亡。</p>
+      <p>• <span class="crim-t">水妖无法复活夜祷</span>。</p>
+      <p>• <span class="ice-t">复活优先于转化</span>：同一已死亡角色同时被水妖复活与死神转化时，复活生效，死神本次转化不生效、不消耗次数。</p>
+    </div>
+  </div>
+
+  <!-- 夜祷 -->
+  <div class="role-block rv">
+    <div class="role-head">
+      <span class="pt d"></span><h3>夜祷</h3>
+      <span class="lat">Le Revenant · 临时单位</span>
+    </div>
+    <div class="panel ice rv">
+      <h4>转化产物 · 死亡阵营</h4>
+      <p>由死神一次性转化产生，加入死亡阵营；每夜独立向主持人报 <b>1 刀</b>（不与狼队协调，可能重复）。该刀<b>穿透守护、最高优先级、必中</b>，占全局死亡上限 1 名额。</p>
+      <p style="margin-top:8px">被放逐或击杀后<b>永久死亡</b>；<span class="crim-t">水妖无法复活</span>。米提亚可验出夜祷（阳性）；降临者查验对其显示「否」。</p>
+      <p>夜祷<b>计入死亡阵营人数</b>（影响屠城阈值），但<b>不计入条件 A 的魂灵计数</b>。</p>
+    </div>
+  </div>
+
+  <div class="callout ice rv">
+    <span class="ct">Sortie &amp; Derniers Mots · 出局与遗言</span>
+    <p>• 夜间被击杀 → <span class="crim-t">无遗言</span>；白天被放逐 → <span class="gold-t">有遗言</span>；自爆 → <span class="crim-t">无遗言</span>；回归名单中的角色并未真正出局，无需遗言。</p>
+    <p>• <b>V4.4</b>：门先生双守代出局按夜间死亡处理 → <span class="crim-t">无遗言</span>。</p>
+    <p>• 出局玩家全程严格沉默；主持人不向出局者透露任何夜间信息。</p>
+  </div>
+</section>
+
+<!-- ============ 第四幕 · 夜序 ============ -->
+<section class="act" id="a4">
+  <div class="act-head rv">
+    <span class="no">Acte Ⅳ · 第四幕</span>
+    <h2>一夜的秩序</h2>
+    <span class="fr">L'Ordre de la Nuit</span>
+  </div>
+
+  <div class="tl rv">
+    <div class="step"><div class="dot">1</div><div class="body"><h5>门先生</h5><p>选择守护 2 人。</p></div></div>
+    <div class="step"><div class="dot crim">2</div><div class="body"><h5>死亡阵营</h5><p>提交击杀（魂灵 N 刀 + 死神 0~2 刀）；死神同时提交夜祷转化目标（若使用）。</p></div></div>
+    <div class="step"><div class="dot">3</div><div class="body"><h5>莱莱可</h5><p>提交刺杀（<b>N1 不可行动</b>；已自爆弃刀者不再行动）。</p></div></div>
+    <div class="step"><div class="dot ice">4</div><div class="body"><h5>夜祷</h5><p>提交穿透刀（自定目标，不与狼队协调）。</p></div></div>
+    <div class="step"><div class="dot">5</div><div class="body"><h5>水妖</h5><p>主持人先告知经<b>击杀优先级、重复目标、死亡上限、守护裁决与 V4.4 代出局裁定</b>后的本夜有效死亡候选；水妖决定是否夜间即时救护 ①。</p></div></div>
+    <div class="step"><div class="dot">6</div><div class="body"><h5>米提亚 / 降临者</h5><p>米提亚提交双查；降临者提交夜查（其昼间指认在白天投票前进行）。</p></div></div>
+    <div class="step"><div class="dot">7</div><div class="body"><h5>当夜结算</h5><p>按击杀优先级确定有效死亡候选（守护抵消非穿透刀；<b>V4.4 触发代出局则门先生入列</b>）→ 交给水妖救护 → 公布最终死亡名单。</p></div></div>
+    <div class="step"><div class="dot ice">8</div><div class="body"><h5>次日白天</h5><p>宣布回归名单 → 首日进行领袖票选 → 讨论与投票。</p></div></div>
+  </div>
+
+  <h3 class="rv" style="text-align:center;font-weight:600;letter-spacing:.16em;font-size:17px;margin:34px 0 4px;color:var(--gold)">击杀优先级 <span style="color:var(--mist-dim);font-size:13px;letter-spacing:.1em">（全局死亡上限 = 2 · 溢出无效）</span></h3>
+  <div class="ladder rv">
+    <div class="tier top"><div class="rk">I</div><div class="nm">夜祷穿透刀</div><div class="ds">无视守护 · 必中 · 占 1 名额</div></div>
+    <div class="tier"><div class="rk">II</div><div class="nm">魂灵第 1 刀</div><div class="ds">占第 2 名额</div></div>
+    <div class="tier"><div class="rk">III</div><div class="nm">莱莱可 1 刀</div><div class="ds">与魂灵第 2 刀竞争</div></div>
+    <div class="tier"><div class="rk">IV</div><div class="nm">魂灵第 2 刀</div><div class="ds">常溢出</div></div>
+    <div class="tier low"><div class="rk">V</div><div class="nm">死神刀</div><div class="ds">几乎总被挤掉</div></div>
+  </div>
+  <div class="callout rv">
+    <span class="ct">Exemple · 结算示例</span>
+    <p>夜祷在场 + 2 魂灵 + 莱莱可动 + 死神出刀 → 生效：夜祷穿透 +（魂灵第 1 刀优先于莱莱可）→ 其余溢出。<b>当夜死 2：夜祷穿透 1 + 狼队 1。</b></p>
+    <p>夜祷与魂灵重复刀同一目标 → 夜祷穿透必中，魂灵刀溢出（同目标不重复计数、仅耗 1 名额）。</p>
+    <p><b>V4.4</b>：两把被守护抵消的刀恰好分别落在门先生的两个守护目标上 → 触发「双守代出局」，门先生加入有效死亡候选、交由水妖①裁决（见第三幕）。</p>
+  </div>
+</section>
+
+<!-- ============ 第五幕 · 领袖 ============ -->
+<section class="act" id="a5">
+  <div class="act-head rv">
+    <span class="no">Acte Ⅴ · 第五幕</span>
+    <h2>领袖机制</h2>
+    <span class="fr">Le Directeur</span>
+  </div>
+  <p class="prose rv">
+    <strong>第一个白天</strong>，在宣布回归 / 死亡名单之后、放逐投票之前，进行一轮<b>领袖票选</b>
+    （不额外发言，直接投票；平票由主持人破平）。
+  </p>
+  <div class="grid2 rv">
+    <div class="panel gold">
+      <h4>权能（持续至出局）</h4>
+      <p>放逐投票记 <span class="gold-t">1.5 票</span>；<b>决定当日发言顺序</b>。</p>
+    </div>
+    <div class="panel gold">
+      <h4>任期与补选</h4>
+      <p>无指定继承者时，领袖出局后于下一白昼补选；无候选则当日无领袖、默认顺序发言、投票均 1 票。</p>
+    </div>
+  </div>
+  <div class="callout rv" style="border-style:solid">
+    <span class="ct">V4.4 · 领袖交接 · 警徽流</span>
+    <p>领袖因<b>任何原因</b>出局后，在<b>下一白昼回归名单宣布之后、讨论发言开始之前</b>，由该出局领袖做一次<b>纯职位操作</b>（不带遗言、不附加说明）：</p>
+    <p>• <span class="gold-t">指定继任</span>：公开指定一名当前在场玩家继任领袖，直接生效，当日不再票选；</p>
+    <p>• <span class="gold-t">放弃指定</span>：不指定，由在场玩家按常规补选流程投出新领袖（平票破平同首轮）。</p>
+    <p style="margin-top:10px">交接是<b>公开信息</b>，可成为信息位传递信任的隐性信号——但不得借此发言或打暗号。若领袖出局时恰逢投票 / 已被放逐当场 / 当日自爆作废，交接统一顺延至下一白昼发言前；若前任领袖在交接时刻前已<b>回归在场</b>（复活 / 死神回归），交接自动作废，按常规补选处理（其本人亦可参与补选）。</p>
+  </div>
+</section>
+
+<!-- ============ 第六幕 · 胜负 ============ -->
+<section class="act" id="a6">
+  <div class="act-head rv">
+    <span class="no">Acte Ⅵ · 第六幕</span>
+    <h2>落幕方式</h2>
+    <span class="fr">Le Dénouement</span>
+  </div>
+  <p class="prose rv">
+    判定时机：每日白天<b>回归名单宣布之后</b>立即判定——
+    <span class="crim-t">先判死亡阵营屠城</span>，再判人类胜利。
+  </p>
+  <div class="duo rv">
+    <article class="crimson">
+      <span class="side">Camp des Morts</span>
+      <h3>死亡阵营 · 屠城（阈值）</h3>
+      <p style="font-size:13.8px;color:var(--mist);line-height:2.1;margin-top:12px">当<b style="color:var(--snow)">场上人类人数 ≤ 场上死亡阵营人数</b>时，剧院的灯熄灭——死亡阵营立即获胜。</p>
+      <ul>
+        <li>死亡阵营人数<b>含夜祷</b>；死神回归不占死亡上限，但在场即计 1 人。</li>
+        <li><b>十三人局速算</b>：基准 10 人类 vs 3 死亡阵营 → 人类需<b>永久死亡 7 人</b>触发屠城；若死神已转化夜祷（死亡阵营 4 人）→ 需 6 人。</li>
+        <li>N1 有守护 / 救护缓冲（期望约 1.2–1.7 死），实际缓冲约 +1.5 人。</li>
+      </ul>
+    </article>
+    <article>
+      <span class="side">Camp des Vivants</span>
+      <h3>人类 · 黎明终章（A + B 同时满足）</h3>
+      <ul>
+        <li><b>A.</b> <b>2 名魂灵永久出局</b>（场上再无魂灵）；</li>
+        <li><b>B1 终局放逐</b> — 2 魂灵出局后，放逐投票票中真实死神；</li>
+        <li><b>B2 莱莱可刺杀</b> — 2 魂灵出局后，莱莱可夜刀永久刺杀死神；</li>
+        <li><b>B3 降临者飞刀</b> — 降临者成功指认后获得一次性飞刀，2 魂灵出局后飞刀永久刺杀死神。</li>
+        <li>人类胜判定成立<b>即游戏结束</b>，夜祷连带出局。</li>
+      </ul>
+    </article>
+  </div>
+  <div class="callout ice rv">
+    <span class="ct">Pourquoi · 为何不会死锁</span>
+    <p>即便降临者与莱莱可双双出局，剩余好人只要在<b>终局放逐</b>中把票投给真实死神（B1），依然可以终结死神——<b>无单点崩盘死锁</b>。</p>
+  </div>
+  <div class="callout rv">
+    <span class="ct">Egalite · 平票处理（终局投票）</span>
+    <p>2 魂灵已出局但放逐投票平票 / 弃票、无人出局 → 死神照常回归（若本应回归），游戏继续。</p>
+  </div>
+</section>
+
+<!-- ============ 第七幕 · 台本 ============ -->
+<section class="act" id="a7">
+  <div class="act-head rv">
+    <span class="no">Acte Ⅶ · 第七幕</span>
+    <h2>主持人台本</h2>
+    <span class="fr">Le Régisseur</span>
+  </div>
+  <div class="grid2 rv">
+    <div class="panel gold">
+      <h4>每日流程</h4>
+      <p>回归名单 →（首日领袖票选）→ 领袖定发言顺序 → 讨论 → 放逐投票 → 夜间行动。</p>
+      <p style="margin-top:6px">回归名单只报名字、不报原因；名单为空时也明确宣布「今夜无人回归」。</p>
+    </div>
+    <div class="panel ice">
+      <h4>结算顺序（每夜）</h4>
+      <p>夜祷穿透刀（无视守护、最高优先）→ 其余击杀按优先级取前 2 有效 → 门先生守护抵消非穿透刀 → <b>V4.4</b> 双守代出局判定 → 水妖①救护 → 公布死亡名单。</p>
+    </div>
+    <div class="panel crimson">
+      <h4>V4.4 · 代出局核查顺序</h4>
+      <p>① 确认两把刀均为<b>非穿透刀</b>且均被守护抵消 → ② 门先生加入有效死亡候选并询问水妖①是否救护 → ③ 无人救则宣布门先生出局（无遗言），当夜死亡名单照常公布。代出局不占死亡上限，触发当夜总死亡数天然 ≤ 2。</p>
+    </div>
+    <div class="panel crimson">
+      <h4>夜祷记录</h4>
+      <p>转化仅有 1 次，目标须已死亡。夜祷每夜<b>自报 1 穿透刀</b>（可能与狼队重复）；被放逐 / 击杀后永久死亡，不可复活。转化目标含永久出局魂灵与自爆魂灵（A 计数不受影响），复活优先于转化。</p>
+    </div>
+    <div class="panel gold">
+      <h4>终局 &amp; 阈值</h4>
+      <p>2 魂灵出局后留意终局放逐：票中真实死神即人类胜（B1）。每次回归名单公布后<b>重算屠城阈值</b>（死亡阵营含夜祷）。</p>
+    </div>
+    <div class="panel">
+      <h4>出局者沉默</h4>
+      <p>出局玩家全程严格沉默；主持人<b>不向出局者透露任何夜间信息</b>；遗言口径见第三幕「出局与遗言」。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 终场 · 版本注记 ============ -->
+<section class="act" id="a8">
+  <div class="act-head rv">
+    <span class="no">Fin · 终场</span>
+    <h2>版本注记</h2>
+    <span class="fr">Notes de Mise en Scene</span>
+  </div>
+  <p class="prose rv">
+    本版「剧院之夜」= <strong>V4.3.1（裁决收口）</strong> 基础上的两项平衡修订。
+    <span class="drop">V4.4 目前为 preview：供试玩与讨论；未经实测确认前，正式对局仍以 V4.3.1 为准。</span>
+  </p>
+  <div class="grid2 rv">
+    <div class="panel gold">
+      <h4>修订 1 · 平民 3 → 5</h4>
+      <p>总人数 11 → <b>13</b>，人类阵营 8 → <b>10</b>。目的：抬高屠城阈值的人数缓冲，提升人类阵营容错。</p>
+    </div>
+    <div class="panel gold">
+      <h4>修订 3 · 门先生双守代出局</h4>
+      <p>为「双守护」增加代价与死亡阵营反制维度，防止守护 + 水妖叠加使夜刀完全失效。详见第三幕门先生条款。</p>
+    </div>
+  </div>
+  <div class="callout crim rv">
+    <span class="ct">Archive · 修订 2（已废弃）</span>
+    <p>「首夜只有死亡方行动」——原意是避免好人在零信息首夜的无效行动。实测对好人胜率造成大幅净伤（信息模型 3000 局 <b>17.3% → 10.2%</b>）：好人人多时死亡阵营大概率全员倒钩，首夜无防护等于白送一刀关键位。已于 2026-09-02 废弃回退，N1 恢复完整行动口径（莱莱可因身份盲区仍不可行动）。</p>
+  </div>
+  <div class="vswitch rv" style="margin-top:30px">
+    <h3>🔁 版本切换 · V4.3.1（11 人局备选）</h3>
+    <p>本剧本以 <b>V4.4 preview · 剧院之夜（13 人）</b>为准。若想改用正式版 <b>V4.3.1 屠城阈值版（11 人）</b>，替换以下两处即可：</p>
+    <table>
+      <tr><th>项目</th><th>V4.4 preview（本版）</th><th>V4.3.1（正式版）</th></tr>
+      <tr><td>普通人数</td><td><b>5 人</b>（总 13 人，人类阵营 10）</td><td>3 人（总 11 人，人类阵营 8）</td></tr>
+      <tr><td>门先生双守代出局</td><td><b>启用</b>（见第三幕）</td><td>无此规则</td></tr>
+    </table>
+    <p>其余配置、角色、回归迷雾、领袖交接、击杀优先级、遗言规则两版完全一致，可互换试玩。领袖交接条款为 <b>V4.3.1 / V4.4 同步新增</b>。</p>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ 尾声 ============ -->
+<footer>
+  <p class="fin">« Cette nuit, personne ne quitte le théâtre. »</p>
+  <p class="colophon">
+    今夜，无人离场。<br>
+    十三人局 · 人类 10 / 死亡 3 · 与《死魂灵的夜曲_规则V4.4_preview版.md》同源 · V4.4 preview · 终曲「剧院之夜」
+  </p>
+</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- light snow（规则页 · 轻量慢雪，不做暴风雪） ---------- */
+  var cv = document.getElementById("snow"), ctx = cv.getContext("2d");
+  var W, H, DPR = Math.min(window.devicePixelRatio || 1, 2);
+  var N = 64, flakes = [];
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = W * DPR; cv.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    flakes = [];
+    for (var i = 0; i < N; i++){
+      flakes.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: .6 + Math.random() * 1.8,
+        s: .18 + Math.random() * .5,
+        ph: Math.random() * Math.PI * 2,
+        sw: .2 + Math.random() * .6,
+        o: .18 + Math.random() * .4
+      });
+    }
+  }
+  function draw(t){
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < N; i++){
+      var f = flakes[i];
+      f.y += f.s;
+      f.x += Math.sin(t / 2100 + f.ph) * f.sw * .35;
+      if (f.y > H + 4){ f.y = -4; f.x = Math.random() * W; }
+      if (f.x > W + 4) f.x = -4; else if (f.x < -4) f.x = W + 4;
+      ctx.globalAlpha = f.o;
+      ctx.fillStyle = "#dfe7f2";
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, f.r, 0, 6.2832);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  resize();
+  window.addEventListener("resize", resize);
+  if (!reduced) requestAnimationFrame(draw);
+  else {
+    for (var i = 0; i < N; i++){
+      var f = flakes[i];
+      ctx.globalAlpha = f.o * .7;
+      ctx.fillStyle = "#dfe7f2";
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 6.2832); ctx.fill();
+    }
+  }
+
+  /* ---------- reveal on scroll ---------- */
+  var els = document.querySelectorAll(".rv");
+  if ("IntersectionObserver" in window && !reduced){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add("on"); io.unobserve(e.target); }
+      });
+    }, { threshold: .06, rootMargin: "0px 0px -14% 0px" });
+    els.forEach(function(el){ io.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add("on"); });
+  }
+})();
+</script>
+</body>
+</html>
