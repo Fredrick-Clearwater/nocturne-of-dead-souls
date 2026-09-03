@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>死魂灵的夜曲 · 导演台 · 模拟器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Noto+Serif+SC:wght@400;600;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0f1e; --bg2:#0d1426; --panel:#111a31; --panel2:#0e1629;
+  --line:rgba(201,168,106,.22); --line-soft:rgba(201,168,106,.12);
+  --gold:#c9a86a; --gold2:#e9cd8f; --gold-dim:#8d7647;
+  --ink:#e9e2cf; --ink-dim:#98a1ba; --ink-faint:#5d6780;
+  --blood:#c0304a; --blood2:#8e2438;
+  --good:#8fc9a8; --teal:#6fb3b8;
+  --serif:"Noto Serif SC",serif; --fr:"Cormorant Garamond",serif; --deco:"Cinzel Decorative",serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:
+    radial-gradient(1200px 500px at 50% -120px, rgba(201,168,106,.10), transparent 60%),
+    radial-gradient(900px 600px at 85% 110%, rgba(192,48,74,.07), transparent 55%),
+    linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);
+  color:var(--ink); font-family:var(--serif); min-height:100vh; font-size:14px;
+}
+::selection{background:rgba(201,168,106,.35);}
+/* ---------- 顶栏 ---------- */
+header{
+  display:flex; align-items:center; gap:22px; flex-wrap:wrap;
+  padding:16px 26px 14px; border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(201,168,106,.07),transparent);
+  position:sticky; top:0; z-index:50; backdrop-filter:blur(6px);
+}
+.brand{display:flex; align-items:baseline; gap:12px;}
+.brand .en{font-family:var(--deco); font-size:20px; color:var(--gold2); letter-spacing:.06em; text-shadow:0 0 18px rgba(233,205,143,.35);}
+.brand .zh{font-size:15px; font-weight:900; letter-spacing:.3em; color:var(--ink);}
+.brand .fr{font-family:var(--fr); font-style:italic; font-size:13px; color:var(--ink-dim);}
+nav{display:flex; gap:10px; margin-left:auto; flex-wrap:wrap;}
+nav button{
+  background:transparent; border:1px solid var(--line); color:var(--ink-dim);
+  font-family:var(--serif); font-size:13px; letter-spacing:.14em; padding:8px 20px; cursor:pointer;
+  transition:.22s; border-radius:3px;
+}
+nav button:hover{color:var(--gold2); border-color:var(--gold); transform:translateY(-1px);}
+nav button:active{transform:translateY(1px) scale(.98);}
+nav button.on{color:var(--bg); background:linear-gradient(135deg,var(--gold),var(--gold2)); border-color:var(--gold); font-weight:600;}
+/* ---------- 布局 ---------- */
+main{max-width:1480px; margin:0 auto; padding:32px 44px 80px;}
+.screen{display:none;} .screen.active{display:block; animation:fadeUp .4s ease both;}
+h2.sec{font-size:17px; font-weight:900; letter-spacing:.2em; color:var(--gold2); margin:6px 0 12px;}
+.sub-fr{font-family:var(--fr); font-style:italic; color:var(--ink-dim); font-size:13px; margin-bottom:28px;}
+.panel{background:linear-gradient(180deg,var(--panel),var(--panel2)); border:1px solid var(--line); border-radius:8px; padding:24px 28px;}
+.hint{color:var(--ink-dim); font-size:12.5px; line-height:2;}
+.divider{height:1px; background:var(--line-soft); margin:20px 0;}
+@keyframes fadeUp{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+button{font-family:var(--serif);}
+.btn{
+  background:transparent; border:1px solid var(--line); color:var(--ink);
+  padding:10px 26px; font-size:13.5px; letter-spacing:.1em; cursor:pointer; border-radius:3px;
+  transition:background .18s, border-color .18s, color .18s, box-shadow .18s, transform .08s;
+  position:relative;
+}
+.btn:hover{border-color:var(--gold); color:var(--gold2); background:rgba(201,168,106,.06); box-shadow:0 0 18px rgba(201,168,106,.08);}
+.btn:active{transform:translateY(1px) scale(.985);}
+.btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#141021; border-color:var(--gold); font-weight:600;}
+.btn.primary:hover{filter:brightness(1.1); box-shadow:0 0 26px rgba(233,205,143,.35);}
+.btn.danger{border-color:rgba(192,48,74,.55); color:#e893a4;}
+.btn.danger:hover{background:rgba(192,48,74,.16); border-color:var(--blood); box-shadow:0 0 18px rgba(192,48,74,.16);}
+.btn.small{padding:6px 14px; font-size:12px;}
+.btn:disabled{opacity:.4; cursor:not-allowed; transform:none; box-shadow:none;}
+select,input[type=number]{
+  background:var(--panel2); color:var(--ink); border:1px solid var(--line);
+  font-family:var(--serif); font-size:13px; padding:7px 11px; border-radius:3px; outline:none;
+  transition:border-color .18s, box-shadow .18s;
+}
+select:hover,input[type=number]:hover{border-color:rgba(201,168,106,.5);}
+select:focus,input:focus{border-color:var(--gold); box-shadow:0 0 0 2px rgba(201,168,106,.15);}
+/* ---------- 配置页 ---------- */
+.preset-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; margin-bottom:28px;}
+.preset{border:1px solid var(--line); border-radius:8px; padding:18px 22px; cursor:pointer; transition:.2s; background:rgba(255,255,255,.015);}
+.preset:hover{border-color:var(--gold); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.25);}
+.preset:active{transform:translateY(0) scale(.99);}
+.preset.on{border-color:var(--gold2); background:linear-gradient(180deg,rgba(201,168,106,.10),rgba(201,168,106,.02)); box-shadow:0 0 24px rgba(201,168,106,.08) inset;}
+.preset b{font-size:14.5px; color:var(--gold2); letter-spacing:.08em;}
+.preset small{display:block; color:var(--ink-dim); margin-top:6px; line-height:1.7; font-size:12px;}
+.role-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:8px 0 6px;}
+.role-card{display:flex; align-items:center; gap:14px; border:1px solid var(--line-soft); border-radius:8px; padding:14px 16px; background:rgba(255,255,255,.015); transition:border-color .18s, background .18s, transform .18s;}
+.role-card:hover{border-color:var(--line); background:rgba(255,255,255,.03);}
+.role-card .por{width:52px; height:52px; border-radius:50%; overflow:hidden; flex:none; border:2px solid var(--line); display:flex; align-items:center; justify-content:center;}
+.role-card .por img{width:100%; height:100%; object-fit:cover;}
+.role-card .por.glyph{font-size:20px; font-weight:900; color:var(--gold2); background:radial-gradient(circle at 35% 30%,#1d2745,#101830); font-family:var(--serif);}
+.role-card .por.glyph.death{color:#e893a4;}
+.role-card .meta{flex:1;}
+.role-card .meta b{font-size:14px; letter-spacing:.06em;}
+.role-card .meta .fr2{font-family:var(--fr); font-style:italic; color:var(--ink-faint); font-size:11.5px; display:block;}
+.stepper{display:flex; align-items:center; gap:10px; margin-top:8px;}
+.stepper button{width:28px; height:28px; border:1px solid var(--line); background:transparent; color:var(--gold2); cursor:pointer; font-size:16px; line-height:1; border-radius:4px; transition:.15s;}
+.stepper button:hover{border-color:var(--gold); background:rgba(201,168,106,.1);}
+.stepper button:active{transform:scale(.88);}
+.stepper .num{min-width:28px; text-align:center; font-size:17px; font-weight:900; color:var(--gold2);}
+details.rules{margin-top:22px; border:1px solid var(--line-soft); border-radius:8px; padding:0 22px;}
+details.rules summary{cursor:pointer; padding:15px 0; color:var(--ink-dim); letter-spacing:.14em; font-size:13px; list-style:none;}
+details.rules summary::before{content:"▸ "; color:var(--gold);}
+details.rules[open] summary::before{content:"▾ ";}
+.toggle-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:14px 30px; padding:8px 0 22px;}
+.tg{display:flex; align-items:center; justify-content:space-between; gap:14px; border-bottom:1px dashed var(--line-soft); padding:10px 0;}
+.tg label{color:var(--ink); font-size:13px;}
+.tg label small{display:block; color:var(--ink-faint); font-size:11.5px; margin-top:3px; line-height:1.8;}
+.tg select{min-width:122px;}
+.setup-btns{display:flex; gap:14px; margin-top:28px; flex-wrap:wrap;}
+/* ---------- 对局页 ---------- */
+#scr-game.active{display:block;}
+.status-strip{
+  display:flex; flex-wrap:wrap; gap:12px 30px; align-items:center;
+  border:1px solid var(--line); border-radius:8px; padding:16px 26px; margin-bottom:20px;
+  background:linear-gradient(90deg,rgba(201,168,106,.06),transparent 60%);
+}
+.st{display:flex; flex-direction:column; gap:3px;}
+.st .k{font-size:10.5px; letter-spacing:.22em; color:var(--ink-faint);}
+.st .v{font-size:14px; color:var(--ink); font-weight:600;}
+.st .v b{color:var(--gold2);}
+.st .v.warn{color:#e893a4;}
+.threshold{flex:1; min-width:250px;}
+.threshold .bar{position:relative; height:14px; border-radius:7px; overflow:hidden; border:1px solid var(--line); background:var(--panel2); margin-top:6px;}
+.threshold .h-seg{position:absolute; left:0; top:0; bottom:0; background:linear-gradient(90deg,#a3874f,var(--gold)); transition:width .7s cubic-bezier(.2,.7,.2,1);}
+.threshold .d-seg{position:absolute; right:0; top:0; bottom:0; background:linear-gradient(90deg,var(--blood2),var(--blood)); transition:width .7s cubic-bezier(.2,.7,.2,1);}
+.threshold .tick{position:absolute; top:-3px; bottom:-3px; width:2px; background:#fff; box-shadow:0 0 6px #fff; transition:left .7s cubic-bezier(.2,.7,.2,1);}
+.game-grid{display:grid; grid-template-columns:330px minmax(440px,1fr) 360px; gap:20px; align-items:start;}
+@media (max-width:1150px){ .game-grid{grid-template-columns:1fr;} }
+.log-panel{display:flex; flex-direction:column; max-height:72vh; position:sticky; top:76px;}
+.log-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
+.log-head b{letter-spacing:.18em; font-size:13px; color:var(--gold2);}
+.log-box{overflow-y:auto; flex:1; min-height:340px; border:1px solid var(--line-soft); border-radius:6px; padding:14px 16px; background:rgba(0,0,0,.22); font-size:12.5px; line-height:1.9;}
+.log-item{padding:5px 0; border-bottom:1px dashed rgba(255,255,255,.04);}
+.log-item .lt{color:var(--ink-faint); font-size:10.5px; margin-right:8px; font-family:var(--fr);}
+.log-sys{color:var(--ink-dim);} .log-good{color:var(--good);} .log-death{color:#e893a4;}
+.log-warn{color:var(--gold2);} .log-god{color:var(--teal); opacity:.85;}
+.phase-panel .rail{display:flex; flex-wrap:wrap; gap:4px 0; align-items:center; margin:14px 0 20px;}
+.rail .step{font-size:11.5px; letter-spacing:.1em; color:var(--ink-faint); padding:4px 12px; border:1px solid transparent; border-radius:20px; white-space:nowrap; transition:.2s;}
+.rail .step.done{color:var(--gold-dim);}
+.rail .step.cur{color:#141021; background:linear-gradient(135deg,var(--gold),var(--gold2)); font-weight:600; box-shadow:0 2px 12px rgba(233,205,143,.3);}
+.rail .arr{color:var(--ink-faint); margin:0 2px;}
+.phase-title,.phase-panel .rail,.vote-table,.settle-title{animation:fadeUp .3s ease both;}
+.phase-title{display:flex; align-items:baseline; gap:12px; margin-bottom:10px;}
+.phase-title .nm{font-size:19px; font-weight:900; color:var(--gold2); letter-spacing:.1em;}
+.phase-title .fr3{font-family:var(--fr); font-style:italic; color:var(--ink-dim); font-size:13px;}
+.phase-desc{color:var(--ink-dim); font-size:12.5px; line-height:2; margin-bottom:18px;}
+.phase-desc b{color:var(--gold2);}
+.action-block{border:1px solid var(--line-soft); border-left:3px solid var(--gold); border-radius:6px; padding:15px 18px; margin-bottom:16px; background:rgba(255,255,255,.015); animation:fadeUp .35s ease both;}
+.action-block.death-b{border-left-color:var(--blood);}
+.ab-t{display:flex; align-items:center; gap:10px; margin-bottom:12px; font-weight:600; letter-spacing:.05em;}
+.ab-t .who{font-size:14px;} .ab-t .who.role-魂灵,.ab-t .who.role-死神,.ab-t .who.role-夜祷{color:#e893a4;}
+.ab-t .who.role-莱莱可,.ab-t .who.role-门先生,.ab-t .who.role-米提亚,.ab-t .who.role-降临者,.ab-t .who.role-水妖{color:var(--gold2);}
+.action-row{display:flex; align-items:center; gap:12px; margin:10px 0; flex-wrap:wrap; color:var(--ink-dim); font-size:13px;}
+.mini-ic{width:30px; height:30px; border-radius:50%; overflow:hidden; flex:none; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:900; color:var(--gold2); background:#101830;}
+.mini-ic img{width:100%; height:100%; object-fit:cover;}
+.mini-ic.death{color:#e893a4;}
+.action-block .por{width:32px; height:32px; border-radius:50%; overflow:hidden; flex:none; border:1px solid var(--line); display:inline-flex; align-items:center; justify-content:center; font-size:14px; font-weight:900; color:var(--gold2); background:#101830;}
+.action-block .por img{width:100%; height:100%; object-fit:cover;}
+.action-block .por.death{color:#e893a4;}
+.kill-preview{border:1px dashed var(--line); border-radius:6px; padding:13px 18px; margin:14px 0; color:var(--ink); font-size:13px; line-height:2; background:rgba(192,48,74,.05); animation:fadeUp .35s ease both;}
+.phase-btns{display:flex; gap:12px; margin-top:20px; flex-wrap:wrap;}
+.cast-panel{max-height:78vh; overflow-y:auto; position:sticky; top:76px;}
+.cast-panel .cap{letter-spacing:.18em; font-size:13px; color:var(--gold2); margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;}
+.pcard{display:flex; gap:12px; align-items:center; border:1px solid var(--line-soft); border-radius:6px; padding:10px 12px; margin-bottom:10px; background:rgba(255,255,255,.015); transition:border-color .18s, background .18s, transform .18s, opacity .3s;}
+.pcard:hover{border-color:var(--line); background:rgba(255,255,255,.04);}
+.pcard.f-death{border-left:3px solid var(--blood2);}
+.pcard.f-human{border-left:3px solid rgba(201,168,106,.45);}
+.pcard.dead{opacity:.42; filter:grayscale(.7);}
+.pcard .por{width:46px; height:46px; border-radius:50%; overflow:hidden; flex:none; border:1.5px solid var(--line);}
+.pcard .por img{width:100%; height:100%; object-fit:cover;}
+.pcard .por.glyph{display:flex; align-items:center; justify-content:center; font-weight:900; font-size:17px; color:var(--gold2); background:radial-gradient(circle at 35% 30%,#1d2745,#101830);}
+.pcard .por.glyph.death{color:#e893a4;}
+.pcard .pi{flex:1; min-width:0;}
+.pcard .r1{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+.pcard .seat{font-size:10.5px; color:var(--ink-faint);}
+.pcard .nm2{font-weight:600; font-size:13.5px;}
+.pcard .rl{font-size:11.5px; padding:1px 8px; border-radius:10px; border:1px solid var(--line-soft); color:var(--ink-dim);}
+.pcard .rl.death{color:#e893a4; border-color:rgba(192,48,74,.4);}
+.ptags{display:flex; flex-wrap:wrap; gap:4px; margin-top:4px;}
+.ptag{font-size:10.5px; padding:1px 7px; border-radius:8px; background:rgba(201,168,106,.12); color:var(--gold2); border:1px solid transparent;}
+.ptag.leader{background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#141021; font-weight:600;}
+.ptag.guard{background:rgba(111,179,184,.15); color:var(--teal);}
+.ptag.ret{background:rgba(192,48,74,.15); color:#e893a4;}
+.ptag.deadtag{background:rgba(0,0,0,.3); color:var(--ink-faint);}
+.ptag.prayer{background:rgba(111,179,184,.15); color:var(--teal);}
+.vote-table{width:100%; border-collapse:collapse; font-size:12.5px; margin:6px 0;}
+.vote-table td{padding:8px 8px; border-bottom:1px dashed var(--line-soft);}
+.vote-table .vn{color:var(--ink); white-space:nowrap;}
+.vote-table .vr{color:var(--ink-faint); font-size:11px;}
+.vote-table select{max-width:230px;}
+/* ---------- 推演 / 统计 ---------- */
+.batch-row{display:flex; gap:18px; align-items:flex-end; flex-wrap:wrap; margin-bottom:20px;}
+.batch-row .fld{display:flex; flex-direction:column; gap:7px;}
+.batch-row .fld span{font-size:11px; letter-spacing:.16em; color:var(--ink-faint);}
+progress{width:280px; height:10px; accent-color:var(--gold);}
+.bar-wrap{display:flex; height:22px; border-radius:5px; overflow:hidden; border:1px solid var(--line); margin:14px 0;}
+.bar-h{background:linear-gradient(90deg,#a3874f,var(--gold));}
+.bar-d{background:linear-gradient(90deg,var(--blood2),var(--blood));}
+.stat-table{width:100%; border-collapse:collapse; font-size:12.5px; margin:12px 0;}
+.stat-table th{font-weight:600; color:var(--gold2); letter-spacing:.08em; text-align:left; padding:9px 12px; border-bottom:1px solid var(--line);}
+.stat-table td{padding:8px 12px; border-bottom:1px dashed var(--line-soft); color:var(--ink-dim);}
+.stat-table td.l{color:var(--ink);}
+.ew{font-family:var(--deco); font-size:28px; letter-spacing:.08em; margin-bottom:12px; text-align:center; animation:fadeUp .5s ease both;}
+.ew.human{color:var(--gold2); text-shadow:0 0 24px rgba(233,205,143,.4);}
+.ew.death{color:#e05c77; text-shadow:0 0 24px rgba(192,48,74,.5);}
+.er{color:var(--ink-dim); margin-bottom:16px; line-height:2;}
+#endOverlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(4,7,15,.8); z-index:100; backdrop-filter:blur(4px);}
+#endOverlay.show{display:flex; animation:fadeUp .25s ease both;}
+.end-card{background:linear-gradient(180deg,var(--panel),var(--panel2)); border:1px solid var(--gold); border-radius:10px; padding:40px 50px; max-width:580px; width:92%; max-height:88vh; overflow-y:auto; box-shadow:0 0 70px rgba(201,168,106,.18); animation:fadeUp .35s ease both;}
+.footnote{margin-top:40px; color:var(--ink-faint); font-size:11.5px; text-align:center; letter-spacing:.1em;}
+.footnote .fr4{font-family:var(--fr); font-style:italic;}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <span class="en">NOCTURNE</span><span class="zh">导演台</span><span class="fr">La Régie du Théâtre</span>
+  </div>
+  <nav>
+    <button data-scr="setup" class="on">开演配置</button>
+    <button data-scr="game" id="navGame" disabled>导演台</button>
+    <button data-scr="batch">推演场</button>
+    <button data-scr="stats">档案室</button>
+  </nav>
+</header>
+<main>
+
+<!-- ============ 开演配置 ============ -->
+<section class="screen active" id="scr-setup">
+  <h2 class="sec">开演配置</h2>
+  <div class="sub-fr">Mise en scène — 选定卡司与舞台规约</div>
+  <div class="preset-row" id="presetRow"></div>
+  <div class="panel">
+    <h2 class="sec" style="font-size:14px;">卡司名额</h2>
+    <div class="role-grid" id="roleGrid"></div>
+    <details class="rules">
+      <summary>舞台规约（规则开关）</summary>
+      <div class="toggle-grid" id="toggleGrid"></div>
+    </details>
+    <div class="setup-btns">
+      <button class="btn primary" onclick="UI.startGame()">🎭 开始手动对局</button>
+      <button class="btn" onclick="UI.show('batch')">🎬 前往推演场</button>
+    </div>
+    <div class="hint" id="setupHint" style="margin-top:10px;"></div>
+  </div>
+</section>
+
+<!-- ============ 导演台（对局） ============ -->
+<section class="screen" id="scr-game">
+  <div class="status-strip" id="statusStrip"></div>
+  <div class="game-grid">
+    <div class="panel log-panel">
+      <div class="log-head"><b>舞台记录</b><button class="btn small" id="logFilterBtn" onclick="UI.toggleLogFilter()">筛选：全部</button></div>
+      <div class="log-box" id="logBox"></div>
+    </div>
+    <div class="panel phase-panel" id="phasePanel"></div>
+    <div class="panel cast-panel">
+      <div class="cap"><span>在场卡司</span><span id="castCount" style="color:var(--ink-dim);font-size:11px;"></span></div>
+      <div id="playerList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 推演场 ============ -->
+<section class="screen" id="scr-batch">
+  <h2 class="sec">推演场</h2>
+  <div class="sub-fr">La Répétition générale — 蒙特卡洛批量彩排</div>
+  <div class="panel">
+    <div class="batch-row">
+      <div class="fld"><span>局数</span><input type="number" id="batchN" value="2000" min="1" max="20000" style="width:90px;"></div>
+      <div class="fld"><span>阵容 / 规约</span><button class="btn small" onclick="UI.show('setup')">查看当前配置</button></div>
+      <div class="fld"><span>好人 AI</span><select id="batchInfo"><option value="1">信息驱动（推荐）</option><option value="0">完全随机基准</option></select></div>
+      <div class="fld"><span>对比模式</span><select id="batchCompare"><option value="0">单配置</option><option value="1">V4.3.1→V4.4 四变体</option></select></div>
+      <button class="btn primary" id="batchBtn" onclick="UI.runBatch()">🎬 开始推演</button>
+    </div>
+    <div id="batchProgWrap" style="display:none;">
+      <progress id="batchProg" max="100" value="0"></progress>
+      <span class="hint" id="batchMsg" style="margin-left:10px;"></span>
+    </div>
+    <div id="batchResult"></div>
+  </div>
+</section>
+
+<!-- ============ 档案室 ============ -->
+<section class="screen" id="scr-stats">
+  <h2 class="sec">档案室</h2>
+  <div class="sub-fr">Les Archives — 本机累计对局统计</div>
+  <div class="panel" id="accStats"></div>
+  <div class="setup-btns"><button class="btn danger" onclick="UI.clearStats()">清空档案</button></div>
+</section>
+
+<div class="footnote">NOCTURNE OF DEAD SOULS · <span class="fr4">Chaque representation, une seul nuit</span> · 导演台模拟器 V1</div>
+</main>
+
+<div id="endOverlay"><div class="end-card" id="endBox"></div></div>
+
+<script>
+/*ENGINE-BEGIN*/
+/* ================================================================
+ * 《死魂灵的夜曲》规则引擎（纯函数层，无 DOM 依赖，可独立测试）
+ * 依据：规则书 V4.3.1（屠城阈值版·裁决收口）+ V4.4 preview 修订
+ * 口径裁定（2026-09-02）：
+ *  - 已计入条件 A 的永久出局魂灵不可被水妖②③复活；
+ *    仅「与水妖同一次结算中阵亡、A 计数尚未落定」的魂灵可被③救回，
+ *    救回后该计数不成立（G.pendingA 延迟落定机制）。
+ *  - 死神可自由提交 0~上限 刀，由优先级引擎裁决去重与溢出。
+ *  - 夜祷转化目标 = 任意已死亡角色（除夜祷/死神），含永久出局魂灵
+ *    （自爆魂灵可转，规则书明文；转化不影响已成立的条件 A）。
+ * ================================================================ */
+"use strict";
+const DEATH_ROLES = ["魂灵","死神","夜祷"];
+const ENGINE_VERSION = "director-1";
+
+function factionOf(p){ return DEATH_ROLES.includes(p.role) ? "death" : "human"; }
+
+const DEFAULT_CFG = {
+  label:"V4.3.1 屠城阈值版",
+  version:"4.3.1",
+  roleCounts:{ "魂灵":2,"死神":1,"莱莱可":1,"门先生":1,"米提亚":1,"降临者":1,"水妖":1,"普通人":3 },
+  deathCap:2,
+  winMode:"threshold",          // threshold 屠城 | tubian 屠边
+  prayerEnabled:true, prayerPierce:true,
+  assassinN1Block:true,
+  soulSD:true, assassinSD:true,
+  nixieNightType:"instant",     // instant 即时救护 | delayed 延迟复活
+  guardCount:2,
+  leaderWeight:1.5,
+  guardSubst:false,             // V4.4 门先生代出局
+  n1DeathOnly:false,            // V4.4 首夜仅死亡方行动
+  thresholdTiming:"dawn",       // dawn 黎明判定（规则书）| instant 即时判定
+  infoModel:true,               // 好人 AI 信息驱动
+};
+
+const PRESETS = [
+  { key:"v431", name:"V4.3.1 屠城阈值版", desc:"11 人标准局 · 米提亚双查 · 降临者昼间指认 · 水妖三复活 · 夜祷转化",
+    patch:{ label:"V4.3.1 屠城阈值版", version:"4.3.1",
+      roleCounts:{"魂灵":2,"死神":1,"莱莱可":1,"门先生":1,"米提亚":1,"降临者":1,"水妖":1,"普通人":3},
+      guardSubst:false, n1DeathOnly:false } },
+  { key:"v44", name:"V4.4 preview 剧院之夜", desc:"13 人局 · 平民+2 · 门先生双守代出局（首夜死亡方行动已于 9/2 实测废弃：−7pp，fall 回 V4.3 首夜口径）",
+    patch:{ label:"V4.4 preview 剧院之夜", version:"4.4",
+      roleCounts:{"魂灵":2,"死神":1,"莱莱可":1,"门先生":1,"米提亚":1,"降临者":1,"水妖":1,"普通人":5},
+      guardSubst:true, n1DeathOnly:false } },
+  { key:"v42", name:"V4.2 屠边版（怀旧）", desc:"11 人 · 灭五神或三民即胜 · 无夜祷转化",
+    patch:{ label:"V4.2 屠边版", version:"4.2",
+      roleCounts:{"魂灵":2,"死神":1,"莱莱可":1,"门先生":1,"米提亚":1,"降临者":1,"水妖":1,"普通人":3},
+      winMode:"tubian", prayerEnabled:false, guardSubst:false, n1DeathOnly:false } },
+];
+
+function makeCfg(patch){
+  const cfg = JSON.parse(JSON.stringify(DEFAULT_CFG));
+  Object.assign(cfg, patch||{});
+  if(patch && patch.roleCounts) Object.assign(cfg.roleCounts, patch.roleCounts);
+  return cfg;
+}
+
+function createGame(cfg){
+  const players=[]; let seat=1;
+  Object.entries(cfg.roleCounts).forEach(([r,n])=>{
+    for(let i=0;i<n;i++) players.push({
+      id:players.length, seat:seat++, role:r, baseRole:r,
+      alive:true, revealed:false, soulOut:false,
+      selfDestructUsed:false, selfDestructed:false, knifeGone:false,
+      guardedOn:-99, deathCause:null,
+    });
+  });
+  for(let i=players.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [players[i],players[j]]=[players[j],players[i]]; }
+  players.forEach((p,i)=>{ p.id=i; p.seat=i+1; p.name=(i+1)+"号"; });
+  return {
+    cfg, players, nightNum:0,
+    leader:null, electionDone:false,
+    pendingReturns:[], pendingA:[],
+    convertUsed:false,
+    oracleUsedToday:false, oracleIdentifyUsedEver:false,
+    oracleKnifeGranted:false, oracleKnifeUsed:false,
+    nixie:{ night:1, exile:1, passive:1 },
+    nixiePassivePending:false, exileRevivePending:false,
+    night:null, lastNightDeaths:[], lastReturns:[],
+    over:false, winner:null, winDetail:"",
+    soulTotal:cfg.roleCounts["魂灵"]||0,
+    log:[], stats:{ use:{}, exiles:0 },
+  };
+}
+function eLog(G,text,cls,pub){ G.log.push({ t:(G.nightNum?(G.night&&String(G.phase||"").startsWith("day")?"D":"N")+G.nightNum:"—"), text, cls:cls||"log-sys", pub:pub!==false }); }
+function eLogGod(G,text){ G.log.push({ t:"N"+G.nightNum, text:"【上帝】"+text, cls:"log-god", pub:false }); }
+function eUse(G,k){ G.stats.use[k]=(G.stats.use[k]||0)+1; }
+
+function aliveP(G){ return G.players.filter(p=>p.alive); }
+function aliveRole(G,role){ return G.players.find(p=>p.alive&&p.role===role); }
+function soulsAllOut(G){ return G.players.filter(p=>p.baseRole==="魂灵").every(p=>p.soulOut); }
+function soulOutCount(G){ return G.players.filter(p=>p.baseRole==="魂灵"&&p.soulOut).length; }
+function nameOf(G,id){ return G.players[id].name; }
+function rnd(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function humanWin(G,detail){ if(!G.over){ G.over=true; G.winner="human"; G.winDetail=detail; eLog(G,"☀ 人类阵营获胜！"+detail,"log-good"); } }
+function wolfWin(G,detail){ if(!G.over){ G.over=true; G.winner="death"; G.winDetail=detail; eLog(G,"☠ 死亡阵营获胜！"+detail,"log-death"); } }
+
+function checkWolfWin(G){
+  if(G.over) return;
+  const alive=aliveP(G);
+  if(G.cfg.winMode==="tubian"){
+    const GODS=["莱莱可","门先生","米提亚","降临者","水妖"];
+    if(GODS.every(r=>!alive.some(p=>p.role===r))) return wolfWin(G,"屠边完成：五神俱灭。");
+    if(!alive.some(p=>p.role==="普通人")) return wolfWin(G,"屠边完成：三民尽殁。");
+  }else{
+    const h=alive.filter(p=>factionOf(p)==="human").length;
+    const d=alive.filter(p=>factionOf(p)==="death").length;
+    if(h<=d) return wolfWin(G,`屠城阈值达成：存活人类 ${h} ≤ 死亡阵营 ${d}。`);
+  }
+}
+
+/* ---------------- 夜晚 ---------------- */
+function blankNight(){ return { guard:[], soulKnives:{}, reaperKnives:[], prayerKnife:null,
+  assassinKnife:null, convertTarget:null, nixiePick:"none",
+  mitiaChecks:[null,null], oracleCheck:null, oracleKnife:null }; }
+
+/* 首夜仅死亡方行动（V4.4）：无守护/刺客/水妖救护/查验 */
+function n1Mute(G){ return G.cfg.n1DeathOnly && G.nightNum===1; }
+
+function buildKnives(G){
+  const n=G.night, cfg=G.cfg, knives=[];
+  if(G.oracleKnifeGranted && !G.oracleKnifeUsed && n.oracleKnife!=null){
+    const ora=G.players.find(p=>p.baseRole==="降临者");
+    if(ora && ora.alive) knives.push({src:"降临者飞刀", srcId:ora.id, target:n.oracleKnife, pri:-1, pierce:true});
+  }
+  if(cfg.prayerEnabled && n.prayerKnife!=null){
+    const pr=G.players.find(p=>p.role==="夜祷"&&p.alive);
+    if(pr) knives.push({src:"夜祷", srcId:pr.id, target:n.prayerKnife, pri:0, pierce:cfg.prayerPierce});
+  }
+  const souls=G.players.filter(p=>p.alive&&p.baseRole==="魂灵").sort((a,b)=>a.seat-b.seat);
+  souls.forEach((s,i)=>{
+    const t=n.soulKnives[s.id];
+    if(t!=null) knives.push({src:"魂灵", srcId:s.id, target:t, pri:(i===0?1:3), pierce:false});
+  });
+  const lai=G.players.find(p=>p.baseRole==="莱莱可");
+  if(lai && lai.alive && !lai.knifeGone && !(G.nightNum===1&&cfg.assassinN1Block) && n.assassinKnife!=null)
+    knives.push({src:"莱莱可", srcId:lai.id, target:n.assassinKnife, pri:2, pierce:false});
+  const rea=G.players.find(p=>p.baseRole==="死神");
+  if(rea && rea.alive) n.reaperKnives.filter(t=>t!=null)
+    .forEach(t=>knives.push({src:"死神", srcId:rea.id, target:t, pri:4, pierce:false}));
+  knives.sort((a,b)=>a.pri-b.pri);
+  return knives;
+}
+
+/* 优先级 + 去重 + 上限 + 守护裁决（规则书 §4） */
+function previewDeaths(G){
+  const cfg=G.cfg, knives=buildKnives(G);
+  const selected=[], seen=new Set(), overflow=[];
+  for(const k of knives){
+    if(seen.has(k.target)){ overflow.push({k,why:"同目标重复，不另占名额"}); continue; }
+    if(selected.length>=cfg.deathCap){ overflow.push({k,why:"死亡上限溢出"}); continue; }
+    selected.push(k); seen.add(k.target);
+  }
+  const guarded=new Set(G.night.guard);
+  const eff=[], savedByGuard=[];
+  for(const k of selected){
+    if(!k.pierce && guarded.has(k.target)) savedByGuard.push(k);
+    else eff.push(k);
+  }
+  /* V4.4 门先生代出局：双守目标同夜均被非穿透刀命中且均被守护抵消 */
+  let subst=false;
+  if(cfg.guardSubst && !n1Mute(G) && guarded.size===2){
+    const canceledTs=new Set(savedByGuard.map(k=>k.target));
+    subst=[...guarded].every(t=>canceledTs.has(t));
+  }
+  return {knives, selected, overflow, eff, savedByGuard, subst};
+}
+
+/* 夜结算（至死亡标记与被动复活标记为止；③裁决与转化由 finalizeNight 完成） */
+function resolveNight(G){
+  const cfg=G.cfg, n=G.night;
+  if(n1Mute(G)){
+    n.guard=[]; n.prayerKnife=null; n.assassinKnife=null;
+    n.nixiePick="none"; n.mitiaChecks=[null,null]; n.oracleCheck=null; n.oracleKnife=null;
+  }
+  if(n.guard.length) eUse(G,"门先生守护");
+  const pv=previewDeaths(G);
+  pv.overflow.forEach(o=>eLogGod(G,`${o.k.src}刀 → ${nameOf(G,o.k.target)}：${o.why}，无效。`));
+  pv.savedByGuard.forEach(k=>eLogGod(G,`守护抵消指向 ${nameOf(G,k.target)} 的${k.src}刀（名额已占用）。`));
+  const deaths=pv.eff.slice();
+  /* 水妖① */
+  if(!n1Mute(G) && n.nixiePick!=="none" && n.nixiePick!=null){
+    const tid=+n.nixiePick;
+    const hit=deaths.find(k=>k.target===tid);
+    const savedHit=pv.savedByGuard.find(k=>k.target===tid);
+    if(cfg.nixieNightType==="instant"){
+      if(hit && G.nixie.night>0){
+        deaths.splice(deaths.indexOf(hit),1); G.nixie.night--; eUse(G,"水妖夜救");
+        eLogGod(G,`水妖即时救护 ${nameOf(G,tid)} —— 当夜不死，不入死亡名单。`);
+      } else if(hit){ eLogGod(G,"水妖夜间救护次数不足，未生效。"); }
+      else { eLogGod(G,`水妖救护目标 ${nameOf(G,tid)} 不在有效死亡候选中，次数不消耗。`); }
+    }else{
+      if(hit && G.nixie.night>0){
+        G.nixie.night--; eUse(G,"水妖夜救");
+        G.pendingReturns.push({id:tid, reason:"nixie"});
+        eLogGod(G,`水妖延迟复活 ${nameOf(G,tid)} —— 仍入死亡名单，次日白天回归。`);
+      } else if(hit){ eLogGod(G,"水妖夜间复活次数不足，未生效。"); }
+      else { eLogGod(G,"水妖复活目标不在有效死亡候选中，次数不消耗。"); }
+    }
+    if(savedHit) eLogGod(G,`（${nameOf(G,tid)} 已被守护抵消，本未会死。）`);
+  }
+  /* 查验（提交即生效） */
+  const mit=G.players.find(p=>p.baseRole==="米提亚");
+  const ora=G.players.find(p=>p.baseRole==="降临者");
+  if(!n1Mute(G) && mit && mit.alive){
+    const cs=(n.mitiaChecks||[]).filter(c=>c!=null);
+    if(cs.length){
+      eUse(G,"米提亚查验");
+      const dual=(cfg.version!=="4.2") && cs.length>=2 && cs[0]!==cs[1];
+      const isPos=id=>{ const r=G.players[id].role; return r==="魂灵"||r==="夜祷"; };
+      if(dual){
+        const poses=cs.filter(isPos);
+        if(poses.length) eLogGod(G,`米提亚双查 [${cs.map(id=>nameOf(G,id)).join("、")}] → 「魂灵在它们之中」（含 ${poses.map(id=>nameOf(G,id)).join("、")}）。`);
+        else eLogGod(G,`米提亚双查 [${cs.map(id=>nameOf(G,id)).join("、")}] → 「都是生者」。`);
+      }else{
+        const id=cs[0];
+        eLogGod(G,`米提亚查验 ${nameOf(G,id)} → ${isPos(id)?"阳性（魂灵/夜祷）":"阴性"}。`);
+      }
+    }
+  }
+  if(!n1Mute(G) && ora && ora.alive && n.oracleCheck!=null){
+    eUse(G,"降临者查验");
+    const t=G.players[n.oracleCheck];
+    eLogGod(G,`降临者查验 ${t.name} → ${t.role==="死神"?"阳性（死神）":"阴性"}`);
+  }
+  /* 死亡标记 */
+  const nixieDies = deaths.some(k=>G.players[k.target].baseRole==="水妖");
+  /* V4.4 代出局：门先生进入有效死亡候选（可被水妖①救护），不占死亡上限 */
+  if(pv.subst && !G.over){
+    const gd=G.players.find(p=>p.baseRole==="门先生"&&p.alive);
+    if(gd) deaths.push({src:"门先生代出局", srcId:gd.id, target:gd.id, pri:9, pierce:false});
+  }
+  G.lastNightDeaths=[];
+  for(const k of deaths){
+    const p=G.players[k.target];
+    if(!p.alive) continue;
+    p.alive=false; p.deathCause="night";
+    G.lastNightDeaths.push({id:p.id, by:k.src});
+    eLog(G,`${p.name} 在夜里死去（${k.src}刀）。`,"log-death",false);
+    if(p.role==="死神"){
+      if((k.src==="莱莱可"||k.src==="降临者飞刀") && soulsAllOut(G)){
+        eUse(G,k.src==="降临者飞刀"?"B3 飞刀终局":"B2 刺杀终局");
+        humanWin(G,k.src==="降临者飞刀"?"B3 · 降临者飞刀在双魂灵出局后终结死神。":"B2 · 莱莱可在双魂灵出局后永久刺杀死神。");
+      }else{
+        G.pendingReturns.push({id:p.id, reason:"reaper"});
+        eLogGod(G,"死神将于次日白天回归（非永久击杀）。");
+      }
+    }
+    if(p.baseRole==="魂灵"){
+      /* 严格口径：与水妖同夜阵亡且其③可用 → A 计数延迟落定（可被③救回） */
+      if(nixieDies && G.nixie.passive>0 && !G.pendingReturns.some(r=>r.id===p.id)){
+        G.pendingA.push(p.id);
+        eLogGod(G,`魂灵 ${p.name} 阵亡，但水妖同夜出局——其 A 计数暂不落定（水妖③可救）。`);
+      }else if(!G.pendingReturns.some(r=>r.id===p.id)){
+        p.soulOut=true;
+        eLogGod(G,`魂灵 ${p.name} 永久出局（条件 A：${soulOutCount(G)}/${G.soulTotal}）。`);
+      }
+    }
+    if(p.role==="夜祷"){ eLogGod(G,`夜祷 ${p.name} 永久死亡，无法回归。`); }
+    if(G.leader===p.id) G.leader=null;
+  }
+  if(nixieDies && G.nixie.passive>0 && !G.over){ G.nixiePassivePending=true; }
+  if(G.oracleKnifeGranted && !G.oracleKnifeUsed && n.oracleKnife!=null) G.oracleKnifeUsed=true;
+  if(cfg.thresholdTiming==="instant") checkWolfWin(G);
+  n.guard.forEach(id=>{ G.players[id].guardedOn=G.nightNum; });
+}
+
+/* ③ 被动复活裁决 + pendingA 落定 + 夜祷转化（复活优先） */
+function finalizeNight(G, passivePick){
+  const cfg=G.cfg, n=G.night;
+  if(G.nixiePassivePending){
+    G.nixiePassivePending=false;
+    let revived=null;
+    if(passivePick!=null){
+      const t=G.players[passivePick];
+      const ok = !t.alive && t.role!=="夜祷" && !(t.selfDestructed&&t.baseRole==="魂灵") && !t.soulOut
+                 && !G.pendingReturns.some(r=>r.id===t.id) && G.nixie.passive>0;
+      if(ok){
+        G.nixie.passive--; eUse(G,"水妖被动复活");
+        G.pendingReturns.push({id:t.id, reason:"nixie"});
+        const ai=G.pendingA.indexOf(t.id);
+        if(ai>=0){ G.pendingA.splice(ai,1); eLogGod(G,`水妖③救回同夜阵亡的魂灵 ${t.name} —— 其 A 计数不成立。`); }
+        else eLogGod(G,`水妖③被动复活：${t.name} 将于次日白天回归。`);
+        revived=t.id;
+      }else{
+        eLogGod(G,"水妖③目标无效（已永久出局/夜祷/自爆魂灵/已待回归），次数不消耗。");
+      }
+    }
+    /* 未被救回的同夜魂灵 → A 计数落定 */
+    G.pendingA.forEach(id=>{
+      const p=G.players[id];
+      if(!p.alive && !p.soulOut){ p.soulOut=true; eLogGod(G,`魂灵 ${p.name} 永久出局（条件 A：${soulOutCount(G)}/${G.soulTotal}）。`); }
+    });
+    G.pendingA=[];
+  }
+  /* 夜祷转化（目标 = 已死亡角色，除夜祷/死神；复活优先于转化） */
+  if(cfg.prayerEnabled && !n1Mute(G) && n && n.convertTarget!=null && !G.convertUsed){
+    const t=G.players[n.convertTarget];
+    if(t.alive){ eLogGod(G,`转化目标 ${t.name} 并未死亡，转化无效（不消耗次数）。`); }
+    else if(t.role==="死神"||t.role==="夜祷"){ eLogGod(G,"该目标不可被转化为夜祷（不消耗次数）。"); }
+    else if(G.pendingReturns.some(r=>r.id===t.id)){ eLogGod(G,"复活优先于转化：该角色已在回归名单，转化无效（不消耗次数）。"); }
+    else{
+      const wasSoul=t.baseRole==="魂灵";
+      t.role="夜祷"; G.convertUsed=true; eUse(G,"夜祷转化");
+      G.pendingReturns.push({id:t.id, reason:"prayer"});
+      eLogGod(G,`死神将 ${t.name} 转化为夜祷，次日随回归名单归来。${wasSoul?"（原魂灵仍计入条件 A，不影响其计数）":""}`);
+    }
+  }
+  if(cfg.thresholdTiming==="instant") checkWolfWin(G);
+}
+
+function processReturns(G){
+  G.lastReturns=[];
+  for(const r of G.pendingReturns){
+    const p=G.players[r.id];
+    p.alive=true; p.deathCause=null;
+    G.lastReturns.push({id:p.id, reason:r.reason});
+  }
+  G.pendingReturns=[];
+  if(G.lastReturns.length){
+    eLog(G,`回归名单：${G.lastReturns.map(r=>nameOf(G,r.id)).join("、")} 回归游戏。`,"log-warn");
+    G.lastReturns.forEach(r=>{
+      const why=r.reason==="reaper"?"死神回归":(r.reason==="prayer"?"夜祷转化归来":"水妖复活");
+      eLogGod(G,`${nameOf(G,r.id)} 回归原因：${why}。`);
+    });
+  }else eLog(G,"今日无人回归。","log-sys");
+}
+
+/* ---------------- 白天 ---------------- */
+function tallyVotes(G,votes,weight){
+  const cnt={};
+  for(const [v,t] of Object.entries(votes)){
+    if(t==null||t==="") continue;
+    const w=(G.leader===+v)?weight:1;
+    cnt[t]=(cnt[t]||0)+w;
+  }
+  let max=-1, top=[];
+  for(const [t,c] of Object.entries(cnt)){ if(c>max){max=c; top=[+t];} else if(c===max) top.push(+t); }
+  return {cnt, max, top: top.length===1?top[0]:null, tied: top.length>1?top:[]};
+}
+
+function exilePlayer(G,pid){
+  const p=G.players[pid];
+  if(!p||!p.alive) return;
+  p.alive=false; p.deathCause="exile"; G.stats.exiles++; eUse(G,"放逐");
+  eLog(G,`${p.name} 被投票放逐，留下遗言后出局。`,"log-death");
+  eLogGod(G,`${p.name} 真实身份：${p.role}。`);
+  if(p.role==="死神"){
+    if(soulsAllOut(G)){
+      eUse(G,"B1 终局放逐");
+      humanWin(G,"B1 · 终局指认：放逐票落于真实死神，死神不再回归。");
+      return;
+    }
+    G.pendingReturns.push({id:p.id, reason:"reaper"});
+    eLogGod(G,"死神被放逐，将于次日白天回归。");
+  }
+  if(p.baseRole==="魂灵"&&!p.soulOut){
+    p.soulOut=true;
+    eLogGod(G,`放逐魂灵永久出局（条件 A：${soulOutCount(G)}/${G.soulTotal}）。`);
+  }
+  if(p.role==="夜祷") eLogGod(G,"夜祷被放逐，永久死亡。");
+  if(p.role==="水妖"&&G.nixie.passive>0){ G.nixiePassivePending=true; }
+  const nix=aliveRole(G,"水妖");
+  if(nix&&G.nixie.exile>0) G.exileRevivePending=true;
+  if(G.leader===p.id) G.leader=null;
+  if(G.cfg.thresholdTiming==="instant") checkWolfWin(G);
+}
+
+function applyNixieExileRevive(G,targetId){
+  G.exileRevivePending=false;
+  if(targetId==null){ eLogGod(G,"水妖不使用放逐复活。"); return; }
+  const t=G.players[targetId];
+  const ok = t && !t.alive && t.deathCause==="exile" && t.role!=="夜祷"
+             && !(t.selfDestructed&&t.baseRole==="魂灵") && !t.soulOut && G.nixie.exile>0;
+  if(!ok){ eLogGod(G,"放逐复活目标无效（已永久出局/夜祷），次数不消耗。"); return; }
+  G.nixie.exile--; eUse(G,"水妖放逐复活");
+  G.pendingReturns.push({id:t.id, reason:"nixie"});
+  eLogGod(G,`水妖②放逐复活：${t.name} 将于次日白天回归。`);
+}
+
+function applyNixiePassiveDay(G,targetId){
+  /* 白天路径（水妖被放逐时触发）：与 finalizeNight 的③共用逻辑 */
+  G.nixiePassivePending=false;
+  if(targetId!=null){
+    const t=G.players[targetId];
+    const ok = t && !t.alive && t.role!=="夜祷" && !(t.selfDestructed&&t.baseRole==="魂灵")
+               && !t.soulOut && !G.pendingReturns.some(r=>r.id===t.id) && G.nixie.passive>0;
+    if(ok){
+      G.nixie.passive--; eUse(G,"水妖被动复活");
+      G.pendingReturns.push({id:t.id, reason:"nixie"});
+      eLogGod(G,`水妖③被动复活：${t.name} 将于次日白天回归。`);
+      return;
+    }
+  }
+  eLogGod(G,"水妖③未生效或放弃（无效目标不消耗次数）。");
+}
+
+function selfDestruct(G,pid){
+  const p=G.players[pid];
+  if(!p||!p.alive||p.selfDestructUsed) return false;
+  if(p.baseRole==="魂灵"&&G.cfg.soulSD){
+    p.selfDestructUsed=true; p.selfDestructed=true; p.revealed=true;
+    p.alive=false; p.deathCause="sd"; p.soulOut=true; eUse(G,"魂灵自爆");
+    eLog(G,`💥 ${p.name} 翻牌自爆 —— 身份：魂灵！立即永久出局（计入条件 A ${soulOutCount(G)}/${G.soulTotal}），无遗言，当日剩余流程作废，直接进入黑夜。`,"log-death");
+    if(G.leader===p.id) G.leader=null;
+    return true;
+  }
+  if(p.baseRole==="莱莱可"&&G.cfg.assassinSD){
+    p.selfDestructUsed=true; p.knifeGone=true; p.revealed=true; eUse(G,"莱莱可自爆");
+    eLog(G,`✨ ${p.name} 翻牌自爆 —— 身份：莱莱可！弃刀不出局，B2 永久关闭，当日剩余流程作废，直接进入黑夜。`,"log-warn");
+    return true;
+  }
+  return false;
+}
+
+function oracleIdentify(G,pid){
+  const ora=G.players.find(p=>p.baseRole==="降临者");
+  if(!ora||!ora.alive) return {ok:false,msg:"降临者已出局，失去指认能力。"};
+  if(G.oracleIdentifyUsedEver) return {ok:false,msg:"指认已成功过，降临者已改持飞刀。"};
+  if(G.oracleUsedToday) return {ok:false,msg:"本白昼已使用过指认。"};
+  if(pid==null) return {ok:false,msg:"请先选择指认目标。"};
+  const t=G.players[pid];
+  if(!t.alive) return {ok:false,msg:"指认目标须为当日已回归且存活的玩家。"};
+  eUse(G,"降临者指认");
+  G.oracleUsedToday=true;
+  if(t.role==="死神"){
+    G.oracleIdentifyUsedEver=true; G.oracleKnifeGranted=true;
+    t.alive=false; t.deathCause="oracle"; t.revealed=true;
+    G.pendingReturns.push({id:t.id, reason:"reaper"});
+    if(G.leader===t.id) G.leader=null;
+    eLog(G,`🔮 ${ora.name} 指认死神成功！${t.name} 当场曝光、被迫自爆出局——当日放逐投票作废，立即进入黑夜。`,"log-warn");
+    eLogGod(G,"死神被指认曝光，次日白天回归；降临者永久失去指认，获得一次性最高优先飞刀。");
+    return {ok:true,hit:true};
+  }
+  eLog(G,`🔮 ${ora.name} 指认 ${t.name} …… 目标并非死神，本次机会作废。`,"log-warn");
+  eLogGod(G,`降临者指认失败：${t.name} 非死神（真实身份：${t.role}）。`);
+  return {ok:true,hit:false};
+}
+
+/* ---------------- 好人/死亡方 AI（随机 + 信息驱动口径） ---------------- */
+function aiNightFill(G){
+  const n=G.night, cfg=G.cfg, alive=aliveP(G);
+  const humans=alive.filter(p=>factionOf(p)==="human");
+  const mute=n1Mute(G);
+  if(!mute && aliveRole(G,"门先生") && cfg.guardCount>0){
+    const gd=aliveRole(G,"门先生");
+    const pool=alive.filter(p=>p.id!==gd.id&&p.guardedOn!==G.nightNum-1);
+    const list=pool.slice();
+    n.guard=[];
+    for(let i=0;i<Math.min(cfg.guardCount,list.length);i++){ const t=rnd(list); n.guard.push(t.id); list.splice(list.indexOf(t),1); }
+  }else n.guard=[];
+  G.players.filter(p=>p.alive&&p.baseRole==="魂灵").forEach(s=>{ n.soulKnives[s.id]=humans.length?rnd(humans).id:null; });
+  const rea=aliveRole(G,"死神");
+  n.reaperKnives=[];
+  if(rea){
+    /* 规则口径：死神可提交至多 deathCap 刀，溢出由优先级引擎裁决 */
+    const slots=Math.min(cfg.deathCap, Math.max(0,alive.length-1));
+    for(let i=0;i<slots;i++) n.reaperKnives.push(humans.length?rnd(humans).id:null);
+    if(cfg.prayerEnabled&&!G.convertUsed){
+      const dead=G.players.filter(p=>!p.alive&&p.role!=="死神"&&p.role!=="夜祷"&&!G.pendingReturns.some(r=>r.id===p.id));
+      if(dead.length&&Math.random()<0.7) n.convertTarget=rnd(dead).id;
+    }
+  }
+  const pr=G.players.find(p=>p.role==="夜祷"&&p.alive);
+  n.prayerKnife=(pr&&humans.length)?rnd(humans).id:null;
+  const lai=aliveRole(G,"莱莱可");
+  n.assassinKnife=null;
+  if(lai&&!lai.knifeGone&&!(G.nightNum===1&&cfg.assassinN1Block)){
+    const pool=alive.filter(p=>p.id!==lai.id);
+    if(pool.length) n.assassinKnife=rnd(pool).id;
+  }
+  const ora2=G.players.find(p=>p.baseRole==="降临者");
+  n.oracleKnife=null;
+  if(G.oracleKnifeGranted&&!G.oracleKnifeUsed&&ora2&&ora2.alive){
+    const pool=alive.filter(p=>p.id!==ora2.id);
+    if(pool.length) n.oracleKnife=rnd(pool).id;
+  }
+  const nix=aliveRole(G,"水妖");
+  n.nixiePick="none";
+  if(!mute&&nix&&G.nixie.night>0){
+    const pv=previewDeaths(G);
+    if(pv.eff.length&&Math.random()<0.8) n.nixiePick=String(rnd(pv.eff).target);
+  }
+  const mit=G.players.find(p=>p.baseRole==="米提亚");
+  if(!mute&&mit&&mit.alive){
+    n.mitiaChecks=(cfg.version!=="4.2")?[rnd(alive).id,rnd(alive).id]:[rnd(alive.filter(p=>p.id!==mit.id)).id,null];
+  }else n.mitiaChecks=[null,null];
+  if(!mute&&ora2&&ora2.alive){
+    const pool=alive.filter(p=>p.id!==ora2.id);
+    n.oracleCheck=pool.length?rnd(pool).id:null;
+  }else n.oracleCheck=null;
+  return n;
+}
+
+function aiVotes(G){
+  const G2=G, alive=aliveP(G2), cfg=G2.cfg;
+  const humans=alive.filter(p=>factionOf(p)==="human");
+  const votes={};
+  alive.forEach(p=>{
+    let pool=factionOf(p)==="death" ? humans : alive.filter(q=>q.id!==p.id);
+    if(factionOf(p)==="human" && cfg.infoModel){
+      const mc=(G2.night&&G2.night.mitiaChecks)||[];
+      const known=mc.filter(id=>id!=null&&G2.players[id].alive&&factionOf(G2.players[id])==="death").map(id=>G2.players[id]);
+      const mitia=aliveRole(G2,"米提亚");
+      const oc=(G2.night&&G2.night.oracleCheck);
+      const oracleHit=oc!=null&&G2.players[oc].role==="死神"&&G2.players[oc].alive;
+      if(known.length&&mitia&&G2.leader===mitia.id&&Math.random()<.99) pool=known;
+      else if(known.length&&Math.random()<.72) pool=known;
+      else if(oracleHit&&Math.random()<.85) pool=[G2.players[oc]];
+    }
+    if(!pool.length) pool=alive.filter(q=>q.id!==p.id);
+    votes[p.id]=pool.length?rnd(pool).id:null;
+  });
+  return votes;
+}
+
+function aiLeaderPick(G){
+  const alive=aliveP(G);
+  if(!alive.length) return null;
+  if(G.cfg.infoModel){
+    const mitia=aliveRole(G,"米提亚");
+    if(mitia&&Math.random()<(.4+Math.random()*.2)) return mitia.id;
+  }
+  return rnd(alive).id;
+}
+
+function aiPassivePick(G){
+  const cands=G.players.filter(p=>!p.alive&&p.role!=="夜祷"&&!(p.selfDestructed&&p.baseRole==="魂灵")
+    &&!p.soulOut&&!G.pendingReturns.some(r=>r.id===p.id));
+  if(cands.length&&Math.random()<0.8) return rnd(cands).id;
+  return null;
+}
+
+/* ---------------- 自动对局（批量推演） ---------------- */
+function autoOneGame(cfg){
+  const G=createGame(cfg);
+  let guard=0;
+  while(!G.over&&guard++<80){
+    /* ---- 夜晚 ---- */
+    G.nightNum++; G.phase="night"; G.night=blankNight();
+    aiNightFill(G);
+    resolveNight(G);
+    if(G.over) break;
+    finalizeNight(G, G.nixiePassivePending?aiPassivePick(G):null);
+    if(G.over) break;
+    /* ---- 白天 ---- */
+    G.phase="day";
+    processReturns(G);
+    checkWolfWin(G);
+    if(G.over) break;
+    if(!G.electionDone||!G.leader){
+      const pick=aiLeaderPick(G);
+      if(pick!=null){ G.leader=pick; eUse(G,"领袖当选"); }
+      G.electionDone=true;
+    }
+    const r=tallyVotes(G,aiVotes(G),cfg.leaderWeight);
+    if(r.top!=null){
+      exilePlayer(G,r.top);
+      if(G.over) break;
+      if(G.exileRevivePending){
+        const cands=G.players.filter(p=>!p.alive&&p.deathCause==="exile"&&p.role!=="夜祷"
+          &&!(p.selfDestructed&&p.baseRole==="魂灵")&&!p.soulOut);
+        applyNixieExileRevive(G, cands.length&&Math.random()<0.7?rnd(cands).id:null);
+      }
+      if(G.nixiePassivePending) applyNixiePassiveDay(G, aiPassivePick(G));
+    }
+  }
+  if(!G.over) wolfWin(G,"超过 80 昼夜未分胜负，判死亡阵营胜（僵局）。");
+  return G;
+}
+/*ENGINE-END*/
+
+/* ================================================================
+ * UI 层
+ * ================================================================ */
+const App={G:null, logFilter:"all"};
+const $=id=>document.getElementById(id);
+const PHASE_NAMES={
+  night_guard:"夜 · 守护", night_wolf:"夜 · 死亡阵营", night_assassin:"夜 · 莱莱可",
+  night_prayer:"夜 · 夜祷", night_nixie:"夜 · 水妖救护", night_check:"夜 · 查验", night_settle:"夜 · 结算",
+  day_leader:"昼 · 领袖票选", day_discuss:"昼 · 讨论", day_vote:"昼 · 放逐投票", day_after:"昼 · 幕间",
+};
+const NIGHT_SEQ=["night_guard","night_wolf","night_assassin","night_prayer","night_nixie","night_check","night_settle"];
+const DAY_SEQ=["day_leader","day_discuss","day_vote","day_after"];
+const ROLE_IMG={"莱莱可":"莱莱可.jpg","米提亚":"米提亚.jpg","降临者":"降临者.jpg","水妖":"水妖.jpg","魂灵":"魂灵之一_塔罗完善版.jpg"};
+const ROLE_GLYPH={"门先生":"門","死神":"殁","普通人":"民","夜祷":"禱"};
+
+function rolePortrait(role,cls){
+  const img=ROLE_IMG[role];
+  if(img) return `<span class="por ${cls||""}"><img src="${img}" alt="${role}"></span>`;
+  return `<span class="por glyph ${cls||""} ${DEATH_ROLES.includes(role)?"death":""}">${ROLE_GLYPH[role]||role[0]}</span>`;
+}
+
+const UI={
+  cfg:makeCfg(PRESETS[0].patch),
+  presetKey:"v431",
+  show(name){
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    $("scr-"+name).classList.add("active");
+    document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.scr===name));
+    if(name==="stats") UI.renderStats();
+  },
+
+  /* ---------- 配置 ---------- */
+  renderSetup(){
+    $("presetRow").innerHTML=PRESETS.map(p=>`
+      <div class="preset ${UI.presetKey===p.key?"on":""}" onclick="UI.pickPreset('${p.key}')">
+        <b>${p.name}</b><small>${p.desc}</small>
+      </div>`).join("");
+    const roles=["魂灵","死神","莱莱可","门先生","米提亚","降临者","水妖","普通人"];
+    $("roleGrid").innerHTML=roles.map(r=>{
+      const death=DEATH_ROLES.includes(r);
+      return `<div class="role-card">
+        ${rolePortrait(r,death?"death":"")}
+        <div class="meta"><b>${r}</b><span class="fr2">${death?"Camp des Morts":"Camp des Vivants"}</span>
+          <div class="stepper">
+            <button onclick="UI.bumpRole('${r}',-1)">−</button>
+            <span class="num" id="rc_${r}">${UI.cfg.roleCounts[r]||0}</span>
+            <button onclick="UI.bumpRole('${r}',1)">＋</button>
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+    const T=[
+      ["deathCap","全局死亡上限 / 夜","每夜所有击杀共享（规则书 §4）",[1,2,3]],
+      ["leaderWeight","领袖放逐票权","得票最高者任领袖；出局当日补选",[1,1.5,2]],
+      ["thresholdTiming","屠城判定时机","黎明＝回归名单宣布后判定（规则书§6）；即时＝任一死亡事件后立即判定",["dawn","instant"]],
+      ["nixieNightType","水妖① 夜间救护","即时＝当夜不死不入名单；延迟＝仍入名单次日回归",["instant","delayed"]],
+      ["winMode","胜利模式","屠城阈值 / 屠边（V4.2 怀旧）",["threshold","tubian"]],
+      ["prayerPierce","夜祷刀穿透守护","规则书：穿透、最高优先（V4.3+）",[true,false]],
+      ["assassinN1Block","首夜禁刺客刀","莱莱可 N1 不可行动（规则书）",[true,false]],
+      ["soulSD","魂灵自爆","翻牌永久出局、计入 A、当日作废",[true,false]],
+      ["assassinSD","莱莱可自爆","翻牌弃刀不出局、关闭 B2",[true,false]],
+      ["guardSubst","V4.4 门先生代出局","双守目标同夜均被守护抵消 → 门先生代死",["4.4"]],
+      ["n1DeathOnly","V4.4 首夜仅死亡方行动（已废弃）","N1 无守护/刺客/救护/查验；9/2 实测 −7pp 已废弃，仅留作对照实验",["4.4"]],
+      ["infoModel","好人 AI 信息驱动","推演用：40–60% 推米提亚、阳性集中投票",["batch"]],
+    ];
+    $("toggleGrid").innerHTML=T.map(([k,name,desc,opts])=>{
+      let ctrl="";
+      const v=UI.cfg[k];
+      if(Array.isArray(opts)&&opts.every(o=>typeof o==="boolean")) ctrl=`<select onchange="UI.setCfg('${k}',this.value==='true')"><option value="true" ${v?"selected":""}>开启</option><option value="false" ${v?"":"selected"}>关闭</option></select>`;
+      else if(k==="deathCap") ctrl=`<select onchange="UI.setCfg('${k}',+this.value)">${opts.map(o=>`<option value="${o}" ${v===o?"selected":""}>${o} 人</option>`).join("")}</select>`;
+      else if(k==="leaderWeight") ctrl=`<select onchange="UI.setCfg('${k}',+this.value)">${opts.map(o=>`<option value="${o}" ${v===o?"selected":""}>${o} 票</option>`).join("")}</select>`;
+      else if(k==="thresholdTiming") ctrl=`<select onchange="UI.setCfg('${k}',this.value)"><option value="dawn" ${v==="dawn"?"selected":""}>黎明判定（规则书）</option><option value="instant" ${v==="instant"?"selected":""}>即时判定（变体）</option></select>`;
+      else if(k==="nixieNightType") ctrl=`<select onchange="UI.setCfg('${k}',this.value)"><option value="instant" ${v==="instant"?"selected":""}>即时救护</option><option value="delayed" ${v==="delayed"?"selected":""}>延迟复活</option></select>`;
+      else if(k==="winMode") ctrl=`<select onchange="UI.setCfg('${k}',this.value)"><option value="threshold" ${v==="threshold"?"selected":""}>屠城阈值</option><option value="tubian" ${v==="tubian"?"selected":""}>屠边</option></select>`;
+      else if(k==="guardSubst") ctrl=`<select onchange="UI.setCfg('${k}',this.value==='4.4')" ${UI.cfg.version!=="4.4"?"disabled":""}><option value="true" ${v?"selected":""}>开启</option><option value="false" ${v?"":"selected"}>关闭</option></select> ${UI.cfg.version!=="4.4"?'<small style="color:var(--ink-faint)">仅 V4.4</small>':""}`;
+      else if(k==="n1DeathOnly") ctrl=`<select onchange="UI.setCfg('${k}',this.value==='4.4')" ${UI.cfg.version!=="4.4"?"disabled":""}><option value="true" ${v?"selected":""}>开启</option><option value="false" ${v?"":"selected"}>关闭</option></select> ${UI.cfg.version!=="4.4"?'<small style="color:var(--ink-faint)">仅 V4.4</small>':""}`;
+      else if(k==="infoModel") ctrl=`<select onchange="UI.setCfg('${k}',this.value==='true')"><option value="true" ${v?"selected":""}>开启</option><option value="false" ${v?"":"selected"}>关闭</option></select>`;
+      return `<div class="tg"><label>${name}<small>${desc}</small></label>${ctrl}</div>`;
+    }).join("");
+    const total=Object.values(UI.cfg.roleCounts).reduce((a,b)=>a+b,0);
+    const souls=UI.cfg.roleCounts["魂灵"]||0;
+    const ok=total>=5&&souls>=1;
+    $("setupHint").innerHTML= ok
+      ? `总人数 <b style="color:var(--gold2)">${total}</b>（人 ${total-DEATH_ROLES.reduce((a,r)=>a+(UI.cfg.roleCounts[r]||0),0)} / 死 ${DEATH_ROLES.reduce((a,r)=>a+(UI.cfg.roleCounts[r]||0),0)}）· 阈值线：人类 ≤ 死亡阵营即城陷`
+      : `<span style="color:#e893a4">⚠ 至少需要 5 名玩家且至少 1 名魂灵。</span>`;
+  },
+  pickPreset(key){
+    const p=PRESETS.find(x=>x.key===key);
+    UI.presetKey=key; UI.cfg=makeCfg(p.patch);
+    UI.renderSetup();
+  },
+  bumpRole(r,d){
+    UI.cfg.roleCounts[r]=Math.max(0,(UI.cfg.roleCounts[r]||0)+d);
+    UI.renderSetup();
+  },
+  setCfg(k,v){
+    if(k==="guardSubst"||k==="n1DeathOnly"){ if(UI.cfg.version==="4.4") UI.cfg[k]=v; }
+    else UI.cfg[k]=v;
+    UI.renderSetup();
+  },
+
+  /* ---------- 对局流程 ---------- */
+  startGame(){
+    const total=Object.values(UI.cfg.roleCounts).reduce((a,b)=>a+b,0);
+    if(total<5||(UI.cfg.roleCounts["魂灵"]||0)<1){ alert("至少需要 5 名玩家且至少 1 名魂灵。"); return; }
+    App.G=createGame(UI.cfg);
+    App.logFilter="all"; $("logFilterBtn").textContent="筛选：全部";
+    $("navGame").disabled=false;
+    UI.show("game");
+    eLog(App.G,"—— 开演。卡司就位，第 1 夜即将降临 ——","log-warn");
+    UI.startNight();
+  },
+  startNight(){
+    const G=App.G;
+    G.nightNum++; G.phase="night_guard"; G.night=blankNight();
+    eLog(G,`—— 第 ${G.nightNum} 夜（N${G.nightNum}）降临 ——`,"log-sys");
+    UI.renderAll();
+  },
+  startDay(){
+    const G=App.G;
+    G.oracleUsedToday=false;
+    eLog(G,`—— 第 ${G.nightNum} 天（D${G.nightNum}）白昼 ——`,"log-sys");
+    eLog(G,G.lastNightDeaths.length?`昨夜死亡名单：${G.lastNightDeaths.map(d=>nameOf(G,d.id)).join("、")}。`:"昨夜平安夜，无人死亡。",G.lastNightDeaths.length?"log-death":"log-good");
+    processReturns(G);
+    checkWolfWin(G);
+    if(G.over) return UI.endGame();
+    G.phase=(!G.electionDone||!G.leader)?"day_leader":"day_discuss";
+    UI.renderAll();
+  },
+  nextPhase(){
+    const G=App.G;
+    if(!G||G.over) return;
+    if(G.phase==="night_settle"||G.phase==="day_after") return;
+    const seq=G.phase.startsWith("night")?NIGHT_SEQ:DAY_SEQ;
+    let i=seq.indexOf(G.phase);
+    while(i<seq.length-1){
+      i++;
+      const ph=seq[i];
+      if(ph==="night_prayer"&&(!G.cfg.prayerEnabled||!G.players.some(p=>p.role==="夜祷"&&p.alive))) continue;
+      if(ph==="day_leader"&&G.electionDone&&G.leader!=null) continue;
+      G.phase=ph; break;
+    }
+    if(G.phase.startsWith("night")&&G.phase!=="night_settle"&&seq.indexOf(G.phase)===seq.length-1) G.phase="night_settle";
+    UI.renderAll();
+  },
+  doSettle(){
+    const G=App.G;
+    resolveNight(G);
+    if(G.over) return UI.endGame();
+    if(!G.nixiePassivePending) finalizeNight(G,null);
+    if(G.over) return UI.endGame();
+    UI.renderSettle();
+  },
+  confirmPassiveNight(pick){
+    finalizeNight(App.G,pick);
+    const G=App.G;
+    if(G.over) return UI.endGame();
+    UI.renderSettle();
+  },
+  enterDay(){ UI.startDay(); },
+  toNight(){ UI.startNight(); },
+
+  /* 自爆 */
+  doSD(pid){
+    const G=App.G, p=G.players[pid];
+    if(!confirm(`确认 ${p.name}（${p.baseRole}）自爆？当日流程作废并立即入夜。`)) return;
+    if(selfDestruct(G,pid)){ G.night=null; UI.startNight(); }
+    else UI.renderAll();
+  },
+  /* 降临者指认 */
+  doIdentify(){
+    const G=App.G;
+    const sel=$("oraPick");
+    const pid=sel&&sel.value!==""?+sel.value:null;
+    const r=oracleIdentify(G,pid);
+    if(!r.ok){ alert(r.msg); return; }
+    if(r.hit){ G.night=null; UI.startNight(); }
+    else UI.renderAll();
+  },
+  /* 水妖②③ */
+  confirmExileRevive(tid){ applyNixieExileRevive(App.G,tid); UI.renderAll(); },
+  confirmPassiveDay(tid){ applyNixiePassiveDay(App.G,tid); UI.renderAll(); },
+
+  /* 投票 */
+  runElection(){
+    const G=App.G, votes=UI.collectVotes();
+    const r=tallyVotes(G,votes,1);
+    eLog(G,"领袖票选："+aliveP(G).map(p=>`${p.name}→${votes[p.id]!=null?nameOf(G,votes[p.id]):"弃权"}`).join("，"),"log-sys",false);
+    let win=r.top;
+    if(win==null){
+      const tied=(r.tied.length?r.tied:aliveP(G).map(p=>p.id)).sort((a,b)=>G.players[a].seat-G.players[b].seat);
+      win=tied[0];
+      eLog(G,`平票，按座位顺序破平：${nameOf(G,win)} 当选。`,"log-warn");
+    }
+    G.leader=win; G.electionDone=true; eUse(G,"领袖当选");
+    eLog(G,`👑 ${nameOf(G,win)} 当选领袖（放逐票 ${G.cfg.leaderWeight} 票，定发言顺序）。`,"log-warn");
+    G.phase="day_discuss"; UI.renderAll();
+  },
+  runVote(){
+    const G=App.G, votes=UI.collectVotes();
+    const r=tallyVotes(G,votes,G.cfg.leaderWeight);
+    eLog(G,"放逐投票："+aliveP(G).map(p=>`${p.name}→${votes[p.id]!=null?nameOf(G,votes[p.id]):"弃权"}${G.leader===p.id&&votes[p.id]!=null?"("+G.cfg.leaderWeight+"票)":""}`).join("，"),"log-sys",false);
+    if(r.top==null){ eLog(G,"投票平票，本轮无人出局。","log-warn"); G.voteNote=`<div class="kill-preview">平票 —— 无人被放逐，游戏继续。</div>`; }
+    else{
+      eLog(G,`⚖ ${nameOf(G,r.top)} 得票最高，被放逐。`,"log-death");
+      G.voteNote=`<div class="kill-preview">唱票：${Object.entries(r.cnt).map(([t,c])=>`${nameOf(G,+t)} ${c}票`).join("、")}<br><b>${nameOf(G,r.top)} 被放逐。</b></div>`;
+      exilePlayer(G,r.top);
+      if(G.over) return UI.endGame();
+    }
+    G.phase="day_after"; UI.renderAll();
+  },
+  collectVotes(){
+    const G=App.G, votes={};
+    aliveP(G).forEach(p=>{ const e=$("vote_"+p.id); votes[p.id]=(e&&e.value!=="")?+e.value:null; });
+    return votes;
+  },
+  /* AI 代填 */
+  aiFillPhase(){
+    const G=App.G, n=G.night, alive=aliveP(G);
+    const cfg=G.cfg, mute=n1Mute(G);
+    const snapshot=JSON.parse(JSON.stringify(n));
+    aiNightFill(G);
+    /* 保留用户在其它阶段已提交的选择：仅覆盖当前阶段相关字段 */
+    const fieldsByPhase={
+      night_guard:["guard"], night_wolf:["soulKnives","reaperKnives","convertTarget"],
+      night_assassin:["assassinKnife","oracleKnife"], night_prayer:["prayerKnife"],
+      night_nixie:["nixiePick"], night_check:["mitiaChecks","oracleCheck"],
+    };
+    const fields=fieldsByPhase[G.phase]||[];
+    const merged=snapshot;
+    fields.forEach(f=>{ merged[f]=n[f]; });
+    G.night=merged;
+    UI.renderAll();
+  },
+  aiFillVotesUI(){
+    const G=App.G, votes=aiVotes(G);
+    aliveP(G).forEach(p=>{ const e=$("vote_"+p.id); if(e&&votes[p.id]!=null) e.value=String(votes[p.id]); });
+  },
+
+  /* ---------- 渲染 ---------- */
+  renderAll(){
+    const G=App.G; if(!G) return;
+    UI.renderStatus(G); UI.renderPlayers(G); UI.renderPhase(G); UI.renderLog();
+  },
+  renderStatus(G){
+    const al=aliveP(G);
+    const h=al.filter(p=>factionOf(p)==="human").length;
+    const d=al.length-h;
+    const tot=Math.max(1,h+d);
+    const isDay=(G.phase||"").startsWith("day");
+    const tickLeft=(d/tot*100);
+    const danger=h<=d+1;
+    $("statusStrip").innerHTML=`
+      <div class="st"><span class="k">${isDay?"ACTE":"ENTREACTE"} · 回合</span><span class="v"><b>${(isDay?"D":"N")+G.nightNum}</b></span></div>
+      <div class="st"><span class="k">阶段</span><span class="v">${PHASE_NAMES[G.phase]||G.phase}</span></div>
+      <div class="st"><span class="k">领袖</span><span class="v">${G.leader!=null?nameOf(G,G.leader):"—"}</span></div>
+      <div class="st"><span class="k">条件 A · 魂灵出局</span><span class="v ${soulOutCount(G)>=G.soulTotal?"":"warn"}"><b>${soulOutCount(G)}/${G.soulTotal}</b>${soulsAllOut(G)?"（A 达成）":""}</span></div>
+      <div class="st"><span class="k">水妖 · 夜/逐/被</span><span class="v">${G.nixie.night}/${G.nixie.exile}/${G.nixie.passive}</span></div>
+      <div class="st"><span class="k">夜祷转化</span><span class="v">${G.convertUsed?"已用":"可用"}</span></div>
+      <div class="st"><span class="k">降临者飞刀</span><span class="v">${G.oracleKnifeGranted?(G.oracleKnifeUsed?"已用":"可用"):"—"}</span></div>
+      <div class="threshold"><span class="k" style="font-size:10.5px;letter-spacing:.22em;color:var(--ink-faint);">屠城阈值 ${G.cfg.winMode==="tubian"?"（屠边模式）":h<=d?'<b style="color:#e893a4">⚠ 城已陷落</b>':`人 ${h} vs 死 ${d}`}</span>
+        <div class="bar"><div class="h-seg" style="width:${(h/tot*100)}%"></div><div class="d-seg" style="width:${(d/tot*100)}%"></div><div class="tick" style="left:${tickLeft}%"></div></div>
+      </div>`;
+  },
+  renderPlayers(G){
+    $("castCount").textContent=`存活 ${aliveP(G).length}/${G.players.length}`;
+    $("playerList").innerHTML=G.players.map(p=>{
+      const tags=[];
+      if(G.leader===p.id) tags.push(`<span class="ptag leader">👑 领袖</span>`);
+      if(G.night&&G.night.guard.includes(p.id)) tags.push(`<span class="ptag guard">🛡 守护中</span>`);
+      if(p.guardedOn===G.nightNum-1&&p.alive) tags.push(`<span class="ptag">昨夜被守</span>`);
+      if(G.pendingReturns.some(r=>r.id===p.id)) tags.push(`<span class="ptag ret">待回归</span>`);
+      if(G.pendingA.includes(p.id)) tags.push(`<span class="ptag ret">A 未落定</span>`);
+      if(!p.alive) tags.push(`<span class="ptag deadtag">${({night:"夜杀",exile:"放逐",sd:"自爆",oracle:"曝光"})[p.deathCause]||"出局"}</span>`);
+      if(p.revealed) tags.push(`<span class="ptag deadtag">已翻牌</span>`);
+      if(p.knifeGone) tags.push(`<span class="ptag">已弃刀</span>`);
+      if(p.role==="夜祷") tags.push(`<span class="ptag prayer">转化夜祷</span>`);
+      if(p.baseRole==="降临者"&&G.oracleKnifeGranted) tags.push(`<span class="ptag ${G.oracleKnifeUsed?"":"prayer"}">${G.oracleKnifeUsed?"飞刀已用":"🔮 飞刀可用"}</span>`);
+      const fac=factionOf(p);
+      return `<div class="pcard f-${fac} ${p.alive?"":"dead"}">
+        ${rolePortrait(p.role,fac==="death"?"death":"")}
+        <div class="pi">
+          <div class="r1"><span class="seat">№${p.seat}</span><span class="nm2">${p.name}</span><span class="rl ${fac==="death"?"death":""}">${p.role}</span></div>
+          ${p.baseRole!==p.role?`<div class="ptags"><span class="ptag">原身份：${p.baseRole}</span></div>`:""}
+          ${tags.length?`<div class="ptags">${tags.join("")}</div>`:""}
+        </div>
+      </div>`;
+    }).join("");
+  },
+  renderLog(){
+    const G=App.G; if(!G) return;
+    const items=G.log.filter(l=>App.logFilter==="all"||(App.logFilter==="pub"?l.pub:!l.pub));
+    const box=$("logBox");
+    box.innerHTML=items.map(l=>`<div class="log-item ${l.cls}"><span class="lt">${l.t}</span>${l.text}</div>`).join("");
+    box.scrollTop=box.scrollHeight;
+  },
+  toggleLogFilter(){
+    App.logFilter=App.logFilter==="all"?"pub":(App.logFilter==="pub"?"god":"all");
+    $("logFilterBtn").textContent="筛选："+({all:"全部",pub:"公开",god:"上帝"})[App.logFilter];
+    UI.renderLog();
+  },
+
+  voteTableHtml(){
+    const G=App.G, alive=aliveP(G);
+    return `<table class="vote-table">${alive.map(p=>`<tr>
+      <td class="vn">№${p.seat} ${p.name}${G.leader===p.id?" 👑":""}</td>
+      <td class="vr">${p.role}</td>
+      <td>投给 <select id="vote_${p.id}"><option value="">— 弃权 —</option>${alive.filter(q=>q.id!==p.id).map(q=>`<option value="${q.id}">${q.name}（${q.role}）</option>`).join("")}</select></td>
+    </tr>`).join("")}</table>`;
+  },
+  sdButtonsHtml(){
+    const G=App.G;
+    return G.players.filter(p=>p.alive&&!p.selfDestructUsed&&
+      ((p.baseRole==="魂灵"&&G.cfg.soulSD)||(p.baseRole==="莱莱可"&&G.cfg.assassinSD&&!p.knifeGone)))
+      .map(p=>p.baseRole==="魂灵"
+        ?`<button class="btn small danger" onclick="UI.doSD(${p.id})">💥 ${p.name} 魂灵自爆</button>`
+        :`<button class="btn small" onclick="UI.doSD(${p.id})">✨ ${p.name} 莱莱可自爆</button>`)
+      .join(" ");
+  },
+  identifyHtml(){
+    const G=App.G;
+    const ora=G.players.find(p=>p.baseRole==="降临者");
+    if(!ora||!ora.alive||G.cfg.version==="4.2"||G.oracleIdentifyUsedEver||G.oracleUsedToday) return "";
+    const alive=aliveP(G).filter(p=>p.id!==ora.id);
+    return `<div class="action-block"><div class="ab-t">${rolePortrait("降临者","mini")}<span class="who role-降临者">降临者 ${ora.name}</span> · 指认死神（每白昼 1 次）</div>
+      <div class="action-row">目标：<select id="oraPick"><option value="">-- 不指认 --</option>${alive.map(p=>`<option value="${p.id}">${p.name}（${p.role}）</option>`).join("")}</select>
+      <button class="btn small danger" onclick="UI.doIdentify()">🔮 指认</button></div>
+      <div class="hint">成功 → 死神曝光自爆、当日投票作废、立即入夜；降临者永久失去指认并获得一次性最高优先飞刀（穿透守护）。失败 → 本次作废，次日可再试。</div></div>`;
+  },
+  renderSettle(){
+    const G=App.G, body=$("phasePanel");
+    const deathList=G.lastNightDeaths.length?G.lastNightDeaths.map(d=>`${nameOf(G,d.id)}（${d.by}刀）`).join("、"):"无（平安夜）";
+    let h=`<div class="phase-title"><span class="nm">夜 · 结算完毕</span><span class="fr3">Rideau de nuit</span></div>
+      <div class="kill-preview">⚖ 今夜死亡：<b>${deathList}</b></div>`;
+    if(G.nixiePassivePending){
+      const cands=G.players.filter(p=>!p.alive&&p.role!=="夜祷"&&!(p.selfDestructed&&p.baseRole==="魂灵")
+        &&!p.soulOut&&!G.pendingReturns.some(r=>r.id===p.id));
+      h+=`<div class="action-block death-b"><div class="ab-t">${rolePortrait("水妖","mini")}<span class="who role-水妖">水妖出局</span> · ③ 被动复活（剩 ${G.nixie.passive} 次）</div>
+        <div class="action-row">${cands.map(p=>`<button class="btn small" onclick="UI.confirmPassiveNight(${p.id})">${p.name}（${p.role}${G.pendingA.includes(p.id)?" · A未落定":""}）</button>`).join("")||'<span class="hint">无可复活对象</span>'}
+        <button class="btn primary" onclick="UI.confirmPassiveNight(null)">放弃 / 继续 →</button></div>
+        <div class="hint">已永久出局（计入 A）的魂灵不可复活；本夜同结算阵亡的魂灵标记为「A 未落定」，救回则计数不成立。</div></div>`;
+    }else{
+      h+=`<div class="phase-btns"><button class="btn primary" onclick="UI.enterDay()">☀ 进入白天（D${G.nightNum}）→</button></div>`;
+    }
+    body.innerHTML=h; UI.renderLog(); UI.renderPlayers(G); UI.renderStatus(G);
+  },
+  renderPhase(G){
+    const body=$("phasePanel"), ph=G.phase, alive=aliveP(G), cfg=G.cfg;
+    const seq=ph.startsWith("night")?NIGHT_SEQ:DAY_SEQ;
+    const idx=seq.indexOf(ph);
+    const rail=`<div class="rail">`+seq.map((s,i)=>{
+      const cls=i<idx?"done":(i===idx?"cur":"");
+      return (i?'<span class="arr">›</span>':"")+`<span class="step ${cls}">${PHASE_NAMES[s].replace(/^夜 · |^昼 · /,"")}</span>`;
+    }).join("")+`</div>`;
+    const head=`<div class="phase-title"><span class="nm">${PHASE_NAMES[ph]}</span><span class="fr3">${ph.startsWith("night")?"Acte nocturne":"Acte du jour"} ${G.nightNum}</span></div>${rail}`;
+    let h=head;
+    const mute=n1Mute(G);
+    const nextBtns=ai=>`<div class="phase-btns"><button class="btn primary" onclick="UI.nextPhase()">下一阶段 →</button>${ai?`<button class="btn" onclick="UI.aiFillPhase()">🤖 AI 代填本阶段</button>`:""}</div>`;
+
+    if(ph==="night_guard"){
+      const gd=aliveRole(G,"门先生");
+      h+=`<div class="phase-desc">门先生守护 <b>${cfg.guardCount}</b> 人：<b>不可守自己</b>、<b>同一人不得连续两晚被守</b>。守护仅对非穿透刀生效，被抵消的刀<b>仍占用死亡名额</b>。${mute?'<br><b style="color:#e893a4">V4.4：首夜仅死亡方行动——本夜无守护。</b>':""}</div>`;
+      if(mute||!gd) h+=`<div class="hint">${mute?"首夜静默。":"门先生已出局，本夜无守护。"}</div>`;
+      else{
+        const cand=alive.filter(p=>p.id!==gd.id&&p.guardedOn!==G.nightNum-1);
+        h+=`<div class="action-block"><div class="ab-t">${rolePortrait("门先生","mini")}<span class="who role-门先生">门先生 ${gd.name}</span> · 选择守护</div>`;
+        for(let i=0;i<cfg.guardCount;i++)
+          h+=`<div class="action-row">守护 ${i+1}：<select onchange="App.G.night.guard[${i}]=this.value===''?undefined:+this.value;App.G.night.guard=[...new Set(App.G.night.guard.filter(v=>v!==undefined))]"><option value="">— 不守 —</option>${cand.map(p=>`<option value="${p.id}" ${G.night.guard[i]===p.id?"selected":""}>${p.name}（${p.role}）</option>`).join("")}</select></div>`;
+        h+=`</div>`;
+      }
+      h+=nextBtns(!mute&&!!gd);
+    }
+    else if(ph==="night_wolf"){
+      const souls=G.players.filter(p=>p.alive&&p.baseRole==="魂灵");
+      const rea=aliveRole(G,"死神");
+      h+=`<div class="phase-desc">魂灵各出 <b>1</b> 刀（存活 ${souls.length} 名）；死神可提交 <b>0~${cfg.deathCap}</b> 刀——多刀由<b>优先级引擎</b>裁决：同目标不重复计数、超出死亡上限（${cfg.deathCap}）即溢出无效。优先级：<b>夜祷 ＞ 魂灵① ＞ 莱莱可 ＞ 魂灵② ＞ 死神</b>。</div>`;
+      souls.forEach(s=>{
+        h+=`<div class="action-block death-b"><div class="ab-t">${rolePortrait("魂灵","mini")}<span class="who role-魂灵">魂灵 ${s.name}</span> · 出刀</div>
+          <div class="action-row">目标：<select onchange="App.G.night.soulKnives[${s.id}]=this.value===''?null:+this.value"><option value="">— 不出刀 —</option>${alive.filter(p=>p.id!==s.id).map(p=>`<option value="${p.id}" ${G.night.soulKnives[s.id]===p.id?"selected":""}>${p.name}（${p.role}）</option>`).join("")}</select></div></div>`;
+      });
+      if(rea){
+        h+=`<div class="action-block death-b"><div class="ab-t">${rolePortrait("死神","mini")}<span class="who role-死神">死神 ${rea.name}</span> · 出刀（0~${cfg.deathCap}，溢出自动作废）</div>`;
+        for(let i=0;i<cfg.deathCap;i++)
+          h+=`<div class="action-row">刀 ${i+1}：<select onchange="App.G.night.reaperKnives[${i}]=this.value===''?null:+this.value"><option value="">— 不出刀 —</option>${alive.filter(p=>p.id!==rea.id).map(p=>`<option value="${p.id}" ${G.night.reaperKnives[i]===p.id?"selected":""}>${p.name}（${p.role}）</option>`).join("")}</select></div>`;
+        if(cfg.prayerEnabled&&!G.convertUsed){
+          const dead=G.players.filter(p=>!p.alive&&p.role!=="死神"&&p.role!=="夜祷"&&!G.pendingReturns.some(r=>r.id===p.id));
+          h+=`<div class="action-row" style="margin-top:10px;">夜祷转化（仅 1 次，目标须已死亡）：<select onchange="App.G.night.convertTarget=this.value===''?null:+this.value"><option value="">— 不转化 —</option>${dead.map(p=>`<option value="${p.id}" ${G.night.convertTarget===p.id?"selected":""}>${p.name}（${p.role}${p.soulOut?" · 已永久出局":""}）</option>`).join("")}</select></div>
+            <div class="hint">任意已死亡角色皆可转化（含永久出局魂灵；自爆魂灵可转、不影响已成立的 A）。若目标同被水妖复活，<b>复活优先</b>、转化不耗次数。</div>`;
+        }else if(G.convertUsed) h+=`<div class="hint">夜祷转化已使用。</div>`;
+        h+=`</div>`;
+      }else{
+        const rp=G.players.find(p=>p.baseRole==="死神");
+        h+=`<div class="hint">${rp&&G.pendingReturns.some(r=>r.id===rp.id)?`死神 ${rp.name} 已出局，次日白天回归（本夜不行动）。`:"死神已永久消灭。"}</div>`;
+      }
+      h+=nextBtns(true);
+    }
+    else if(ph==="night_assassin"){
+      const lai=aliveRole(G,"莱莱可");
+      h+=`<div class="phase-desc">莱莱可夜刀 1，计入死亡上限。双魂灵出局后刺中死神 = <b>永久击杀（B2）</b>。</div>`;
+      if(!lai) h+=`<div class="hint">莱莱可已出局。</div>`;
+      else if(lai.knifeGone) h+=`<div class="hint">莱莱可已自爆弃刀。</div>`;
+      else if(mute||G.nightNum===1&&cfg.assassinN1Block) h+=`<div class="hint">首夜莱莱可不可行动。</div>`;
+      else h+=`<div class="action-block"><div class="ab-t">${rolePortrait("莱莱可","mini")}<span class="who role-莱莱可">莱莱可 ${lai.name}</span> · 刺杀</div>
+        <div class="action-row">目标：<select onchange="App.G.night.assassinKnife=this.value===''?null:+this.value"><option value="">— 不行动 —</option>${alive.filter(p=>p.id!==lai.id).map(p=>`<option value="${p.id}" ${G.night.assassinKnife===p.id?"selected":""}>${p.name}（${p.role}）</option>`).join("")}</select></div></div>`;
+      const ora2=G.players.find(p=>p.baseRole==="降临者");
+      if(G.oracleKnifeGranted&&!G.oracleKnifeUsed&&ora2&&ora2.alive&&!mute)
+        h+=`<div class="action-block"><div class="ab-t">${rolePortrait("降临者","mini")}<span class="who role-降临者">降临者 ${ora2.name}</span> · 一次性飞刀（最高优先、穿透守护）</div>
+          <div class="action-row">目标：<select onchange="App.G.night.oracleKnife=this.value===''?null:+this.value"><option value="">— 不使用 —</option>${alive.filter(p=>p.id!==ora2.id).map(p=>`<option value="${p.id}" ${G.night.oracleKnife===p.id?"selected":""}>${p.name}（${p.role}）</option>`).join("")}</select></div>
+          <div class="hint">双魂灵出局后刺中死神 = 永久击杀（B3）。仅此一刀。</div></div>`;
+      h+=nextBtns(!mute&&(!!lai&&!lai.knifeGone&&!(G.nightNum===1&&cfg.assassinN1Block)));
+    }
+    else if(ph==="night_prayer"){
+      const pr=G.players.find(p=>p.role==="夜祷"&&p.alive);
+      h+=`<div class="phase-desc">夜祷自行决定 1 刀：<b>最高优先级</b>${cfg.prayerPierce?"、<b>穿透守护</b>":""}、占死亡上限 1 名额。不与狼队协调，可能重复浪费名额。</div>`;
+      if(!cfg.prayerEnabled||!pr) h+=`<div class="hint">${!cfg.prayerEnabled?"本局未启用夜祷。":"夜祷未在场。"}</div>`;
+      else h+=`<div class="action-block death-b"><div class="ab-t">${rolePortrait("夜祷","mini")}<span class="who role-夜祷">夜祷 ${pr.name}</span> · 穿透刀</div>
+        <div class="action-row">目标：<select onchange="App.G.night.prayerKnife=this.value===''?null:+this.value"><option value="">— 不行动 —</option>${alive.filter(p=>p.id!==pr.id).map(p=>`<option value="${p.id}" ${G.night.prayerKnife===p.id?"selected":""}>${p.name}（${p.role}）</option>`).join("")}</select></div></div>`;
+      h+=nextBtns(!!pr&&cfg.prayerEnabled);
+    }
+    else if(ph==="night_nixie"){
+      const nix=aliveRole(G,"水妖");
+      const pv=previewDeaths(G);
+      h+=`<div class="phase-desc">优先级结算预览（已含守护抵消与 ${cfg.deathCap} 上限）：</div>`;
+      h+=`<div class="kill-preview">今夜将死：<b>${pv.eff.length?pv.eff.map(k=>`${nameOf(G,k.target)}（${k.src}刀）`).join("、"):"无（平安夜）"}</b>
+        ${pv.savedByGuard.length?`<br>被守护抵消：${pv.savedByGuard.map(k=>nameOf(G,k.target)).join("、")}（名额已占用）`:""}
+        ${pv.subst?`<br><b style="color:#e893a4">V4.4 触发：双守目标均被抵消 → 门先生代出局（可被水妖①救护）</b>`:""}
+        ${pv.overflow.length?`<br><span style="color:var(--ink-faint)">溢出无效：${pv.overflow.map(o=>o.k.src+"→"+nameOf(G,o.k.target)).join("、")}</span>`:""}</div>`;
+      if(mute||!nix) h+=`<div class="hint">${mute?"首夜静默。":"水妖已出局。"}</div>`;
+      else if(G.nixie.night<=0) h+=`<div class="hint">水妖① 夜间救护次数已用尽。</div>`;
+      else{
+        const tn=cfg.nixieNightType==="instant"?"即时救护（当夜不死）":"延迟复活（次日回归）";
+        const cands=pv.eff.concat(pv.savedByGuard);
+        if(pv.subst){
+          const gd=aliveRole(G,"门先生");
+          if(gd&&!cands.some(k=>k.target===gd.id)) cands.push({target:gd.id, src:"门先生代出局"});
+        }
+        h+=`<div class="action-block"><div class="ab-t">${rolePortrait("水妖","mini")}<span class="who role-水妖">水妖 ${nix.name}</span> · ① ${tn}（剩 ${G.nixie.night} 次）</div>
+          <div class="action-row">目标：<select onchange="App.G.night.nixiePick=this.value"><option value="none">— 不使用 —</option>${cands.map(k=>`<option value="${k.target}" ${+G.night.nixiePick===k.target?"selected":""}>${nameOf(G,k.target)}${pv.savedByGuard.includes(k)?"（已被守护抵消）":""}</option>`).join("")}</select></div>
+          <div class="hint">目标不在有效死亡候选中则不耗次数；可对自己使用。${pv.subst?"门先生（代出局）亦可救护。":""}</div></div>`;
+      }
+      h+=nextBtns(!mute&&!!nix&&G.nixie.night>0);
+    }
+    else if(ph==="night_check"){
+      const mit=G.players.find(p=>p.baseRole==="米提亚");
+      const ora=G.players.find(p=>p.baseRole==="降临者");
+      h+=`<div class="phase-desc">查验结果仅记录于<b>【上帝】</b>日志，法官私下告知本人。</div>`;
+      if(mute) h+=`<div class="hint">首夜静默：V4.4 首夜无查验。</div>`;
+      else{
+        if(mit&&mit.alive){
+          const dual=cfg.version!=="4.2";
+          h+=`<div class="action-block"><div class="ab-t">${rolePortrait("米提亚","mini")}<span class="who role-米提亚">米提亚 ${mit.name}</span> · ${dual?"双查（可含自己）":"查验"}</div>`;
+          for(let i=0;i<(dual?2:1);i++)
+            h+=`<div class="action-row">目标 ${i+1}：<select onchange="App.G.night.mitiaChecks[${i}]=this.value===''?null:+this.value"><option value="">— 不验 —</option>${alive.map(p=>`<option value="${p.id}" ${G.night.mitiaChecks[i]===p.id?"selected":""}>${p.name}${p.id===mit.id?"（自己）":""}</option>`).join("")}</select></div>`;
+          if(dual) h+=`<div class="hint">皆非魂灵/夜祷 →「都是生者」；任一命中 →「魂灵在它们之中」。验〔自己+X〕可绝对确认 X。</div></div>`;
+        }else h+=`<div class="hint">米提亚已出局。</div>`;
+        if(ora&&ora.alive)
+          h+=`<div class="action-block"><div class="ab-t">${rolePortrait("降临者","mini")}<span class="who role-降临者">降临者 ${ora.name}</span> · 查验（是否死神，不含自己）</div>
+            <div class="action-row">目标：<select onchange="App.G.night.oracleCheck=this.value===''?null:+this.value"><option value="">— 不验 —</option>${alive.filter(p=>p.id!==ora.id).map(p=>`<option value="${p.id}" ${G.night.oracleCheck===p.id?"selected":""}>${p.name}（${p.role}）</option>`).join("")}</select></div></div>`;
+        else h+=`<div class="hint">降临者已出局。</div>`;
+      }
+      h+=nextBtns(!mute&&((!!mit&&mit.alive)||(!!ora&&ora.alive)));
+    }
+    else if(ph==="night_settle"){
+      const pv=previewDeaths(G);
+      h+=`<div class="phase-desc">确认无误后结算本夜。结算：确定死亡名单 → 水妖①救护 → 死神回归/转化标记 → 查验结果记录${cfg.guardSubst?" → 门先生代出局判定":""}。</div>`;
+      h+=`<div class="kill-preview">预计死亡：<b>${pv.eff.length?pv.eff.map(k=>`${nameOf(G,k.target)}（${k.src}刀）`).join("、"):"无"}</b>${pv.subst?`<br>另：门先生代出局（V4.4）`:""}</div>`;
+      h+=`<div class="phase-btns"><button class="btn primary" onclick="UI.doSettle()">⚖ 结算本夜</button></div>`;
+    }
+    else if(ph==="day_leader"){
+      h+=`<div class="phase-desc">${G.electionDone?"领袖已出局，今日补选。":"<b>首日领袖票选</b>：回归名单宣布后、放逐投票前进行。"}得票最高者当选，<b>平票按座位顺序破平</b>。领袖放逐票记 <b>${cfg.leaderWeight}</b> 票。</div>`;
+      h+=UI.voteTableHtml();
+      h+=`<div class="phase-btns"><button class="btn primary" onclick="UI.runElection()">计票 · 选出领袖</button><button class="btn" onclick="UI.aiFillVotesUI()">🤖 AI 代填</button></div>`;
+    }
+    else if(ph==="day_discuss"){
+      h+=`<div class="phase-desc">讨论发言。${G.leader!=null?`领袖 <b>${nameOf(G,G.leader)}</b> 决定发言顺序。`:"无领袖，按默认顺序发言。"}</div>`;
+      const sd=UI.sdButtonsHtml();
+      if(sd) h+=`<div class="action-block death-b"><div class="ab-t">自爆（立即结算，当日作废、直接入夜）</div><div class="action-row">${sd}</div></div>`;
+      h+=UI.identifyHtml();
+      h+=`<div class="phase-btns"><button class="btn primary" onclick="UI.nextPhase()">结束讨论 · 进入放逐投票 →</button></div>`;
+    }
+    else if(ph==="day_vote"){
+      h+=`<div class="phase-desc">放逐投票（独立通道，不占夜死上限）。${G.leader!=null?`领袖 <b>${nameOf(G,G.leader)}</b> 记 <b>${cfg.leaderWeight}</b> 票。`:""}最高票出局，<b>平票无人出局</b>。${soulsAllOut(G)?'<b style="color:#e893a4">双魂灵已出局——票中真实死神即 B1 人类胜！</b>':""}</div>`;
+      const sd=UI.sdButtonsHtml();
+      if(sd) h+=`<div class="action-block death-b"><div class="ab-t">自爆（唱票中亦可，立即作废本轮投票）</div><div class="action-row">${sd}</div></div>`;
+      h+=UI.voteTableHtml();
+      h+=`<div class="phase-btns"><button class="btn primary" onclick="UI.runVote()">唱票 · 公布结果</button><button class="btn" onclick="UI.aiFillVotesUI()">🤖 AI 代填</button></div>`;
+    }
+    else if(ph==="day_after"){
+      h+=G.voteNote||"";
+      let mid="";
+      if(G.exileRevivePending){
+        const cands=G.players.filter(p=>!p.alive&&p.deathCause==="exile"&&p.role!=="夜祷"
+          &&!(p.selfDestructed&&p.baseRole==="魂灵")&&!p.soulOut&&!G.pendingReturns.some(r=>r.id===p.id));
+        mid=`<div class="action-block"><div class="ab-t">${rolePortrait("水妖","mini")}<span class="who role-水妖">水妖</span> · ② 放逐复活（剩 ${G.nixie.exile} 次）</div>
+          <div class="action-row">${cands.map(p=>`<button class="btn small" onclick="UI.confirmExileRevive(${p.id})">${p.name}（${p.role}）</button>`).join("")||'<span class="hint">无可复活对象</span>'}
+          <button class="btn primary" onclick="UI.confirmExileRevive(null)">不使用 / 继续 →</button></div>
+          <div class="hint">仅可复活「已被放逐且未永久出局」者；延迟至次日白天回归。</div></div>`;
+      }
+      if(G.nixiePassivePending){
+        const cands=G.players.filter(p=>!p.alive&&p.role!=="夜祷"&&!(p.selfDestructed&&p.baseRole==="魂灵")
+          &&!p.soulOut&&!G.pendingReturns.some(r=>r.id===p.id));
+        mid+=`<div class="action-block death-b"><div class="ab-t">${rolePortrait("水妖","mini")}<span class="who role-水妖">水妖出局</span> · ③ 被动复活（剩 ${G.nixie.passive} 次）</div>
+          <div class="action-row">${cands.map(p=>`<button class="btn small" onclick="UI.confirmPassiveDay(${p.id})">${p.name}（${p.role}）</button>`).join("")||'<span class="hint">无可复活对象</span>'}
+          <button class="btn primary" onclick="UI.confirmPassiveDay(null)">放弃 / 继续 →</button></div>
+          <div class="hint">允许指定死亡阵营角色（资敌博弈），但已永久出局（计入 A）的魂灵与夜祷不可复活。</div></div>`;
+      }
+      h+=mid;
+      h+=`<div class="phase-btns"><button class="btn primary" onclick="UI.toNight()">🌙 进入黑夜（N${G.nightNum+1}）→</button></div>`;
+    }
+    body.innerHTML=h;
+  },
+
+  /* ---------- 结束 / 统计 ---------- */
+  endGame(){
+    const G=App.G;
+    UI.saveStats(G);
+    const days=G.nightNum;
+    const w=G.winner;
+    const rows=Object.entries(G.stats.use).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td class="l">${k}</td><td>${v}</td></tr>`).join("");
+    $("endBox").innerHTML=`
+      <div class="ew ${w}">${w==="human"?"☀ VICTOIRE DES VIVANTS":"☠ LA MORT REGNE"}</div>
+      <div style="text-align:center;margin-bottom:14px;font-weight:900;letter-spacing:.2em;">${w==="human"?"人类阵营胜利":"死亡阵营胜利"}</div>
+      <div class="er">${G.winDetail}<br>历时 ${days} 个昼夜 · 放逐 ${G.stats.exiles} 人</div>
+      <table class="stat-table"><tr><th>技能 / 事件</th><th>次数</th></tr>${rows||'<tr><td colspan="2" style="color:var(--ink-faint)">无</td></tr>'}</table>
+      <div class="phase-btns" style="justify-content:center;">
+        <button class="btn primary" onclick="UI.rematch()">同配置再来一局</button>
+        <button class="btn" onclick="UI.closeEnd();UI.show('stats')">查看档案</button>
+        <button class="btn" onclick="UI.closeEnd();UI.show('setup')">返回配置</button>
+      </div>`;
+    $("endOverlay").classList.add("show");
+    UI.renderAll();
+  },
+  closeEnd(){ $("endOverlay").classList.remove("show"); },
+  rematch(){ UI.closeEnd(); UI.startGame(); },
+  SKEY:"srn_director_stats_v1",
+  saveStats(G){
+    try{
+      const acc=JSON.parse(localStorage.getItem(UI.SKEY)||"[]");
+      acc.push({ ts:Date.now(), label:G.cfg.label, players:G.players.length, winner:G.winner,
+        days:G.nightNum, exiles:G.stats.exiles, auto:false, use:G.stats.use });
+      localStorage.setItem(UI.SKEY,JSON.stringify(acc.slice(-3000)));
+    }catch(e){}
+  },
+  loadStats(){ try{ return JSON.parse(localStorage.getItem(UI.SKEY)||"[]"); }catch(e){ return []; } },
+  renderStats(){
+    const acc=UI.loadStats();
+    if(!acc.length){ $("accStats").innerHTML=`<div class="hint">暂无档案。打一局手动对局，或到推演场跑一批（推演结果亦可存档）。</div>`; return; }
+    const group=(list,title)=>{
+      const n=list.length; if(!n) return "";
+      const h=list.filter(g=>g.winner==="human").length;
+      const avg=(list.reduce((a,g)=>a+g.days,0)/n).toFixed(2);
+      const skills={}; list.forEach(g=>{ for(const [k,v] of Object.entries(g.use)) skills[k]=(skills[k]||0)+v; });
+      const skillRows=Object.entries(skills).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td class="l">${k}</td><td>${v}</td><td>${(v/n).toFixed(2)}</td></tr>`).join("");
+      const hr=(h/n*100).toFixed(1);
+      return `<h2 class="sec" style="font-size:14px;margin-top:14px;">${title}（${n} 局）</h2>
+        <div class="bar-wrap"><div class="bar-h" style="width:${hr}%"></div><div class="bar-d" style="width:${(100-hr).toFixed(1)}%"></div></div>
+        <table class="stat-table"><tr><th>人类胜</th><th>死亡胜</th><th>人类胜率</th><th>平均昼夜</th></tr>
+        <tr><td class="l">${h}</td><td class="l">${n-h}</td><td class="l">${hr}%</td><td class="l">${avg}</td></tr></table>
+        <table class="stat-table"><tr><th>技能/事件</th><th>总次数</th><th>场均</th></tr>${skillRows}</table>`;
+    };
+    let html=group(acc,"全部对局");
+    const byLabel={};
+    acc.forEach(g=>{ (byLabel[g.label]=byLabel[g.label]||[]).push(g); });
+    Object.entries(byLabel).forEach(([lab,list])=>{ html+=group(list,lab); });
+    $("accStats").innerHTML=html;
+  },
+  clearStats(){ if(confirm("确定清空全部档案？")){ localStorage.removeItem(UI.SKEY); UI.renderStats(); } },
+
+  /* ---------- 批量推演 ---------- */
+  running:false,
+  runBatch(){
+    if(UI.running) return;
+    const n=Math.min(20000,Math.max(1,+$("batchN").value||1000));
+    const info=$("batchInfo").value==="1";
+    const compare=$("batchCompare").value==="1";
+    const variants=compare?[
+      {name:"V4.3.1 基准（11人）",cfg:makeCfg({...PRESETS[0].patch,infoModel:info})},
+      {name:"V4.4-A 仅平民+2（13人）",cfg:makeCfg({...PRESETS[1].patch,infoModel:info,guardSubst:false,n1DeathOnly:false})},
+      {name:"V4.4 ★现行（+代出局）",cfg:makeCfg({...PRESETS[1].patch,infoModel:info})},
+      {name:"V4.4-old 含首夜死亡方（已废弃）",cfg:makeCfg({...PRESETS[1].patch,infoModel:info,guardSubst:true,n1DeathOnly:true})},
+    ]:[{name:UI.cfg.label+"（"+Object.values(UI.cfg.roleCounts).reduce((a,b)=>a+b,0)+"人）",cfg:makeCfg({...UI.cfg,infoModel:info})}];
+    UI.running=true; $("batchBtn").disabled=true;
+    $("batchProgWrap").style.display="block"; $("batchProg").max=n; $("batchProg").value=0;
+    const results=variants.map(v=>({name:v.name,games:[]}));
+    const CHUNK=Math.max(1,Math.min(150,Math.floor(n/20)));
+    function step(){
+      const t0=performance.now();
+      /* 每片：轮转给各变体各跑 ceil(CHUNK/变体数) 局 */
+      const per=Math.max(1,Math.ceil(CHUNK/variants.length));
+      for(const ri in results){
+        const r=results[ri], v=variants[ri];
+        for(let i=0;i<per&&r.games.length<n;i++){
+          const g=autoOneGame(v.cfg);
+          r.games.push({winner:g.winner,days:g.nightNum,use:g.stats.use});
+        }
+      }
+      const minDone=Math.min(...results.map(r=>r.games.length));
+      $("batchProg").value=minDone;
+      $("batchMsg").textContent=`已完成 ${minDone}/${n} · 本批 ${(performance.now()-t0).toFixed(0)}ms`;
+      if(results.every(r=>r.games.length>=n)){
+        UI.running=false; $("batchBtn").disabled=false;
+        UI.renderBatchResult(results,n);
+      }else setTimeout(step,10);
+    }
+    step();
+  },
+  renderBatchResult(results,n){
+    $("batchResult").innerHTML=results.map(r=>{
+      const N=r.games.length;
+      const h=r.games.filter(g=>g.winner==="human").length;
+      const avg=(r.games.reduce((a,g)=>a+g.days,0)/N).toFixed(2);
+      const d5=(r.games.filter(g=>g.days>=5).length/N*100).toFixed(1);
+      const skills={}; r.games.forEach(g=>{ for(const [k,v] of Object.entries(g.use)) skills[k]=(skills[k]||0)+v; });
+      const skillRows=Object.entries(skills).sort((a,b)=>b[1]-a[1]).slice(0,8)
+        .map(([k,v])=>`<tr><td class="l">${k}</td><td>${v}</td><td>${(v/N).toFixed(2)}</td></tr>`).join("");
+      const hr=(h/N*100).toFixed(2);
+      return `<div class="divider"></div><h2 class="sec" style="font-size:14px;">${r.name} · ${N} 局</h2>
+        <div class="bar-wrap"><div class="bar-h" style="width:${hr}%"></div><div class="bar-d" style="width:${(100-hr).toFixed(2)}%"></div></div>
+        <table class="stat-table"><tr><th>人类胜</th><th>死亡胜</th><th>人类胜率</th><th>平均昼夜</th><th>≥5 昼夜局</th></tr>
+        <tr><td class="l">${h}</td><td class="l">${N-h}</td><td class="l">${hr}%</td><td class="l">${avg}</td><td class="l">${d5}%</td></tr></table>
+        <table class="stat-table"><tr><th>技能/事件</th><th>总次数</th><th>场均</th></tr>${skillRows}</table>`;
+    }).join("");
+  },
+};
+
+/* 导航 */
+document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>UI.show(b.dataset.scr)));
+UI.renderSetup();
+</script>
+</body>
+</html>
