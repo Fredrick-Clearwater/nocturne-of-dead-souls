@@ -336,8 +336,8 @@ const DEFAULT_CFG = {
 };
 
 const PRESETS = [
-  { key:"v431", name:"V4.3.1 屠城阈值版", desc:"11 人标准局 · 米提亚双查 · 降临者昼间指认 · 水妖三复活 · 夜祷转化",
-    patch:{ label:"V4.3.1 屠城阈值版", version:"4.3.1",
+  { key:"v431", name:"V4.3.1 间奏·亡灵之舞（屠城阈值版）", desc:"11 人标准局 · 米提亚双查 · 降临者昼间指认 · 水妖三复活 · 夜祷转化",
+    patch:{ label:"V4.3.1 间奏·亡灵之舞（屠城阈值版）", version:"4.3.1",
       roleCounts:{"魂灵":2,"死神":1,"莱莱可":1,"门先生":1,"米提亚":1,"降临者":1,"水妖":1,"普通人":3},
       guardSubst:false, n1DeathOnly:false } },
   { key:"v44", name:"V4.4 preview 剧院之夜", desc:"13 人局 · 平民+2 · 门先生双守代出局（首夜死亡方行动已于 9/2 实测废弃：−7pp，fall 回 V4.3 首夜口径）",
@@ -503,6 +503,11 @@ function resolveNight(G){
   pv.overflow.forEach(o=>eLogGod(G,`${o.k.src}刀 → ${nameOf(G,o.k.target)}：${o.why}，无效。`));
   pv.savedByGuard.forEach(k=>eLogGod(G,`守护抵消指向 ${nameOf(G,k.target)} 的${k.src}刀（名额已占用）。`));
   const deaths=pv.eff.slice();
+  /* V4.4 代出局：门先生先入列有效死亡候选（须在水妖①裁决之前，否则①救不了他），不占死亡上限 */
+  if(pv.subst && !G.over){
+    const gd=G.players.find(p=>p.baseRole==="门先生"&&p.alive);
+    if(gd) deaths.push({src:"门先生代出局", srcId:gd.id, target:gd.id, pri:9, pierce:false});
+  }
   /* 水妖① */
   if(!n1Mute(G) && n.nixiePick!=="none" && n.nixiePick!=null){
     const tid=+n.nixiePick;
@@ -552,11 +557,6 @@ function resolveNight(G){
   }
   /* 死亡标记 */
   const nixieDies = deaths.some(k=>G.players[k.target].baseRole==="水妖");
-  /* V4.4 代出局：门先生进入有效死亡候选（可被水妖①救护），不占死亡上限 */
-  if(pv.subst && !G.over){
-    const gd=G.players.find(p=>p.baseRole==="门先生"&&p.alive);
-    if(gd) deaths.push({src:"门先生代出局", srcId:gd.id, target:gd.id, pri:9, pierce:false});
-  }
   G.lastNightDeaths=[];
   for(const k of deaths){
     const p=G.players[k.target];
@@ -836,7 +836,12 @@ function aiNightFill(G){
   n.nixiePick="none";
   if(!mute&&nix&&G.nixie.night>0){
     const pv=previewDeaths(G);
-    if(pv.eff.length&&Math.random()<0.8) n.nixiePick=String(rnd(pv.eff).target);
+    const cands=pv.eff.slice();
+    if(pv.subst){
+      const gd=aliveRole(G,"门先生");
+      if(gd) cands.push({target:gd.id});   /* V4.4 代出局亦在①候选中 */
+    }
+    if(cands.length&&Math.random()<0.8) n.nixiePick=String(rnd(cands).target);
   }
   const mit=G.players.find(p=>p.baseRole==="米提亚");
   if(!mute&&mit&&mit.alive){
