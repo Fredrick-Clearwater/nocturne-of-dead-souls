@@ -149,6 +149,7 @@ details.rules[open] summary::before{content:"▾ ";}
 .phase-desc b{color:var(--gold2);}
 .action-block{border:1px solid var(--line-soft); border-left:3px solid var(--gold); border-radius:6px; padding:15px 18px; margin-bottom:16px; background:rgba(255,255,255,.015); animation:fadeUp .35s ease both;}
 .action-block.death-b{border-left-color:var(--blood);}
+.action-block.gold-b{border-left-color:var(--gold); background:linear-gradient(180deg,rgba(212,170,90,.07),rgba(255,255,255,.015));}
 .ab-t{display:flex; align-items:center; gap:10px; margin-bottom:12px; font-weight:600; letter-spacing:.05em;}
 .ab-t .who{font-size:14px;} .ab-t .who.role-魂灵,.ab-t .who.role-死神,.ab-t .who.role-夜祷{color:#e893a4;}
 .ab-t .who.role-莱莱可,.ab-t .who.role-门先生,.ab-t .who.role-米提亚,.ab-t .who.role-降临者,.ab-t .who.role-水妖{color:var(--gold2);}
@@ -327,6 +328,7 @@ const DEFAULT_CFG = {
   nixieNightType:"instant",     // instant 即时救护 | delayed 延迟复活
   guardCount:2,
   leaderWeight:1.5,
+  leaderSuccession:true,        // 领袖交接：出局可指定继任或放弃（V4.3.1+ 规则书 §5）
   guardSubst:false,             // V4.4 门先生代出局
   n1DeathOnly:false,            // V4.4 首夜仅死亡方行动
   thresholdTiming:"dawn",       // dawn 黎明判定（规则书）| instant 即时判定
@@ -370,6 +372,7 @@ function createGame(cfg){
   return {
     cfg, players, nightNum:0,
     leader:null, electionDone:false,
+    successionFrom:null,        /* 领袖出局待交接（下白昼发言前生效，若届时在场则作废） */
     pendingReturns:[], pendingA:[],
     convertUsed:false,
     oracleUsedToday:false, oracleIdentifyUsedEver:false,
@@ -393,6 +396,26 @@ function soulsAllOut(G){ return G.players.filter(p=>p.baseRole==="魂灵").every
 function soulOutCount(G){ return G.players.filter(p=>p.baseRole==="魂灵"&&p.soulOut).length; }
 function nameOf(G,id){ return G.players[id].name; }
 function rnd(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+/* 领袖交接（2026-09-03 规则书 §5）：领袖因任何原因出局时记录待交接；
+   下一白昼发言前若前任仍不在场 → 指定继任或放弃（放弃走补选）；
+   若前任已回归在场 → 交接作废，按常规补选。 */
+function leaderCleared(G,pid){
+  if(G.leader!==pid) return;
+  G.successionFrom=pid; G.leader=null;
+}
+function successionPending(G){
+  if(!G.cfg.leaderSuccession||G.successionFrom==null) return false;
+  return !G.players[G.successionFrom].alive;
+}
+function resolveSuccession(G){
+  if(G.successionFrom==null) return;
+  const fp=G.players[G.successionFrom];
+  if(fp.alive){  /* 前任已回归在场 → 交接作废 */
+    eLog(G,`${fp.name} 回归在场，前任领袖交接作废，按常规流程补选。`,"log-warn");
+    G.successionFrom=null;
+  }
+}
 
 function humanWin(G,detail){ if(!G.over){ G.over=true; G.winner="human"; G.winDetail=detail; eLog(G,"☀ 人类阵营获胜！"+detail,"log-good"); } }
 function wolfWin(G,detail){ if(!G.over){ G.over=true; G.winner="death"; G.winDetail=detail; eLog(G,"☠ 死亡阵营获胜！"+detail,"log-death"); } }
@@ -561,7 +584,7 @@ function resolveNight(G){
       }
     }
     if(p.role==="夜祷"){ eLogGod(G,`夜祷 ${p.name} 永久死亡，无法回归。`); }
-    if(G.leader===p.id) G.leader=null;
+    leaderCleared(G,p.id);
   }
   if(nixieDies && G.nixie.passive>0 && !G.over){ G.nixiePassivePending=true; }
   if(G.oracleKnifeGranted && !G.oracleKnifeUsed && n.oracleKnife!=null) G.oracleKnifeUsed=true;
@@ -706,7 +729,7 @@ function selfDestruct(G,pid){
     p.selfDestructUsed=true; p.selfDestructed=true; p.revealed=true;
     p.alive=false; p.deathCause="sd"; p.soulOut=true; eUse(G,"魂灵自爆");
     eLog(G,`💥 ${p.name} 翻牌自爆 —— 身份：魂灵！立即永久出局（计入条件 A ${soulOutCount(G)}/${G.soulTotal}），无遗言，当日剩余流程作废，直接进入黑夜。`,"log-death");
-    if(G.leader===p.id) G.leader=null;
+    leaderCleared(G,p.id);
     return true;
   }
   if(p.baseRole==="莱莱可"&&G.cfg.assassinSD){
@@ -731,7 +754,7 @@ function oracleIdentify(G,pid){
     G.oracleIdentifyUsedEver=true; G.oracleKnifeGranted=true;
     t.alive=false; t.deathCause="oracle"; t.revealed=true;
     G.pendingReturns.push({id:t.id, reason:"reaper"});
-    if(G.leader===t.id) G.leader=null;
+    leaderCleared(G,t.id);
     eLog(G,`🔮 ${ora.name} 指认死神成功！${t.name} 当场曝光、被迫自爆出局——当日放逐投票作废，立即进入黑夜。`,"log-warn");
     eLogGod(G,"死神被指认曝光，次日白天回归；降临者永久失去指认，获得一次性最高优先飞刀。");
     return {ok:true,hit:true};
@@ -858,6 +881,32 @@ function aiLeaderPick(G){
   return rnd(alive).id;
 }
 
+/* AI 领袖交接：前任出局后选择指定继任或放弃（返回继任者 id；null = 放弃 → 补选）。
+   口径：前任为人类且信息模型 → 优先交棒给在场信息位（降临者/米提亚），延续查验线索；
+   前任为死亡阵营 → 指定给在场狼同伴（保持屠城目标一致）；随机口径减半概率。 */
+function aiLeaderSuccessor(G){
+  if(!G.cfg.leaderSuccession||!successionPending(G)) return null;
+  const prev=G.players[G.successionFrom];
+  const alive=aliveP(G);
+  if(!alive.length) return null;
+  const isDeath=factionOf(prev)==="death";
+  const info=G.cfg.infoModel;
+  if(isDeath){
+    const mates=alive.filter(p=>factionOf(p)==="death");
+    if(mates.length&&Math.random()<(info?.85:.45)) return rnd(mates).id;
+    return null;
+  }
+  if(info){
+    const ora=aliveRole(G,"降临者"), mit=aliveRole(G,"米提亚");
+    const infoAlive=[ora,mit].filter(Boolean);
+    if(infoAlive.length&&Math.random()<.85) return rnd(infoAlive).id;
+    if(Math.random()<.5) return rnd(alive).id;
+    return null;
+  }
+  if(Math.random()<.4) return rnd(alive).id;
+  return null;
+}
+
 function aiPassivePick(G){
   const cands=G.players.filter(p=>!p.alive&&p.role!=="夜祷"&&!(p.selfDestructed&&p.baseRole==="魂灵")
     &&!p.soulOut&&!G.pendingReturns.some(r=>r.id===p.id));
@@ -884,8 +933,21 @@ function autoOneGame(cfg){
     if(G.over) break;
     G.oracleUsedToday=false;   /* 昼间指认：每白昼 1 次，当日重置 */
     if(!G.electionDone||!G.leader){
-      const pick=aiLeaderPick(G);
-      if(pick!=null){ G.leader=pick; eUse(G,"领袖当选"); }
+      /* 领袖交接：前任出局待交接 → AI 指定继任或放弃（放弃走补选） */
+      if(successionPending(G)){
+        const succ=aiLeaderSuccessor(G);
+        if(succ!=null){
+          G.leader=succ; eUse(G,"领袖交接指定");
+          eLog(G,`👑 前任领袖指定 ${nameOf(G,succ)} 继任领袖。`,"log-warn");
+        }else{
+          eLog(G,"前任领袖放弃指定，进入补选。","log-warn");
+        }
+        G.successionFrom=null;
+      }
+      if(!G.leader){
+        const pick=aiLeaderPick(G);
+        if(pick!=null){ G.leader=pick; eUse(G,"领袖当选"); }
+      }
       G.electionDone=true;
     }
     if(aiTryIdentify(G)){ continue; }  /* 指认命中：当日放逐作废，直接入夜 */
@@ -959,7 +1021,8 @@ const UI={
     }).join("");
     const T=[
       ["deathCap","全局死亡上限 / 夜","每夜所有击杀共享（规则书 §4）",[1,2,3]],
-      ["leaderWeight","领袖放逐票权","得票最高者任领袖；出局当日补选",[1,1.5,2]],
+      ["leaderWeight","领袖放逐票权","得票最高者任领袖；出局可交接/补选",[1,1.5,2]],
+      ["leaderSuccession","领袖交接（指定继任）","领袖出局后于下一白昼发言前，可公开指定继任或放弃由补选（规则书§5）",[true,false]],
       ["thresholdTiming","屠城判定时机","黎明＝回归名单宣布后判定（规则书§6）；即时＝任一死亡事件后立即判定",["dawn","instant"]],
       ["nixieNightType","水妖① 夜间救护","即时＝当夜不死不入名单；延迟＝仍入名单次日回归",["instant","delayed"]],
       ["winMode","胜利模式","屠城阈值 / 屠边（V4.2 怀旧）",["threshold","tubian"]],
@@ -1030,6 +1093,7 @@ const UI={
     eLog(G,`—— 第 ${G.nightNum} 天（D${G.nightNum}）白昼 ——`,"log-sys");
     eLog(G,G.lastNightDeaths.length?`昨夜死亡名单：${G.lastNightDeaths.map(d=>nameOf(G,d.id)).join("、")}。`:"昨夜平安夜，无人死亡。",G.lastNightDeaths.length?"log-death":"log-good");
     processReturns(G);
+    resolveSuccession(G);   /* 前任领袖回归在场 → 交接作废，走补选 */
     checkWolfWin(G);
     if(G.over) return UI.endGame();
     G.phase=(!G.electionDone||!G.leader)?"day_leader":"day_discuss";
@@ -1090,6 +1154,24 @@ const UI={
   confirmPassiveDay(tid){ applyNixiePassiveDay(App.G,tid); UI.renderAll(); },
 
   /* 投票 */
+  doSuccession(){
+    const G=App.G;
+    const sel=$("succPick");
+    const pid=sel&&sel.value!==""?+sel.value:null;
+    if(pid==null){ alert("请先选择继任者。"); return; }
+    const t=G.players[pid];
+    if(!t.alive){ alert("继任者须为在场玩家。"); return; }
+    const prev=G.players[G.successionFrom];
+    G.leader=pid; G.successionFrom=null; G.electionDone=true; eUse(G,"领袖交接指定");
+    eLog(G,`👑 前任领袖 ${prev?prev.name:"（已出局）"} 公开指定 ${t.name} 继任领袖（放逐票 ${G.cfg.leaderWeight} 票）。`,"log-warn");
+    G.phase="day_discuss"; UI.renderAll();
+  },
+  doWaiveSuccession(){
+    const G=App.G;
+    const prev=G.players[G.successionFrom];
+    eLog(G,`前任领袖 ${prev?prev.name:"（已出局）"} 放弃指定，进入常规补选。`,"log-warn");
+    G.successionFrom=null; UI.renderAll();
+  },
   runElection(){
     const G=App.G, votes=UI.collectVotes();
     const r=tallyVotes(G,votes,1);
@@ -1375,9 +1457,19 @@ const UI={
       h+=`<div class="phase-btns"><button class="btn primary" onclick="UI.doSettle()">⚖ 结算本夜</button></div>`;
     }
     else if(ph==="day_leader"){
-      h+=`<div class="phase-desc">${G.electionDone?"领袖已出局，今日补选。":"<b>首日领袖票选</b>：回归名单宣布后、放逐投票前进行。"}得票最高者当选，<b>平票按座位顺序破平</b>。领袖放逐票记 <b>${cfg.leaderWeight}</b> 票。</div>`;
-      h+=UI.voteTableHtml();
-      h+=`<div class="phase-btns"><button class="btn primary" onclick="UI.runElection()">计票 · 选出领袖</button><button class="btn" onclick="UI.aiFillVotesUI()">🤖 AI 代填</button></div>`;
+      if(successionPending(G)){
+        const prev=G.players[G.successionFrom];
+        h+=`<div class="action-block gold-b"><div class="ab-t">👑 领袖交接 · 前任 <b>${nameOf(G,prev.id)}</b>（${prev.baseRole}）已出局</div>
+          <div class="phase-desc" style="margin-top:0">回归名单宣布完毕。前任领袖做<b>纯职位操作</b>（不带遗言）：指定在场玩家继任，或放弃由在场玩家补选。</div>
+          <div class="action-row">继任者：<select id="succPick"><option value="">— 请选择继任者 —</option>${alive.map(p=>`<option value="${p.id}">${p.name}（${p.role}）</option>`).join("")}</select>
+          <button class="btn primary" onclick="UI.doSuccession()">✋ 指定继任</button>
+          <button class="btn" onclick="UI.doWaiveSuccession()">放弃 · 进入补选</button></div>
+          <div class="hint">指定 = 公开宣布直接继任，今日不再票选；放弃 = 按常规补选流程投票（平票按座位破平）。</div></div>`;
+      }else{
+        h+=`<div class="phase-desc">${G.electionDone?"领袖已出局，今日补选。":"<b>首日领袖票选</b>：回归名单宣布后、放逐投票前进行。"}得票最高者当选，<b>平票按座位顺序破平</b>。领袖放逐票记 <b>${cfg.leaderWeight}</b> 票。</div>`;
+        h+=UI.voteTableHtml();
+        h+=`<div class="phase-btns"><button class="btn primary" onclick="UI.runElection()">计票 · 选出领袖</button><button class="btn" onclick="UI.aiFillVotesUI()">🤖 AI 代填</button></div>`;
+      }
     }
     else if(ph==="day_discuss"){
       h+=`<div class="phase-desc">讨论发言。${G.leader!=null?`领袖 <b>${nameOf(G,G.leader)}</b> 决定发言顺序。`:"无领袖，按默认顺序发言。"}</div>`;
