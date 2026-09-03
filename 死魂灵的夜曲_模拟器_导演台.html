@@ -374,6 +374,7 @@ function createGame(cfg){
     convertUsed:false,
     oracleUsedToday:false, oracleIdentifyUsedEver:false,
     oracleKnifeGranted:false, oracleKnifeUsed:false,
+    oracleKnow:[],   /* 降临者夜查验知识库：{id, night, positive}——昼指认避开已验目标（AI 依据） */
     nixie:{ night:1, exile:1, passive:1 },
     nixiePassivePending:false, exileRevivePending:false,
     night:null, lastNightDeaths:[], lastReturns:[],
@@ -522,7 +523,9 @@ function resolveNight(G){
   if(!n1Mute(G) && ora && ora.alive && n.oracleCheck!=null){
     eUse(G,"降临者查验");
     const t=G.players[n.oracleCheck];
-    eLogGod(G,`降临者查验 ${t.name} → ${t.role==="死神"?"阳性（死神）":"阴性"}`);
+    const positive = t.role==="死神";
+    G.oracleKnow.push({id:t.id, night:G.nightNum, positive});
+    eLogGod(G,`降临者查验 ${t.name} → ${positive?"阳性（死神）":"阴性"}`);
   }
   /* 死亡标记 */
   const nixieDies = deaths.some(k=>G.players[k.target].baseRole==="水妖");
@@ -739,6 +742,32 @@ function oracleIdentify(G,pid){
 }
 
 /* ---------------- 好人/死亡方 AI（随机 + 信息驱动口径） ---------------- */
+/* AI 昼间指认（降临者）：只基于自身夜查验知识，不与其重合——
+   ① 夜查已确认死神且在场上 → 直接指认（确定性曝光，解锁飞刀）；
+   ② 未确认时若死神尚未被夜查排除 → 以 25% 概率在「未验」候选里盲赌一次
+   （已验阴性的目标绝不指认，避免 100% 空过）。返回是否命中（命中=当日投票作废）。 */
+function aiTryIdentify(G){
+  const cfg=G.cfg;
+  if(cfg.version==="4.2") return false;
+  const ora=G.players.find(p=>p.baseRole==="降临者");
+  if(!ora||!ora.alive||G.oracleIdentifyUsedEver||G.oracleUsedToday) return false;
+  const alive=aliveP(G);
+  const reaper=aliveRole(G,"死神");
+  const posSet=new Set(G.oracleKnow.filter(k=>k.positive).map(k=>k.id));
+  const negSet=new Set(G.oracleKnow.filter(k=>!k.positive).map(k=>k.id));
+  if(reaper&&posSet.has(reaper.id)){
+    const r=oracleIdentify(G,reaper.id);
+    return !!(r.ok&&r.hit);
+  }
+  if(reaper&&!negSet.has(reaper.id)&&Math.random()<0.25){
+    const pool=alive.filter(p=>p.id!==ora.id&&!negSet.has(p.id)&&!posSet.has(p.id));
+    if(pool.length){
+      const r=oracleIdentify(G,rnd(pool).id);
+      return !!(r.ok&&r.hit);
+    }
+  }
+  return false;
+}
 function aiNightFill(G){
   const n=G.night, cfg=G.cfg, alive=aliveP(G);
   const humans=alive.filter(p=>factionOf(p)==="human");
@@ -772,9 +801,13 @@ function aiNightFill(G){
   }
   const ora2=G.players.find(p=>p.baseRole==="降临者");
   n.oracleKnife=null;
-  if(G.oracleKnifeGranted&&!G.oracleKnifeUsed&&ora2&&ora2.alive){
-    const pool=alive.filter(p=>p.id!==ora2.id);
-    if(pool.length) n.oracleKnife=rnd(pool).id;
+  if(G.oracleKnifeGranted && !G.oracleKnifeUsed && ora2 && ora2.alive && !mute){
+    /* 降临者飞刀策略：蓄刀直到条件 A 达成，锁定死神作终局击杀（B3）；
+       提前乱刀只会浪费这把唯一终结手段。 */
+    const reaNow=aliveRole(G,"死神");
+    if(soulsAllOut(G) && reaNow){
+      n.oracleKnife=reaNow.id;
+    }
   }
   const nix=aliveRole(G,"水妖");
   n.nixiePick="none";
@@ -849,11 +882,13 @@ function autoOneGame(cfg){
     processReturns(G);
     checkWolfWin(G);
     if(G.over) break;
+    G.oracleUsedToday=false;   /* 昼间指认：每白昼 1 次，当日重置 */
     if(!G.electionDone||!G.leader){
       const pick=aiLeaderPick(G);
       if(pick!=null){ G.leader=pick; eUse(G,"领袖当选"); }
       G.electionDone=true;
     }
+    if(aiTryIdentify(G)){ continue; }  /* 指认命中：当日放逐作废，直接入夜 */
     const r=tallyVotes(G,aiVotes(G),cfg.leaderWeight);
     if(r.top!=null){
       exilePlayer(G,r.top);
