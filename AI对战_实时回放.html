@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="8rerx2WBnd46Cp1sN6R9eC">
+<head data-page-node-id="XDMZxy8qEYWD062lhD7ta0">
+<meta charset="UTF-8" data-page-node-id="oclaeAEsS70MZnCF447np4" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" data-page-node-id="JE1LFxlBrSfVstygzCiGnY" />
+<title>【存档快照】死魂灵的夜曲 · 实时观战</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" data-page-node-id="yBil1wDnrWWc6XdbzKRwVG">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin data-page-node-id="rxNzaQZd56lF7OkECwrEbl">
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Noto+Serif+SC:wght@400;600;900&display=swap" rel="stylesheet" data-page-node-id="RhE8Ea3f3XrPW91sglV8ze">
+<style>
+  :root{
+    --night:#0b0f1a; --night-2:#0f1524; --night-3:#141c30;
+    --snow:#eef2f7; --mist:#a9b8cd; --mist-dim:#76879e;
+    --gold:#d4aa5a; --gold-dim:#9a7b3e; --gold-line:rgba(212,170,90,.22);
+    --crimson:#b23a3a; --crimson-soft:#d98a8a; --ice:#7fa3c9;
+    --serif:"Noto Serif SC",serif; --latin:"Cormorant Garamond",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--night);color:var(--snow);font-family:var(--serif);font-size:15px;line-height:1.85;
+       -webkit-font-smoothing:antialiased;padding:0 18px 40px;}
+  ::selection{background:rgba(212,170,90,.3);}
+  #snow{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+  .vignette{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 0%, transparent 55%, rgba(4,6,12,.55) 100%),
+               radial-gradient(90% 60% at 50% 110%, rgba(4,6,12,.5), transparent 70%);}
+  .wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;}
+
+  header{text-align:center;padding:56px 12px 30px;position:relative;}
+  header::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(58% 46% at 50% -4%, rgba(212,170,90,.16), transparent 72%);}
+  header>*{position:relative;}
+  .eyebrow{font-family:var(--latin);font-style:italic;font-size:13px;letter-spacing:.42em;
+    color:var(--ice);text-transform:uppercase;margin-bottom:18px;}
+  h1{font-family:"UnifrakturMaguntia","Cormorant Garamond",serif;font-weight:400;
+    font-size:clamp(34px,6vw,58px);line-height:1.05;letter-spacing:.06em;
+    background:linear-gradient(178deg,#f7ecc8 0%,#ecd08a 34%,#d4aa5a 58%,#9a7b3e 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 24px rgba(212,170,90,.2)) drop-shadow(0 4px 12px rgba(0,0,0,.55));}
+  .cn-sub{font-weight:900;font-size:16px;letter-spacing:.5em;text-indent:.5em;color:var(--snow);margin-top:14px;}
+  .latin-sub{font-family:var(--latin);font-style:italic;font-size:14px;letter-spacing:.3em;color:var(--mist);margin-top:8px;}
+  .status{color:var(--mist-dim);font-size:13px;letter-spacing:.2em;margin-top:18px;}
+  .live{display:inline-block;margin-left:8px;color:var(--crimson-soft);animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .banner{max-width:640px;margin:22px auto 0;text-align:center;font-size:17px;letter-spacing:.18em;
+    padding:13px 18px;border:1px solid var(--gold);border-radius:12px;color:var(--gold);
+    background:rgba(212,170,90,.07);box-shadow:0 0 30px rgba(212,170,90,.12);}
+  .banner.death{color:var(--crimson-soft);border-color:var(--crimson);background:rgba(178,58,58,.08);
+    box-shadow:0 0 30px rgba(178,58,58,.15);}
+
+  .board{display:grid;grid-template-columns:330px 1fr;gap:22px;align-items:start;margin-top:26px;}
+  .panel.roster{position:sticky;top:14px;max-height:calc(100vh - 30px);overflow-y:auto;scrollbar-width:thin;}
+  @media (max-width:900px){.board{grid-template-columns:1fr;}.panel.roster{position:static;max-height:none;overflow:visible;}}
+  .panel{background:linear-gradient(180deg,var(--night-2),var(--night-3));
+    border:1px solid var(--gold-line);border-radius:14px;padding:20px 18px;}
+  .panel h2{color:var(--gold);font-size:14px;font-weight:600;letter-spacing:.35em;margin-bottom:2px;}
+  .panel .latin{font-family:var(--latin);font-style:italic;font-size:12px;letter-spacing:.22em;
+    color:var(--mist-dim);margin-bottom:16px;}
+
+  .seat{display:flex;gap:11px;align-items:center;padding:8px 11px;border-radius:10px;margin-bottom:7px;
+    background:rgba(20,28,48,.75);border:1px solid rgba(212,170,90,.13);transition:opacity .6s,filter .6s;}
+  .seat.dead{opacity:.42;filter:grayscale(.85);}
+  .seat .no{width:34px;height:34px;border-radius:50%;flex-shrink:0;
+    border:1px solid var(--gold-dim);color:var(--gold);font-weight:600;font-size:14px;
+    display:flex;align-items:center;justify-content:center;background:rgba(212,170,90,.07);}
+  .seat .role{font-weight:600;font-size:13.5px;letter-spacing:.05em;}
+  .seat .st{font-size:11px;color:var(--mist-dim);letter-spacing:.06em;}
+  .seat .st .mdl{color:var(--ice);}
+  .f-death .role{color:var(--crimson-soft);}
+  .f-human .role{color:var(--gold);}
+  .lead{color:var(--gold);border:1px solid var(--gold-dim);border-radius:6px;padding:0 5px;font-size:10px;}
+
+  .day{margin-bottom:22px;}
+  .day h3{font-size:14px;font-weight:600;letter-spacing:.3em;padding-bottom:7px;margin-bottom:10px;
+    border-bottom:1px solid var(--gold-line);}
+  .day h3.night{color:var(--ice);}
+  .day h3.dayl{color:var(--gold);}
+  .day h3 .lat{font-family:var(--latin);font-style:italic;font-size:11px;letter-spacing:.18em;
+    color:var(--mist-dim);font-weight:500;margin-left:8px;text-transform:uppercase;}
+  .ev{padding:6px 12px;margin-bottom:5px;border-radius:8px;font-size:13.5px;line-height:1.7;}
+  .ev.announce{background:rgba(20,28,48,.7);color:var(--mist);}
+  .ev.death{background:rgba(178,58,58,.13);color:var(--crimson-soft);}
+  .ev.return{background:rgba(212,170,90,.1);color:var(--gold);}
+  .ev.secret{background:rgba(127,163,201,.07);color:#9db8d4;font-style:italic;font-size:12.5px;}
+  .ev.secret::before{content:"🔒 ";}
+  .ev.speech{border-left:2px solid var(--gold);padding-left:12px;background:rgba(212,170,90,.05);}
+  .ev.speech b{color:var(--gold);font-weight:600;}
+  .ev.vote{background:rgba(20,28,48,.55);font-size:12.5px;color:var(--mist);border:1px dashed rgba(212,170,90,.18);}
+  .meta{color:var(--mist-dim);font-size:11.5px;text-align:center;letter-spacing:.18em;margin-top:26px;}
+</style>
+</head>
+<body data-page-node-id="ms2wBH1lIptJNsIckVASUy">
+<canvas id="snow" data-page-node-id="7KuUSpFdbJ53umzEGyqw0D"></canvas><div class="vignette" data-page-node-id="QGR9r1ciyxFq7pcsjqJaYL"></div>
+<div class="wrap" data-page-node-id="kkcpmd3ATiDn1EiBbydTqR">
+  <header data-page-node-id="b4tBJ2avN6HC9i1yJFdOAn">
+    <div class="eyebrow" data-page-node-id="9kkJQinnE109ZdKj0vkQG2">Le Spectateur en Direct</div>
+    <h1 data-page-node-id="hShjz5yQi50z8io0mAWIUr">Nocturne des &Acirc;mes Mortes</h1>
+    <div class="cn-sub" data-page-node-id="oXSoMitU6dGTJEYJao3Ctz">死魂灵的夜曲</div>
+    <div class="latin-sub" data-page-node-id="4CBxTG49MXZp6iw9voMimC">Live &middot; 实时观战 &middot; 全知之眼</div>
+    <div class="status" id="status" data-page-node-id="pznbw9Gq79fpYYLHSfToQM">连接中……<span class="live" data-page-node-id="enJF5FTktdEoCpgQC9yJp9">● LIVE</span></div>
+    <div id="banner" data-page-node-id="8LbC08Gz1e9K10Fv2QgXka"></div>
+  </header>
+  <div class="board" data-page-node-id="hAgwqwhEcK4Ab70IoQGox2">
+    <div class="panel roster" data-page-node-id="ugqotlGFK4eqCExDgEUh8y">
+      <h2 data-page-node-id="G2z7sa6uJSK8LVNXHwEdgp">十三人名录</h2>
+      <div class="latin" data-page-node-id="Z7P5LGjMYKMNYDb9v5sK5Q">Distribution des R&ocirc;les &middot; 真实身份</div>
+      <div id="seats" data-page-node-id="gvZxxKCfoH2khFK7YaxpHS"></div>
+    </div>
+    <div class="panel" data-page-node-id="WoyJTjfFfTTNel6qVkcT5Z">
+      <h2 data-page-node-id="dOOeZkQhPzOxnkOuxyw0lO">全场记事</h2>
+      <div class="latin" data-page-node-id="xxpH9EZYcsaPb2DUukrAuk">Chronique &middot; 含全部夜间秘密 &middot; 最新一幕在上</div>
+      <div id="feed" data-page-node-id="zRSGtpCBTXFyfy7ZGFOzqw"></div>
+    </div>
+  </div>
+  <div class="meta" data-page-node-id="GjYzH9og2oIe0IDHm559rV">Le Directeur voit tout &middot; 每 2 秒自动轮询 · 无刷新直播</div>
+</div>
+<script>
+(function(){
+  var ROLE_EMOJI = {"莱莱可":"🗡","门先生":"🛡","米提亚":"👁","降临者":"⚡","水妖":"🌊",
+                    "普通人":"🎭","魂灵":"👻","死神":"💀","夜祷":"🕯"};
+  function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function render(s){
+    var alive = s.players.filter(function(p){return p.alive;}).length;
+    var hum = s.players.filter(function(p){return p.alive && p.faction==="human";}).length;
+    var det = alive - hum;
+    var phase = s.done ? ("对局已结束 · 共 " + s.night + " 夜 · 存活 " + alive + "（人 " + hum + " / 死亡阵营 " + det + "）")
+                       : ("对局进行中 · 当前第 " + s.night + " 夜 · 存活 " + alive + "（人 " + hum + " / 死亡阵营 " + det + "）");
+    document.getElementById("status").innerHTML = esc(phase) + (s.done ? "" : '<span class="live"> ● LIVE</span>');
+    document.getElementById("banner").innerHTML = s.winner
+      ? (s.winner === "human"
+         ? "<div class='banner'>🏆 人类阵营胜利 — 大幕落下，晨光照进剧院</div>"
+         : "<div class='banner death'>🩸 死亡阵营胜利 — 屠城之夜，曲终人散</div>")
+      : "";
+    // 名录
+    document.getElementById("seats").innerHTML = s.players.map(function(p){
+      var st = p.alive ? "存活" : ("出局（" + esc(p.cause || "？") + "）");
+      if(!p.alive && p.faction === "death" && p.role !== "魂灵") st += " · 可能回归";
+      var lead = (p.id === s.leader && p.alive) ? " <span class='lead'>领袖</span>" : "";
+      var mdl = p.model ? " · <span class='mdl'>🤖 " + esc(p.model) + "</span>" : "";
+      return "<div class='seat " + (p.alive ? "" : "dead") + " f-" + esc(p.faction) + "'>"
+           + "<div class='no'>" + (p.id + 1) + "</div>"
+           + "<div><div class='role'>" + (ROLE_EMOJI[p.role] || "") + " " + esc(p.name) + " · " + esc(p.role) + "</div>"
+           + "<div class='st'>" + st + lead + mdl + "</div></div></div>";
+    }).join("");
+    // 记事：按阶段分组，最新在上
+    var phases = [], cur = null;
+    (s.log || []).forEach(function(e){
+      var key = e.phase || "白天";
+      if(!cur || cur[0] !== key){ cur = [key, []]; phases.push(cur); }
+      cur[1].push(e);
+    });
+    document.getElementById("feed").innerHTML = phases.slice().reverse().map(function(ph){
+      var key = ph[0], evs = ph[1];
+      var isNight = key.indexOf("夜") >= 0;
+      var head = "<h3 class='" + (isNight ? "night' >" : "dayl'>") + esc(key)
+               + "<span class='lat'>" + (isNight ? "Nocturne" : "Interlude") + "</span></h3>";
+      var body = evs.map(function(e){
+        var et = e.type, cls = "ev announce", txt = esc(e.text || "");
+        if(et === "speech") cls = "ev speech";
+        else if(et === "secret" || et === "night_act" || et === "wolf_chat") cls = "ev secret";
+        else if(et === "death") cls = "ev death";
+        else if(et === "return") cls = "ev return";
+        else if(et === "announce") cls = txt.indexOf("🗳") === 0 ? "ev vote" : "ev announce";
+        if(et === "night_result") return "";
+        var who = (e.who && et === "speech") ? "<b>" + esc(e.who) + "：</b>" : "";
+        return "<div class='" + cls + "'>" + who + txt + "</div>";
+      }).join("");
+      return "<div class='day'>" + head + body + "</div>";
+    }).join("");
+  }
+  function poll(){
+    fetch("AI对战_战况.json", {cache:"no-store"}).then(function(r){return r.json();}).then(function(s){
+      if(s && !s.none) render(s);
+    }).catch(function(){});
+  }
+  poll(); setInterval(poll, 2000);
+})();
+</script>
+<script>
+(function(){
+  var c=document.getElementById("snow"),x=c.getContext("2d"),fl=[];
+  function rs(){c.width=innerWidth;c.height=innerHeight;}rs();addEventListener("resize",rs);
+  for(var i=0;i<70;i++)fl.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.8+.4,s:Math.random()*.5+.15,o:Math.random()*.5+.15});
+  (function tick(){x.clearRect(0,0,c.width,c.height);x.fillStyle="#eef2f7";
+    for(var i=0;i<fl.length;i++){var f=fl[i];f.y+=f.s;f.x+=Math.sin(f.y*.01)*.3;if(f.y>c.height){f.y=-4;f.x=Math.random()*c.width;}
+      x.globalAlpha=f.o;x.beginPath();x.arc(f.x,f.y,f.r,0,7);x.fill();}
+    requestAnimationFrame(tick);})();
+})();
+</script>
+<div style="position:fixed;right:14px;bottom:14px;z-index:99;background:rgba(10,12,20,.78);color:#d8c48a;font:12px/1.6 serif;padding:8px 14px;border:1px solid rgba(216,196,138,.4);border-radius:20px;backdrop-filter:blur(4px)">🎬 存档快照 · 实时直播需本地运行 server.py</div>
+</body>
+</html>
