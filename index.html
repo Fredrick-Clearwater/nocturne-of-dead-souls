@@ -125,7 +125,7 @@
     padding:7px 18px 7px 22px;border-radius:999px;
   }
   .scroll-cue{
-    position:absolute;bottom:4.5vh;left:50%;
+    position:absolute;bottom:1.8vh;left:50%;
     color:var(--mist-dim);font-size:12px;letter-spacing:.4em;
     animation:cue 2.6s ease-in-out infinite;
   }
@@ -178,6 +178,8 @@
     background:var(--gold-line);
     border:1px solid var(--gold-line);
   }
+  /* AI 剧场：卡片网格与导语拉开距离 */
+  #ai-theatre .mist-steps{margin-top:2.8rem}
   .mist-steps article{
     background:linear-gradient(180deg,var(--night-2),var(--night));
     padding:38px 26px 34px;text-align:center;
@@ -195,6 +197,10 @@
     color:var(--mist);font-size:15px;line-height:2.15;
   }
   .mist-note b{color:var(--gold);font-weight:600;}
+  .mist-steps article a, .mist-note a{
+    color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(0,0,0,.15);
+    transition:border-color .2s;}
+  .mist-steps article a:hover, .mist-note a:hover{border-color:var(--gold);}
 
   /* 第三幕 · cast */
   .troupe{display:flex;flex-direction:column;gap:52px;}
@@ -364,6 +370,7 @@
   <div class="hero-actions">
     <a class="hero-link primary" href="死魂灵的夜曲_规则书_剧院之夜.html">了解详细规则</a>
     <a class="hero-link" href="死魂灵的夜曲_模拟器_导演台.html">打开规则模拟器</a>
+    <a class="hero-link" href="#ai-theatre">AI 对战剧场</a>
   </div>
   <div class="scroll-cue">幕 布 拉 开</div>
 </header>
@@ -487,6 +494,49 @@
       </p>
     </div>
   </div>
+</section>
+
+<!-- ============ 幕间 · AI 对战剧场 ============ -->
+<section class="act" id="ai-theatre">
+  <div class="act-head rv">
+    <span class="no">Intermède · 幕间</span>
+    <h2>AI 对战剧场</h2>
+    <span class="fr">Théâtre des IA</span>
+  </div>
+  <div class="prose rv">
+    <p>
+      每一晚，都有另一批「演员」登上这座舞台——<strong>20 个大语言模型</strong>各领一张身份牌，
+      不读剧本、不许对词。它们互相试探、结盟、欺骗与指认，由一位 AI 剧务实时导戏，
+      每场落幕还有 AI 教练复盘出「经验」，注入下一场的演员们的记忆——
+      <span class="drop">它们在彼此身上学习，像一支真正的话剧团。</span>
+    </p>
+    <p>
+      已上演 <b>20</b> 场完整对局，战绩：死亡阵营 <b>14</b> · 人类 <b>5</b>——第 <b>21</b> 局正在筹备中。
+    </p>
+  </div>
+  <div class="mist-steps rv">
+    <article>
+      <span class="t">Reprise · 回放</span>
+      <h3>实时回放</h3>
+      <p>观众席视角，逐条发言的现场直播。<br>第 20 局完整回放。</p>
+      <a href="AI对战_实时回放.html">入场观看 →</a>
+    </article>
+    <article>
+      <span class="t">Régisseur · 剧务席</span>
+      <h3>上帝视角</h3>
+      <p>摊开所有底牌：夜刀、密谋、<br>每一次身份反转的真相。</p>
+      <a href="AI对战_上帝视角.html">推门而入 →</a>
+    </article>
+    <article>
+      <span class="t">Dernière · 第20场</span>
+      <h3>完整战报</h3>
+      <p>死神三度回归三度被逐，莱莱可<br>推理锁死夜祷转化的六夜拉锯。</p>
+      <a href="AI对战_战报_第20局.html">阅读战报 →</a>
+    </article>
+  </div>
+  <p class="mist-note rv">
+    看不过瘾？<b>导演台</b>已内置同款 V4.4 引擎与信息模型——<a href="死魂灵的夜曲_模拟器_导演台.html">执起导演筒，自己跑一局 →</a>
+  </p>
 </section>
 
 <!-- ============ 第四幕 · 终局 ============ -->
